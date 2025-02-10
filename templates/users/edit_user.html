@@ -1,0 +1,57 @@
+[[extend 'layout3.html']]
+
+[[block header]]
+<style>
+
+</style>
+[[icon='fa fa-chart-line']]
+[[breadcamp = 'Edit User']]
+[[end]]
+
+[[block content]]
+
+<div class="container py-5">
+    <div id="custom_input">
+        <div class="col-3">
+            [[=form]]
+        </div>
+        
+    </div>
+    
+</div>
+
+        
+    
+[[end]]
+
+[[block scripts]]
+<script>
+      $(document).ready(function() {
+        $("#ac_auth_user_branch_name").change(function() { 
+            
+            var selectedValue = $(this).val();  
+            $.ajax({
+                url: '[[=URL("get_branch_code")]]', // Replace with your endpoint
+                method: 'GET',
+                data: { q: selectedValue },
+                dataType: 'json',
+                success: function(data) {
+                    console.log(data['branch_code'])       ;     
+                    $("#ac_auth_user_branch_code").val(data['branch_code']);
+                    
+                }
+            });  
+        });
+        var errorElement = $('.py4web-validation-error');
+            if (errorElement.length) {
+                // Change the class to 'text-danger'
+                errorElement.removeClass('py4web-validation-error').addClass('text-danger');
+            }
+
+});
+
+
+</script>
+
+[[end]]
+

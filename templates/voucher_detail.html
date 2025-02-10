@@ -1,0 +1,734 @@
+[[extend 'layout3.html']]
+
+[[block header]]
+
+[[icon='fa fa-chart-line']]
+<style>
+    .custom-radio {
+    width: 15px;
+    height: 15px;
+    }
+    li{
+        list-style: none;
+        cursor: pointer;
+    }
+    ul.suggestion-list-cd,ul.suggestion-list-nm,ul.suggestion-list-rf{
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        
+        }
+
+
+    .suggestions-cd,.suggestions-nm,.suggestions-rf{
+        display: block; 
+        background: #eee;
+        position: absolute;               
+        z-index: 1000; /* Add this line to make sure the suggestion list is on top */
+        
+        
+    }
+    .bg-slate-100{
+        background-color: #f1f5f9;
+    }
+    .w-full{
+  width: 100%;
+}
+.w-1\/2{
+  width: 80%;
+}
+.text-sm{
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+.text-center{
+  text-align: center;
+}
+
+.text-right{
+  text-align: right;
+}
+.text-left{
+  text-align: left;
+}
+
+.align-top{
+  vertical-align: top;
+}
+.text-neutral-600{
+  color: #525252;
+}
+.px-14{
+  padding-left: 3.5rem;
+  padding-right: 3.5rem;
+}
+.py-6{
+  padding-top: 1rem;
+  padding-bottom: 0.5rem;
+}
+table {
+  text-indent: 0;
+  /* 1 */
+  border-color: inherit;
+  /* 2 */
+  border-collapse: collapse;
+  /* 3 */
+}
+.border-spacing-0{
+  --tw-border-spacing-x: 0px;
+  --tw-border-spacing-y: 0px;
+  border-spacing: var(--tw-border-spacing-x) var(--tw-border-spacing-y);
+}
+.font-bold{
+  font-weight: 700;
+}
+
+td{  
+  height: 15px !important;
+}
+
+.scrollable-table {
+    height: 300px;
+    overflow-y: auto;
+    position: relative;
+    z-index: 1;
+}
+
+.table th{
+    background-color: #a8b2bc;
+    color: black;
+    font-weight: bold;
+    position: sticky;
+    top: 0;
+}
+.table tfoot {    
+    color: black;
+    font-weight: bold;
+    position: sticky;
+    bottom:-1;
+    
+}
+.table tbody tr:nth-of-type(even){
+    background-color: #f3f6f8;
+}
+
+
+
+
+</style>
+[[breadcamp = 'Voucher Details']]
+[[end]]
+
+[[block content]]
+<div class="container py-1">
+
+
+    <div class="container py-1">
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <div class="row">
+                    
+                    <div class="col-md-6">
+                        <div class="mb-2">
+                            <strong>Voucher Type:</strong>
+                            <span id="v_type" class="badge bg-success ms-2">[[ = form_data['v_type']]]</span>
+                        </div>
+                        <div class="mb-2">
+                            <strong>Voucher Date:</strong>
+                            <span id="v_date" class="ms-2">[[ = form_data['v_date']]]</span>
+                        </div>
+                        <div class="mb-2">
+                            <strong>Narration:</strong>
+                            <span id="narration" class="ms-2">[[ = form_data['narration']]]</span>
+                        </div>
+                    </div>
+    
+                    
+                    <div class="col-md-6">
+                        <div class="mb-2">
+                            <strong>Serial No:</strong>
+                            <span id="sl" class="ms-2">[[ = form_data['sl']]]</span>
+                        </div>
+                        <div class="mb-2">
+                            <strong>Status:</strong>
+                            <span id="status" class="badge bg-success ms-2">[[ = form_data['status']]]</span>
+                        </div>
+                        <div class="mb-2">
+                            <strong>Reference:</strong>
+                            <span id="source_ref" class="ms-2">[[ = form_data['source_ref']]]</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-section">
+        <div class="container py-0">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div id="custom_input">
+                        <div class="row g-3">
+                            
+                            <div class="col-md-2">
+                                <label for="account_code" class="form-label">Account Code</label>
+                                <input type="text" class="form-control form-control-sm" id="account_code" name="account_code" autocomplete="off">
+                                <div class="suggestions-cd mt-2">
+                                    <ul class="suggestion-list-cd list-group" id="dropdata-cd">
+                                        <!-- suggestions will be displayed here -->
+                                    </ul>
+                                </div>
+                            </div>
+        
+                            
+                            <div class="col-md-3">
+                                <label for="account_name" class="form-label">Account Name</label>
+                                <input type="text" class="form-control form-control-sm" id="account_name" name="account_name" autocomplete="off">
+                                <div class="suggestions-nm mt-2">
+                                    <ul class="suggestion-list-nm list-group" id="dropdata-nm">
+                                        <!-- suggestions will be displayed here -->
+                                    </ul>
+                                </div>
+                            </div>
+        
+                            
+                            <div class="col-md-2 d-flex align-items-center">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input custom-radio" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1">
+                                    <label class="form-check-label" for="inlineRadio1">Debit</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input custom-radio" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
+                                    <label class="form-check-label" for="inlineRadio2">Credit</label>
+                                </div>
+                            </div>
+                            
+        
+                            
+                            <div class="col-md-1">
+                                <label for="amount" class="form-label">Amount</label>
+                                <input type="number" class="form-control form-control-sm" id="amount" name="amount" min="0">
+                            </div>
+        
+                            <!-- Ref. Type -->
+                            <div class="col-md-2">
+                                <label for="type-ref" class="form-label">Ref. Type</label>
+                                <select class="form-select form-select-sm" id="type-ref" name="type-ref">
+                                    <option selected="selected" value="Employee">Employee</option>
+                                    <option value="Vehicle">Vehicle</option>
+                                </select>
+                            </div>
+        
+                           
+                            <div class="col-md-2">
+                                <label for="det-ref" class="form-label">Reference</label>
+                                <input type="text" class="form-control form-control-sm" id="det-ref" name="det-ref">
+                                <div class="suggestions-rf mt-2">
+                                    <ul class="suggestion-list-rf list-group" id="dropdata-rf">
+                                        <!-- suggestions will be displayed here -->
+                                    </ul>
+                                </div>
+                            </div>
+        
+                            
+                            <div class="col-md-2 d-flex align-items-end">
+                                <button type="button" class="btn btn-primary btn-sm w-100" id="add-row">
+                                    <i class="fas fa-plus"></i> Add Account
+                                </button>
+                            </div>
+        
+                            
+                            <div class="col-md-2">
+                                <input type="hidden" class="form-control form-control-sm" id="ref-code" name="ref-code">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="container py-2" >
+            <div class="row">
+                <div class="col-12">
+                    <div class="scrollable-table">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Account Code</th>
+                                    <th scope="col">Account Name</th>
+                                    <th scope="col">Debit</th>
+                                    <th scope="col">Credit</th>
+                                    <th scope="col">Ref. Code</th>
+                                    <th scope="col">Reference</th>
+                                    <th scope="col">Remove</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody">
+                                
+                            </tbody>
+                            <tfoot>
+                                <tr class="tft">
+                                    
+                                    <td id="emp" style="font-weight: bold;"> </td>
+                                    <td id="tot" style="font-weight: bold;"> Total</td>
+                                    <td id="total-debit" style="font-weight: bold;">0 </td>
+                                    <td id="total-credit" style="font-weight: bold;"> 0 </td>
+                                    
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="row mt-3">
+        <div class="col-10">
+            <button type="button" class="btn btn-success me-2" id="save-data">Save</button>
+            <button type="button" class="btn btn-primary"  id="post-data">Post</button>
+              
+        </div>
+        <div class="col-1">            
+            <button type="button" class="btn btn-danger me-2" id="cancel-data">Cancel</button>          
+        </div>
+    </div>
+</div>
+
+[[end]]
+
+
+
+[[block scripts]]
+<script>
+    $(document).ready(function () {
+        function updateTotals() {
+            let totalDebit = 0;
+            let totalCredit = 0;
+            
+            $("#tbody tr").each(function () {
+                totalDebit += parseFloat($(this).find("td:eq(2)").text()) || 0;
+                totalCredit += parseFloat($(this).find("td:eq(3)").text()) || 0;
+            });
+            
+            $("#total-debit").text(totalDebit.toFixed(2));
+            $("#total-credit").text(totalCredit.toFixed(2));
+        // $("#total-debit").text(totalDebit.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+        // $("#total-credit").text(totalCredit.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+        }
+       
+        //////////////
+        updateTotals();
+
+        // autofill suggestion for account code
+        $('#account_code').on('input', function() {        
+            var query = $(this).val();            
+            if (query.length >= 5) {
+                $.ajax({
+                    url: '[[=URL("fetch_account_code_voucher_detail")]]',
+                    data: {term: query},
+                    success: function(data) {
+                        var suggestions = JSON.parse(data);
+                        var dropdown = $('#dropdata-cd');
+                        dropdown.empty(); 
+                        $.each(suggestions, function(index, value) {
+                            dropdown.append('<li class="list-group-item suggestion-item">' + value + '</li>');
+                        });
+                        $('.suggestions-cd').show();
+                    }
+                });
+            } else {
+                $('.suggestions-cd').hide(); 
+            }
+    });
+
+    //click on a suggestion
+    $(document).on('click', '.suggestion-item', function() {
+        var selectedText = $(this).text();
+        var parts = selectedText.split('|');        
+        $('#account_code').val(parts[0]); 
+        $('#account_name').val(parts[1]); 
+        $('.suggestions-cd').hide();
+        
+    });
+    // click outside
+    $(document).click(function(e) {
+        if (!$(e.target).closest('.suggestions-cd, #account_code').length) {
+            $('.suggestions-cd').hide();
+        }
+    });
+
+    // autofill suggestion for account name
+        $('#account_name').on('input', function() {        
+            var query = $(this).val();            
+            if (query.length >= 3) {
+                $.ajax({
+                    url: '[[=URL("fetch_account_voucher_detail")]]',
+                    data: {term: query},
+                    success: function(data) {
+                        var suggestions = JSON.parse(data);
+                        var dropdown = $('#dropdata-nm');
+                        dropdown.empty(); 
+                        $.each(suggestions, function(index, value) {
+                            dropdown.append('<li class="list-group-item suggestion-item-nm">' + value + '</li>');
+                        });
+                        $('.suggestions-nm').show();
+                    }
+                });
+            } else {
+                $('.suggestions-nm').hide(); 
+            }
+    });
+
+    //click on a suggestion
+    $(document).on('click', '.suggestion-item-nm', function() {
+        var selectedText = $(this).text();
+        var parts = selectedText.split('|');        
+        $('#account_code').val(parts[0]); 
+        $('#account_name').val(parts[1]); 
+        $('.suggestions-nm').hide();
+        
+    });
+
+    //when clicking outside
+    $(document).click(function(e) {
+        if (!$(e.target).closest('.suggestions, #ac_name').length) {
+            $('.suggestions-nm').hide();
+        }
+    });
+
+    //autofill suggestion for reference
+    $('#det-ref').on('input', function() {        
+            var r_type= $('#type-ref').val(); 
+            console.log(r_type)  ;         
+            var query = $(this).val();            
+            if (query.length >= 3) {
+                $.ajax({
+                    url: '[[=URL("fetch_reference")]]',
+                    data: {term: query, r_type: r_type},
+                    success: function(data) {
+                        var suggestions = JSON.parse(data);
+                        var dropdown = $('#dropdata-rf');
+                        dropdown.empty(); 
+                        $.each(suggestions, function(index, value) {
+                            dropdown.append('<li class="list-group-item suggestion-rf">' + value + '</li>');
+                        });
+                        $('.suggestions-rf').show();
+                    }
+                });
+            } else {
+                $('.suggestions-rf').hide(); 
+            }
+    });
+
+    //click on a suggestion
+    $(document).on('click', '.suggestion-rf', function() {
+        var selectedText = $(this).text();
+        var parts = selectedText.split('|');        
+        $('#det-ref').val(parts[1]); 
+        $('#ref-code').val(parts[0]); 
+        $('.suggestions-rf').hide();
+        
+    });
+    //when clicking outside
+    $(document).click(function(e) {
+    if (!$(e.target).closest('.suggestions-rf, #ac_name').length) {
+        $('.suggestions-rf').hide();
+    }
+});
+    ///////////////////
+
+
+        //add row to table and update total debit and credit
+           $("#add-row").click(function () {
+            var account_code = $("#account_code").val();
+            var ac_name = $("#account_name").val();
+            var ref_code = $("#ref-code").val();
+            var ref_name = $("#det-ref").val();
+            var amount = $("#amount").val();
+            var v_type = $("#v_type").text();
+            var type ;
+            
+            var isDebit =  $("#inlineRadio1").is(":checked");
+            var isCredit =  $("#inlineRadio2").is(":checked");
+            
+            var debit = isDebit ? amount : 0;
+            var credit = isCredit ? amount : 0;    
+            
+            if(isDebit){
+                type='debit';                
+            }
+            else if(isCredit){
+                type='credit';                
+            }
+            
+            var accountExists = false;
+
+            var obj={acno:account_code, vt:v_type, type:type}
+
+            if (amount <= 0) {
+                alert("Amount must be greater than zero.");
+                return; // Stop execution if the validation fails
+            }
+    
+            // Check if account code already exists in the table
+            $("#tbody tr").each(function() {
+                var existingAccountCode = $(this).find("td:eq(0)").text();
+                if (existingAccountCode === account_code) {
+                    accountExists = true;
+                    return false; 
+                }
+            });
+    
+            if (accountExists) {
+                alert("Account code already exists. Please enter a different account code.");
+            } else if (account_code && (debit || credit)) {
+                $.ajax({
+                    url: "[[=URL('check_account_code')]]",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(obj),
+                    success: function (response) {
+                        var result = JSON.parse(response);
+                        if (result.status === 'valid') {
+                            var newRow = "<tr><td>" + account_code + "</td><td>" + ac_name + "</td><td>" + debit + "</td><td>" + credit + "</td><td>" + ref_code + "</td><td>"+ ref_name  +"</td><td> <button type='button' class='btn btn-sm btn-danger remove-row'><i class='fa-solid fa-x'></i>  </button></td></tr>";
+                            $("#tbody").append(newRow);
+                            $('#account_code').val("")
+                            $('#account_name').val("")
+                            $('#amount').val("")
+                            $('#det-ref').val("")
+                            $('#ref-code').val("")
+                            $('input[type="radio"]').prop('checked', false)
+                            $("#account_name").focus();
+                            updateTotals();
+                        } else if (result.status === 'invalid') {
+                            alert("Account not valid for "+v_type+" voucher");
+                        } else if (result.status === 'not_found') {
+                            alert("Account not found for the user");
+                        } else {
+                            alert("error");
+                        }
+                    }
+        });
+        } else {
+                alert("Please fill in all required fields.");
+            }
+        });
+
+
+        // remove row
+        $(document).on('click', '.remove-row', function () {
+            $(this).closest('tr').remove();
+            updateTotals()
+        });
+        
+        // save button
+        $("#save-data").click(function () {
+            var tableData = [];
+            $("#tbody tr").each(function () {
+                var account_code = $(this).find("td:eq(0)").text();
+                var account_name = $(this).find("td:eq(1)").text();
+                var debit = parseFloat($(this).find("td:eq(2)").text()) || 0;
+                var credit = parseFloat($(this).find("td:eq(3)").text())*(-1) || 0;
+                var ref_code = $(this).find("td:eq(4)").text();
+                var ref_name = $(this).find("td:eq(5)").text();
+
+                
+                tableData.push({
+                    account_code: account_code,
+                    account_name:account_name,
+                    debit: debit,
+                    credit: credit,
+                    ref_code: ref_code,
+                    ref_name: ref_name
+                    
+                });
+            });
+            var sl = $("#sl").text();
+            var v_date = $("#v_date").text();
+            var narration = $("#narration").text();
+            var v_type = $("#v_type").text();
+            var source_ref = $("#ref").text();
+            var status = $("#status").text();
+
+            // console.log(sl+' '+v_date)
+
+            var payload = {
+                sl: sl,
+                v_date: v_date,
+                narration: narration,
+                v_type: v_type,
+                source_ref: source_ref,
+                status: status,
+                tableData: tableData
+            };            
+
+            $.ajax({
+                url: '[[=URL("save_voucher_details")]]',
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(payload),
+                success: function (response) {
+                    if(response.status=="success") {
+                        alert('Voucher saved successfully');
+                    } else if(response.status=="POSTED"){
+                        alert('Unable to save. Voucher already posted.');
+                    }else if(response.status=="CANCEL"){
+                        alert('Unable to save. Voucher already cancelled.');                        
+                    }else {
+                        alert('Unexpected status: ' + response.status);
+                    }                    
+                },
+                error: function (xhr, status, error) {
+                    alert("An error occurred while saving data.");
+                }
+            });
+        });
+
+
+        // cancel button
+        $("#cancel-data").click(function () {
+            var sl = $("#sl").text();
+            console.log(sl);
+    
+                var confirmCancel = confirm("Are you sure you want to cancel the voucher?");
+                if (confirmCancel) {        
+                $.ajax({
+                    url: '[[=URL("cancel_voucher")]]',
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify({ sl: sl, }),
+                    success: function (response) {
+                        alert("Voucher cancelled successfully!");
+                        // $("#status").text("CANCEL");
+                        $("#status").html('<span class="badge bg-success">CANCEL</span>');
+                        $("#save-data").prop('disabled', true);
+                        $("#cancel-data").prop('disabled', true);
+                        $("#post-data").prop('disabled', true);
+            },
+            error: function (xhr, status, error) {
+                alert("An error occurred while cancelling the voucher.");
+            }
+        });
+        } else {
+            //clicked No
+            console.log("Voucher cancellation aborted by user.");
+        }
+    });
+
+        // post button
+        $("#post-data").click(function () {
+
+            var totalDebit = parseFloat($("#total-debit").text()) || 0;
+            var totalCredit = parseFloat($("#total-credit").text()) || 0;
+
+            // checking if debit equals credit 
+            if (totalDebit !== totalCredit) {
+                alert("Total debit and total credit must be equal to post the voucher.");
+                return; 
+            }
+
+            console.log(totalDebit)
+            var sl = $("#sl").text();
+            var v_date = $("#v_date").text();
+            var narration = $("#narration").text();
+            var v_type = $("#v_type").text();
+            var source_ref = $("#ref").text();
+            var status = $("#status").text();            
+
+            console.log(sl);
+
+            var tableData = [];
+            $("#tbody tr").each(function () {
+                var account_code = $(this).find("td:eq(0)").text();
+                var account_name = $(this).find("td:eq(1)").text();
+                var debit = parseFloat($(this).find("td:eq(2)").text()) || 0;
+                var credit = parseFloat($(this).find("td:eq(3)").text())*(-1) || 0;
+
+                var ref_code = $(this).find("td:eq(4)").text();
+                var ref_name = $(this).find("td:eq(5)").text();
+
+
+                tableData.push({
+                    account_code: account_code,
+                    account_name: account_name,
+                    debit: debit,
+                    credit: credit,
+                    ref_code: ref_code,
+                    ref_name: ref_name
+                });
+            });
+
+            var payload = {
+                sl: sl,
+                v_date: v_date,
+                narration: narration,
+                v_type: v_type,
+                source_ref: source_ref,
+                status: status,
+                totalDebit: totalDebit,
+                tableData: tableData
+            };
+                
+                var confirmPost = confirm("Are you sure you want to post the voucher?");
+                if (confirmPost) {                
+                $.ajax({
+                    url: '[[=URL("post_voucher")]]',
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(payload),
+                    success: function (response) {
+                        alert("Voucher posted successfully!");
+                        // $("#status").text("POSTED");
+                        $("#status").html('<span class="badge bg-success">POSTED</span>');
+            },
+            error: function (xhr, status, error) {
+                alert("An error occurred while posting the voucher.");
+            },
+            complete: function() {
+                
+                $("#save-data").prop('disabled', true);
+                $("#cancel-data").prop('disabled', true);
+                $("#post-data").prop('disabled', true);
+            }
+        });
+        } else {
+            // clicked No
+            console.log("Voucher post aborted by user.");
+        }
+    });
+
+    $(document).on('dblclick', '#tbody tr', function() {
+        var accountCode = $(this).find('td:eq(0)').text();
+        var accountName = $(this).find('td:eq(1)').text();
+        var debit = $(this).find('td:eq(2)').text();
+        var credit = $(this).find('td:eq(3)').text();
+        var refCode = $(this).find('td:eq(4)').text();
+        var reference = $(this).find('td:eq(5)').text();
+
+        $('#account_code').val(accountCode);
+        $('#account_name').val(accountName);
+        $('#amount').val(debit > 0 ? debit : credit);
+        $('#ref-code').val(refCode);
+        $('#det-ref').val(reference);
+
+        if (debit > 0) {
+            $('#inlineRadio1').prop('checked', true);
+        } else {
+            $('#inlineRadio2').prop('checked', true);
+        }
+
+        $(this).remove();
+        updateTotals();
+      });
+
+    
+            
+
+    });
+</script>
+[[end]]
+
+

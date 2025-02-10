@@ -1,0 +1,317 @@
+[[extend 'layout3.html']]
+
+[[block header]]
+<style>
+    #cash_denomination_form label {
+    font-size: 0.8rem;
+}
+
+
+
+</style>
+[[icon='fa fa-chart-line']]
+[[breadcamp = 'Cash Denomination']]
+[[end]]
+
+[[block content]]
+
+<div class="container py-1">
+    <div class="card shadow-sm mb-0">
+        <div class="card-body">
+            <div class="row">
+                <!-- Left Column -->
+                <div class="col-md-4">
+                    <div class="mb-2">
+                        <strong>Trans date:</strong>
+                        <input id="trans_date" name="trans_date" type="date" value="[[=today_date]]" readonly="true" />                        
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="col-md-4">
+                    <div class="mb-2">
+                        <strong>Branch Code:</strong>
+                        <span id="branch_code" class="ms-2">[[=trx_branch_code]]</span>
+                    </div>                                    
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-2">
+                        <strong>Branch Name:</strong>
+                        <span id="branch_name" class="ms-2">[[=trx_branch_name]]</span>
+                    </div>                                    
+                </div>                
+            </div>
+            <div class="row">
+                <!-- Left Column -->
+                <div class="col-md-4">
+                    <div class="mb-2">
+                        <strong>Account Code:</strong>
+                        <span id="account_code">[[=account_code]]</span>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="col-md-4">
+                    <div class="mb-2">
+                        <strong>Account Name:</strong>
+                        <span id="account_name" class="ms-2">[[=account_name]]</span>
+                    </div>                                    
+                </div>               
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    <div class="container py-2">      
+       
+        [[if not denom_data:]]
+        <div id="cash_denomination_form" class="p-2">
+            [[for note in bank_notes:]]
+            <div class="row g-0 align-items-center mb-2">
+                <!-- Note Label -->
+                <div class="col-md-2 text-end">
+                    <label class="form-label fw-bold" name="note_amt_[[=note.id]]" id="note_amt_[[=note.id]]">[[=int(note.note_amount)]]</label>
+                </div>
+        
+                <!-- Multiplication Symbol -->
+                <div class="col-md-1 text-center">
+                    <label class="form-label fw-bold">x</label>
+                </div>
+        
+                <!-- Quantity Input -->
+                <div class="col-md-1">
+                    <input type="number" class="form-control form-control-sm text-end" id="quantity_[[=note.id]]" name="quantity_[[=note.id]]" min="0" value="0" >
+                </div>
+        
+                <!-- Equals Symbol -->
+                <div class="col-md-1 text-center">
+                    <label class="form-label fw-bold">=</label>
+                </div>
+        
+                <!-- Total -->
+                <div class="col-md-2">
+                    <input type="text" class="form-control form-control-sm text-end" id="total_[[=note.id]]" name="total_[[=note.id]]" placeholder="Total" value="0" readonly>
+                </div>
+            </div>
+            [[pass]]
+             <!--  Total Row -->
+            <div class="row g-0 align-items-center mb-2">
+                <div class="col-md-2 text-end">
+                    <label class="form-label fw-bold"></label>
+                </div>
+                <div class="col-md-2 text-end">
+                    <label class="form-label fw-bold">Total</label>
+                </div>
+                <div class="col-md-1 text-center">
+                    <label class="form-label fw-bold">=</label>
+                </div>
+                <div class="col-md-2">
+                    <input type="text" class="form-control form-control-sm text-end" id="net_total" name="net_total"  value="0" readonly>
+                </div>
+
+            </div>
+            <div class="row g-0 align-items-center mb-2">
+                <div class="col-md-2 text-end">
+                    <label class="form-label fw-bold"></label>
+                </div>
+                <div class="col-md-2 text-end">
+                    <label class="form-label fw-bold"></label>
+                </div>
+                <div class="col-md-1 text-center">
+                    <label class="form-label fw-bold"></label>
+                </div>
+                
+                <div class="col-md-2 text-end">
+                    <button type="button" name="save" id="save" class="btn btn-success">Save</button>
+                </div>               
+
+            </div>
+            
+        </div>
+        [[else:]]  
+        [[for rows in denom_data:]]
+        <div class="row g-0 align-items-center mb-2">
+            <!-- Note Label -->
+            <div class="col-md-2 text-end">
+                <label class="form-label fw-bold" name="f_note_amt_[[=rows.note_amount]]" id="f_note_amt_[[=rows.note_amount]]">[[=int(rows.note_amount)]]</label>
+            </div>
+    
+            <!-- Multiplication Symbol -->
+            <div class="col-md-1 text-center">
+                <label class="form-label fw-bold">x</label>
+            </div>
+    
+            <!-- Quantity Input -->
+            <div class="col-md-1">
+                <input type="number" class="form-control form-control-sm text-end" id="f_quantity_[[=rows.note_code]]" name="f_quantity_[[=rows.note_code]]" min="0" value="[[=rows.qty]]" va readonly >
+            </div>
+    
+            <!-- Equals Symbol -->
+            <div class="col-md-1 text-center">
+                <label class="form-label fw-bold">=</label>
+            </div>
+    
+            <!-- Total -->
+            <div class="col-md-2">
+                <input type="text" class="form-control form-control-sm text-end" id="f_total_[[=rows.note_code]]" name="f_total_[[=rows.note_code]]" placeholder="Total" value="[[=rows.total]]" readonly>
+            </div>
+        </div>
+         
+        [[pass]]
+        <!--  Total Row -->
+        <div class="row g-0 align-items-center mb-2">
+            <div class="col-md-2 text-end">
+                <label class="form-label fw-bold"></label>
+            </div>
+            <div class="col-md-2 text-end">
+                <label class="form-label fw-bold">Total</label>
+            </div>
+            <div class="col-md-1 text-center">
+                <label class="form-label fw-bold">=</label>
+            </div>
+            <div class="col-md-2">
+                <input type="text" class="form-control form-control-sm text-end" id="f_net_total" name="f_net_total"  value="[[=total_amount]]" readonly>
+            </div>
+
+        </div>
+        [[pass]]  
+    </div>
+
+    
+[[end]]
+
+[[block scripts]]
+<script>
+  $(document).ready(function() {
+        // Function to calculate total for each note
+        function calculateTotal(noteId, noteAmount) {
+            let quantity = $(`#quantity_${noteId}`).val();
+            let total = quantity * noteAmount;
+            $(`#total_${noteId}`).val(total);
+        }        
+
+        // Attach event listener to quantity input fields
+        $("[id^='quantity_']").on('input', function() {
+            let noteId = $(this).attr('id').split('_')[1];
+            let noteAmount = parseInt($(this).closest('.row').find('label').first().text());
+            calculateTotal(noteId, noteAmount);
+
+            let netTotal = 0;
+            $("[id^='total_']").each(function () {
+                netTotal += parseFloat($(this).val()) || 0;
+            });
+            $("#net_total").val(netTotal);
+        });
+
+
+        // save button press 
+        $("#save").click(function () {
+            let rows = [];       
+            let valid = true; // Flag to track validation
+            let errorMsg = "";   
+
+            $("#save").prop("disabled", true);
+            
+            $("[id^='quantity_']").each(function () {
+            let id = $(this).attr('id').split('_')[1];
+            let qty = parseInt($(this).val());
+            // let qty = $(this).val();
+            
+            if (qty === "" || isNaN(qty) || parseInt(qty) < 0) {
+                valid = false;
+                errorMsg = "Please enter positive whole numbers only";
+                return false; 
+            }
+            else if (qty % 1 !=0) {
+                valid = false;
+                errorMsg = "Please enter whole numbers only";
+                return false;                 
+            }
+
+            let noteAmount = parseFloat($("#note_amt_" + id).text());             
+            let total = parseFloat($("#total_" + id).val()); 
+            
+            rows.push({
+                note_code: id,
+                note_amount: noteAmount,
+                qty: qty,
+                total: total,                
+            });
+        });
+
+        if (!valid) {
+            Swal.fire({
+                title: "Invalid Number",
+                text: errorMsg,
+                icon: "error",
+            });
+            $("#save").prop("disabled", false);
+            return; // Stop further execution
+        }        
+
+        const transDate = $("#trans_date").val();
+        const branchCode = $("#branch_code").text();
+        const branchName = $("#branch_name").text();
+        const accountCode = $("#account_code").text();
+        const accountName = $("#account_name").text();
+        const tot = $("#net_total").val();
+
+        const payload = {
+            trans_date : transDate,
+            branch_code : branchCode,
+            branch_name : branchName,
+            account_code :accountCode,
+            account_name : accountName,
+            tot: tot,
+
+            bank_notes : rows
+
+        }
+        
+        
+        // Send data via AJAX
+        $.ajax({
+            url: "[[=URL('cash_denomination/save')]]",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(payload),
+            success: function (response) {
+                if (response.success) {
+                    // alert(response.message);
+                    Swal.fire({
+                        title: "Saved",
+                        text: "Data saved successfully",
+                        icon: "success"
+                            }).then(() => {
+                            location.reload();
+                        });
+                } else {
+                    // alert("Error: " + response.message);
+                    Swal.fire({
+                        title: "Invalid Number",
+                        text: response.message,
+                        icon: "error",
+                    });
+                    $("#save").prop("disabled", false);
+                }
+            },
+            error: function (xhr, status, error) {
+                // alert("AJAX Error: " + error);
+                Swal.fire({
+                    title: "AJAX Error",
+                    text: error,
+                    icon: "error",
+                });
+                $("#save").prop("disabled", false);
+            }
+            
+        });
+    });       
+
+        
+    });
+  
+</script>
+
+[[end]]

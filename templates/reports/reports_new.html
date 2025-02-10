@@ -1,0 +1,162 @@
+[[extend 'layout3.html']]
+
+[[block header]]
+
+[[icon='fa fa-chart-line']]
+[[breadcamp = 'Reports']]
+<style>
+    .form-container {
+        max-width: 600px;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+    }
+    .form-group {
+        margin-bottom: 15px;
+    }
+    .btn-group {
+        display: flex;
+        flex-direction: column;
+    }
+    .btn-group button {
+        margin-bottom: 10px;
+    }
+
+    li{
+        list-style: none;
+        cursor: pointer;
+    }
+    ul.suggestion-list-cd {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        
+        }
+
+
+    .suggestions-cd {
+        display: block; 
+        background: #eee;
+        position: absolute;               
+        z-index: 1000; /* Add this line to make sure the suggestion list is on top */        
+        
+    }
+    .tb_form{
+        display: block;
+        background-color: #f8f9fa;        
+        border-radius: 8px;        
+        margin-top: 5px;
+    }
+</style>
+[[end]]
+
+[[block content]]
+<br> <br>
+
+<div class="btn-group align-items-center">
+    <button type="button" class="btn btn-primary" id="report1-btn" style="width: 40%;" onclick="open_tb()">Trial Balance</button>
+    <div class="tb_form" id="tb_form">
+        <form id="trial_balance"  class="d-flex align-items-center border p-3 rounded" method="POST" action="reports/trial_balance_1">
+            <div class="form-group me-2">
+                <label for="from_date">From Date</label>
+                <input class="form-control form-control-sm date" id="f_date_tb" name="f_date_tb" type="date"/>
+            </div>
+            <div class="form-group me-2">
+                <label for="to_date">To Date</label>
+                <input class="form-control form-control-sm date" id="t_date_tb" name="t_date_tb" type="date"/>
+            </div>
+            <div class="form-group me-3">
+                <label for="branch">Branch</label>
+                <select class="form-control form-control-sm" id="branch" name="branch" required>                
+                    [[if user_branch_code != 99:]]
+                    <option value="[[=branch_diabled]]">[[=branch_diabled]]</option>
+                    [[else:]]
+                    <option value="">Select Branch</option>
+                    [[for branch in branch_names:]]
+                    <option value="[[=branch[0]]]">[[=branch[0]]]</option>
+                    [[pass]]
+                    [[pass]]
+                
+            </select>
+            </div>
+            <div class="form-group me-2">
+                <label for="details">Details</label>
+                <input type="checkbox" id="details" name="details" value="details">
+            </div>
+            <button type="submit" class="btn btn-success"> <i class="fa-solid fa-arrow-right"></i></button>
+        </form>
+    </div>
+    
+    <button type="button" class="btn btn-primary" id="report2-btn" style="width: 40%;">Trial Balance (Summary)</button>
+    <button type="button" class="btn btn-primary" id="report3-btn" style="width: 40%;">Transaction Listing</button>
+</div>
+
+
+
+   
+[[end]]
+
+
+[[block scripts]]
+<script>
+        function open_tb() {
+            // console.log('Hello')
+            const formElement = $("#tb_form");
+            if (formElement.css("display") === "none") {
+                formElement.css("display", "block"); 
+            } else {
+                formElement.css("display", "none"); 
+    }    
+}
+
+
+    $(document).ready(function() {
+
+        $('#trial_balance').submit(function(event) {
+            event.preventDefault(); 
+
+            if($("#t_date_tb").val() == "") {
+                alert("Please select To Date");
+            }
+            else {
+                $("#tb_form").attr("action", "[[=URL('reports','trial_balance_1')]]");
+                // $("#tb_form").submit();
+            } 
+        })
+
+
+
+        $("#report1-btn").click(function() {
+            if($("#to_date").val() == "") {
+                alert("Please select To Date");
+            }
+            else {
+                $("#reports-form").attr("action", "[[=URL('reports','trial_balance_1')]]");
+                $("#reports-form").submit();
+            }     
+        });
+        
+        $("#report2-btn").click(function() {
+            if($("#from_date").val() == "") {
+                alert("Please select From Date");
+            }            
+            else if ($("#to_date").val() == "") {
+                alert("Please select To Date");
+            }
+            else {
+                $("#reports-form").attr("action", "[[=URL('reports','trial_balance_2')]]");
+                $("#reports-form").submit();
+            }
+
+            
+        });
+
+
+       
+});
+    </script>
+[[end]]
+
+

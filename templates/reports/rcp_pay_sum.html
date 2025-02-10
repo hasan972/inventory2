@@ -1,0 +1,236 @@
+[[extend 'layout_report.html']]
+
+[[block header]]
+<style type="text/css">
+    .table th {
+        background-color: #f1c889e0;
+        color: black;
+        font-weight: bold;
+    }
+    .table td {
+        border: 1px solid black;
+        font-size: smaller;
+        /* height: 10px; */
+    }
+    .table th {
+        border-left: 1px solid black;
+        border-right: 1px solid black;
+        border-top: 1px solid black;
+        height: 10px;
+    }
+    .table tr {
+        page-break-inside:avoid; 
+        page-break-after:auto
+    }
+
+    .header-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .download-link {
+        text-decoration: none;
+        color: #007bff;
+    }
+    .card-body {
+        display: flex;
+        justify-content: space-between;
+    }
+    .report-info {
+        flex: 1;
+    }
+    .date-info {
+        flex: 1;
+        text-align: right;
+    }
+    .logo {
+        width: 100px;
+        height: auto;
+    }
+
+    .company-info {
+        text-align: right;
+    }
+    .signature-box {
+    border-top: 1px solid black;
+    height: 10px;
+    margin-top: 20px;
+    width: 60%; /* Adjust the width as needed */
+    margin-left: auto;
+    margin-right: auto;
+}
+.logo-container {
+        max-width: 400px; 
+    }
+    .address-text {
+        font-size: smaller;
+        word-wrap: break-word;
+    } 
+
+</style>
+
+
+
+
+[[end]]
+
+[[block content]]
+
+<div class="container mt-4">
+
+    <div class="d-flex flex-column align-items-center justify-content-center">
+        <div class="text-center logo-container">
+            <img src="[[=URL('static','tdcl.png')]]" height="25px" width="400px" alt="TDCL">
+            <p class="address-text">[[=address]]</p> 
+        </div>   
+    </div>
+
+    <!-- Current Date and Time Section -->
+    <div class="header-container">
+        <p class="text-muted">Date and Time: [[=time]]</p>
+        <a href="#"></a>
+
+    </div>
+
+    <!-- Header Section -->
+    <div class="card mb-1">
+        <div class="card-body">
+            <div class="report-info">
+                <p class="card-text"><strong>Report Type:</strong> Receipt and Payment - Summary</p>
+                <p class="card-text"><strong>Branch Code:</strong> [[=report_branch_code]]</p>
+                <p class="card-text"><strong>Branch Name:</strong> [[=report_branch_name]]</p>
+            </div>
+            <div class="date-info">
+                <p class="card-text"><strong>From Date:</strong> [[=from_date]]</p>
+                <p class="card-text"><strong>To Date:</strong> [[=to_date]]</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Table Section -->
+    <div class="row">        
+        <div class="col-12">
+            <p style="font-size: medium; font-weight: bold;">Receipts</p>
+            <div class="table-responsive">
+                <table id="example" class="table table-sm table-bordered" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th scope="col" style="width: 80%;">Particulars</th>
+                            <th scope="col">Amount</th>
+                            <th scope="col">Amount</th>                        
+                        </tr>
+                    </thead>
+                    <tbody>
+                        [[for row in result1:]]
+                        <tr>
+                            <td>[[=row['account_name']]]</td>
+                            <td  class="text-end" >[[=f"{row['cash_bal']:,.2f}"]]</td>                
+                            <td></td>                        
+                        </tr>
+                        [[pass]]                        
+                        <tr>
+                            <td style="background-color: #dfe3e4">Opening Cash and Bank Balance</td>
+                            <td style="background-color: #dfe3e4"></td>
+                            <td  class="text-end" style="background-color: #dfe3e4">[[=f"{tot_cash_bank:,.2f}"]]</td>
+                            
+                        </tr>
+                        <tr>
+                            <td  style="background-color: #cde9d3">Receipt from Corporate</td>
+                            <td  style="background-color: #cde9d3"></td>
+                            <td  class="text-end"  style="background-color: #cde9d3">[[=f"{tot_corp:,.2f}"]]</td>
+                        </tr>
+                        [[for row4 in result13:]]
+                        <tr>
+                            <td  style="background-color: #e6f5f7">[[=row4['account_name']]]</td>
+                            <td  style="background-color: #e6f5f7"></td>
+                            <td  class="text-end"  style="background-color: #e6f5f7">[[=f"{row4['amount']:,.2f}"]]</td>                                                   
+                        </tr>
+                        [[pass]]
+                        <tr style="font-weight: bold;">
+                            <td style="background-color: #faf9d9">Total Receipt</td>
+                            <td style="background-color: #faf9d9"></td>
+                            <td  class="text-end" style="background-color: #faf9d9">[[=f"{total_receipt:,.2f}"]]</td>
+                        </tr>
+    
+                    </tbody>
+                </table>
+
+            </div>
+            
+        </div>
+        <div class="col-12">
+            <p style="font-size: medium; font-weight: bold;">Payments</p>
+
+            <div class="table-responsive">
+                <table id="example" class="table table-sm table-bordered" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th scope="col" style="width: 80%;">Particulars</th>
+                            <th scope="col">Amount</th>
+                            <th scope="col">Amount</th>                        
+                        </tr>
+                    </thead>
+                    <tbody>
+                        [[for row in result6:]]
+                        <tr>
+                            <td style="background-color: #c2d6d6;">[[=row['account_name']]]</td>
+                            <td style="background-color: #c2d6d6;"></td>
+                            <td  class="text-end" style="background-color: #c2d6d6;">[[=f"{row['amount']:,.2f}"]]</td>                                              
+                        </tr>                        
+                        [[pass]] 
+                        <tr>
+                            <td style="background-color: #dbeedf;font-weight: bold;">Total Expense</td>
+                            <td style="background-color: #dbeedf;"></td>
+                            <td style="background-color: #dbeedf;font-weight: bold;text-align: right;">[[= f"{tot_exp:,.2f}"]]</td>                                              
+                        </tr>      
+                        [[for row3 in result9:]]
+                        <tr>
+                            <td>[[=row3['account_name']]]</td>
+                            <td class="text-end">[[=f"{row3['closing_cash']:,.2f}"]]</td>                
+                            <td></td>                        
+                        </tr>   
+                        [[pass]]
+    
+                        [[for row4 in result10:]]
+                        <tr>
+                            <td>[[=row4['account_name']]]</td>
+                            <td class="text-end">[[=f"{row4['closing_bank']:,.2f}"]]</td>                
+                            <td></td>                        
+                        </tr>   
+                        [[pass]]
+                        <tr>
+                            <td style="font-weight: bold;background-color: #dfe3e4;">Closing Cash and Bank Balance</td>
+                            <td style="background-color: #dfe3e4;"></td>                
+                            <td  class="text-end" style="font-weight: bold;background-color: #dfe3e4;">[[=f"{tot_closing:,.2f}"]]</td>                        
+                        </tr> 
+                        <tr>
+                            <td style="font-weight: bold;background-color: #faf9d9;">Total Payment</td>
+                            <td style="background-color: #faf9d9;"></td>                
+                            <td  class="text-end" style="font-weight: bold;background-color: #faf9d9;">[[=f"{total_pay:,.2f}"]]</td>                        
+                        </tr> 
+    
+                    </tbody>
+                </table>
+
+            </div>
+            
+        </div>
+    </div>
+    <!-- Signature Section -->
+    <div class="row mt-4">
+        <div class="col-4 text-center">
+            <div class="signature-box"></div>
+            <p>Prepared By</p>
+        </div>
+        <div class="col-4 text-center">
+            <div class="signature-box"></div>
+            <p>Checked By</p>
+        </div>
+        <div class="col-4 text-center">
+            <div class="signature-box"></div>
+            <p>Branch In Charge</p>
+        </div>
+    </div>
+</div>
+
+[[end]]

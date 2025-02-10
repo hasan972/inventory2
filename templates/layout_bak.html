@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MK</title>
+
+  <!-- CSS CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@2.2.0/fonts/remixicon.css">
+  <link rel="stylesheet" href="[[=URL('static','css/boostrap.css')]]" />
+  <link rel="stylesheet" href="[[=URL('static','css/datatable.css')]]" />
+  <link rel="stylesheet" href="[[=URL('static','css/sidebar.css')]]" />
+  <link rel="stylesheet" href="[[=URL('static','css/style.css')]]" />
+  
+  <style>
+
+    .active_link a{
+      padding: 0 10px !important;
+      margin: 0px 10px !important;
+      border-radius: 5px !important;
+      /* border: 1px solid blue !important; */
+      background-color: rgba(204, 201, 250) !important;
+      color: rgb(84, 77, 201) !important;
+    }
+    .active_link i{
+      color: rgb(84, 77, 201) !important;
+    }
+    table tr td,table th td{
+      white-space: nowrap !important;
+    }
+    #custom_input input{
+      display: block;
+      width: 100%;
+      font-weight: 400;
+      line-height: 1.5;
+      color: #212529;
+      background-color: #fff;
+      background-clip: padding-box;
+      border: 1px solid #ced4da;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+      min-height: calc(1.5em +(0.5rem + 2px));
+      padding: 0.25rem 0.5rem;
+      font-size: 0.775rem;
+      border-radius: 0.25rem;
+    }
+    input:focus,input:active, input:focus-visible {
+      border: 1px solid rgb(123, 104, 238);
+      outline:none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      border-radius: 0.25rem;
+      transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  }
+  .form-label {
+    color:rgb(42, 46, 52);
+  }
+
+  .customPopup{
+    position: relative;
+    top:33px;
+    left:8px;
+    background-color:rgb(247, 248, 249) !important;
+    font-size:.775rem !important;
+    font-family: var(--bs-font-sans-serif);
+    border-radius:0px!important;
+  }
+  @keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+  }
+.swal2-toast.swal2-show {
+    animation: slideInRight 0.5s forwards !important;
+}
+
+#myTable_wrapper .row{
+  --bs-gutter-x: 0rem;
+}
+</style>
+
+</head>
+
+<body>
+  <div style="height: 40px;background: #323452;position: fixed; width: 100%;">
+    <div class="d-flex align-items-center justify-content-between mx-3" style="height: 100%;">
+      <div class="bg-white ms-1">
+        <img src="[[=URL('static','tsmall.png')]]" width="20" height="20" alt="">
+      </div>
+      <div>
+        <div class="avatar-container">
+          <div class="avatar">AF</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="layout has-sidebar fixed-sidebar fixed-header" style="padding-top: 40px;">
+    [[include 'sidebar.html']]
+
+    <div id="overlay" class="overlay"></div>
+    <div class="layout">
+      <main class="content">
+       
+        [[block header]]
+        <!-- individual pages can customize header here -->
+        [[icon='fa fa-home']]
+        [[breadcamp='']]
+
+        [[end]]
+        [[include 'header.html']]
+      
+
+        <!--  -->
+        <div class="content-body">
+          
+          [[block content]]
+
+          [[end]]
+        </div>
+
+        [[block footer]]
+
+        
+        [[end]]
+        [[include 'footer.html']]
+    
+        <!--  -->
+
+      </main>
+      <div class="overlay"></div>
+      <!-- Modal -->
+    </div>
+  </div>
+  <div class="modal" id="staticBackdrop" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header border-0">
+          <h5 class="modal-title fs-6">Modal title</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="container">
+            <div class="mb-3 row">
+              <label for="staticEmail" class="col-sm-2 col-form-label">Name</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control form-control-sm" id="staticEmail" value="nameexample">
+              </div>
+            </div>
+            <div class="mb-3 row">
+              <label for="staticEmail" class="col-sm-2 col-form-label">Email</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control form-control-sm" id="staticEmail" value="email@example.com">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Script CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+  <!-- <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script> -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="[[=URL('static','js/datatable.js')]]"></script>
+  <script src="[[=URL('static','js/script.js')]]"></script>
+  <!-- <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script> -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    var activeLinks = document.querySelectorAll('.active_link');
+    activeLinks.forEach(function(link) {
+      var subMenuList = $(link).parent().closest('.sub-menu-list');
+      subMenuList.css('display', 'block');
+      var menuItem = $(link).parent().closest('.sub-menu');
+      if (menuItem) {
+          $(menuItem).addClass('open');    
+      }
+    });
+  </script>
+
+
+ 
+
+  <script>
+    $( document ).ready(function() {
+      let table = new DataTable('#example', {
+      dom: "Bfrt<'d-flex justify-content-between'<li><p>>",
+      info: false,
+      ordering: false,
+      paging: true,
+      searching: false,
+      // responsive: true,
+      language: {
+        lengthMenu: '_MENU_ Entry per page'
+      },
+      "columnDefs": [
+        { "width": "30px", "targets": 0 } // Set width of the first column to 30px
+      ],
+      "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+        $("td:first", nRow).html(iDisplayIndex + 1);
+        $("td:first", nRow).addClass('text-center');
+        return nRow;
+      },
+    });
+});
+    
+
+  </script>
+
+<script>
+  // Function to convert table cell to input
+  function convertToInput(element) {
+      var text = element.innerText;
+      var input = document.createElement("input");
+      input.type = "text";
+      input.value = text;
+      input.className = "custom-input";
+      var actionHandled = false;
+
+      function updateCellValue() {
+          if (!actionHandled) {
+              actionHandled = true;
+              element.innerText = input.value;
+              console.log("Value changed to: " + input.value);
+              actionHandled = false;
+          }
+      }
+
+      input.addEventListener("blur", updateCellValue);
+      input.addEventListener("keyup", function(event) {
+          if (!actionHandled && event.key === "Enter") {
+              updateCellValue();
+          }
+      });
+      
+      element.innerText = '';
+      element.appendChild(input);
+      input.focus();
+  }
+
+  // Attach click event listener to table cells
+  var cells = document.querySelectorAll("td.custom-td");
+  cells.forEach(function(cell) {
+      cell.addEventListener("click", function() {
+          convertToInput(this);
+      });
+  });
+
+
+
+
+</script>
+[[block scripts]]<!-- individual pages can add scripts here -->[[end]]
+
+<script src="[[=URL('static','js/utils.js')]]"></script>
+
+[[if globals().get('flash'):]]
+<script>
+  const Toast = Swal.mixin({
+    toast: true,
+    position: "top-end",
+    showConfirmButton: false,
+    customClass: {
+      popup: "customPopup",
+    },
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.onmouseenter = Swal.stopTimer;
+      toast.onmouseleave = Swal.resumeTimer;
+    }
+  });
+  Toast.fire({
+    icon:"[[=XML(flash['type'])]]",
+    title: "[[=XML(flash['message'])]]"
+  });
+</script>
+[[pass]]
+
+</body>
+
+</html>

@@ -1,0 +1,177 @@
+timestamp: 2025-01-19T01:20:07.917089
+CREATE TABLE `ac_bank_notes`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `cid` VARCHAR(10),
+    `note_id` VARCHAR(512),
+    `in_words` VARCHAR(100),
+    `amount` DOUBLE,
+    `status` VARCHAR(10),
+    `field1` VARCHAR(100),
+    `field2` INTEGER,
+    `note` VARCHAR(100),
+    `created_by` VARCHAR(100),
+    `created_on` DATETIME,
+    `updated_by` VARCHAR(100),
+    `updated_on` DATETIME,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+success!
+timestamp: 2025-01-19T02:02:44.830303
+ALTER TABLE `ac_bank_notes` ADD `type` DOUBLE;
+success!
+success!
+timestamp: 2025-01-19T02:14:22.654111
+ALTER TABLE `ac_bank_notes` ADD `note_code` VARCHAR(50);
+timestamp: 2025-01-19T02:16:22.510893
+ALTER TABLE `ac_bank_notes` ADD `note_code` VARCHAR(50);
+timestamp: 2025-01-19T02:18:51.465503
+ALTER TABLE `ac_bank_notes` ADD `note_code` VARCHAR(50);
+timestamp: 2025-01-19T02:19:17.618848
+ALTER TABLE `ac_bank_notes` ADD `note_code` VARCHAR(50);
+timestamp: 2025-01-19T02:20:24.593877
+ALTER TABLE `ac_bank_notes` ADD `note_code` VARCHAR(50);
+timestamp: 2025-01-19T13:04:39.006348
+CREATE TABLE `ac_bank_note`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `cid` VARCHAR(10),
+    `note_code` VARCHAR(50),
+    `note_amount` DOUBLE,
+    `in_words` VARCHAR(100),
+    `type` VARCHAR(100),
+    `field1` VARCHAR(100),
+    `field2` INTEGER,
+    `note` VARCHAR(100),
+    `created_by` VARCHAR(100),
+    `created_on` DATETIME,
+    `updated_by` VARCHAR(100),
+    `updated_on` DATETIME,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+success!
+timestamp: 2025-01-20T01:16:05.318785
+ALTER TABLE `ac_bank_note` ADD `status` VARCHAR(100);
+success!
+success!
+timestamp: 2025-01-22T15:52:50.482812
+CREATE TABLE `ac_denomination`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `cid` VARCHAR(10),
+    `note_code` VARCHAR(50),
+    `note_amount` DOUBLE,
+    `in_words` VARCHAR(100),
+    `type` VARCHAR(100),
+    `qty` INTEGER,
+    `total` DOUBLE,
+    `field1` VARCHAR(100),
+    `field2` INTEGER,
+    `note` VARCHAR(100),
+    `created_by` VARCHAR(100),
+    `created_on` DATETIME,
+    `updated_by` VARCHAR(100),
+    `updated_on` DATETIME,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+success!
+timestamp: 2025-01-22T15:55:22.254943
+ALTER TABLE `ac_denomination` ADD `account_code` VARCHAR(512);
+timestamp: 2025-01-22T15:55:55.651478
+ALTER TABLE `ac_denomination` ADD `account_code` VARCHAR(512);
+timestamp: 2025-01-22T15:56:30.824570
+ALTER TABLE `ac_denomination` ADD `account_code` VARCHAR(512);
+timestamp: 2025-01-22T15:57:14.800595
+ALTER TABLE `ac_denomination` ADD `account_code` VARCHAR(512);
+timestamp: 2025-01-22T15:58:01.839399
+ALTER TABLE `ac_denomination` ADD `account_code` VARCHAR(100);
+timestamp: 2025-01-22T15:59:17.437813
+ALTER TABLE `ac_denomination` ADD `account_code` VARCHAR(100);
+timestamp: 2025-01-22T16:00:27.222286
+ALTER TABLE `ac_denomination` ADD `account_code` VARCHAR(100);
+timestamp: 2025-01-22T16:01:53.332654
+ALTER TABLE `ac_denomination` ADD `account_code` VARCHAR(100);
+timestamp: 2025-01-22T16:04:51.683038
+ALTER TABLE `ac_denomination` ADD `account_code` VARCHAR(100);
+timestamp: 2025-01-22T16:05:36.539292
+ALTER TABLE `ac_denomination` ADD `account_code` VARCHAR(100);
+timestamp: 2025-01-22T16:15:17.747810
+ALTER TABLE `ac_denomination` ADD `account_code` VARCHAR(50);
+timestamp: 2025-01-22T16:15:27.193323
+ALTER TABLE `ac_denomination` ADD `account_code` VARCHAR(50);
+timestamp: 2025-01-22T16:19:54.704326
+ALTER TABLE `ac_denomination` ADD `account_code` VARCHAR(50);
+timestamp: 2025-01-22T16:20:28.134722
+ALTER TABLE `ac_denomination` ADD `account_code` VARCHAR(50);
+timestamp: 2025-01-23T13:10:56.971176
+ALTER TABLE `ac_denomination` ADD `account_code` VARCHAR(50);
+timestamp: 2025-01-23T13:11:29.576597
+ALTER TABLE `ac_denomination` ADD `account_code` VARCHAR(50);
+timestamp: 2025-01-23T13:11:45.663443
+ALTER TABLE `ac_denomination` ADD `account_code` VARCHAR(50);
+timestamp: 2025-01-23T15:02:28.984473
+ALTER TABLE `ac_denomination` ADD `account_code` VARCHAR(50);
+timestamp: 2025-01-26T20:23:02.833343
+ALTER TABLE `ac_denomination` ADD `account_code` VARCHAR(50);
+timestamp: 2025-01-26T20:32:23.547252
+ALTER TABLE `ac_denomination` ADD `account_code` VARCHAR(50);
+timestamp: 2025-01-26T20:49:29.339176
+ALTER TABLE `ac_denomination` ADD `account_code` VARCHAR(50);
+timestamp: 2025-01-26T20:50:14.213983
+ALTER TABLE `ac_denomination` ADD `account_name` VARCHAR(100);
+timestamp: 2025-01-26T20:51:56.172743
+ALTER TABLE `ac_denomination` ADD `account_code` VARCHAR(50);
+timestamp: 2025-01-26T20:53:39.174875
+ALTER TABLE `ac_denomination` ADD `account_code` VARCHAR(50);
+timestamp: 2025-01-26T20:54:25.516773
+ALTER TABLE `ac_denomination` ADD `account_code` VARCHAR(50);
+timestamp: 2025-01-28T12:12:36.195902
+CREATE TABLE `ac_denomination_head`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `cid` VARCHAR(10),
+    `total_amount` DOUBLE,
+    `account_code` VARCHAR(50),
+    `account_name` VARCHAR(100),
+    `branch_code` INTEGER,
+    `branch_name` VARCHAR(100),
+    `trans_date` DATE,
+    `field1` VARCHAR(100),
+    `field2` INTEGER,
+    `note` VARCHAR(100),
+    `created_by` VARCHAR(100),
+    `created_on` DATETIME,
+    `updated_by` VARCHAR(100),
+    `updated_on` DATETIME,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+success!
+timestamp: 2025-01-28T12:14:41.396239
+CREATE TABLE `ac_denomination_details`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `cid` VARCHAR(10),
+    `note_code` VARCHAR(50),
+    `note_amount` DOUBLE,
+    `in_words` VARCHAR(100),
+    `type` VARCHAR(100),
+    `qty` INTEGER,
+    `total` DOUBLE,
+    `account_code` VARCHAR(50),
+    `account_name` VARCHAR(100),
+    `branch_code` INTEGER,
+    `branch_name` VARCHAR(100),
+    `trans_date` DATE,
+    `field1` VARCHAR(100),
+    `field2` INTEGER,
+    `note` VARCHAR(100),
+    `created_by` VARCHAR(100),
+    `created_on` DATETIME,
+    `updated_by` VARCHAR(100),
+    `updated_on` DATETIME,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+success!
+timestamp: 2025-01-29T11:04:28.242594
+ALTER TABLE `ac_denomination_head` ADD `trans_id` VARCHAR(20);
+success!
+success!
+timestamp: 2025-01-29T11:04:28.312618
+ALTER TABLE `ac_denomination_details` ADD `trans_id` VARCHAR(20);
+success!
+success!

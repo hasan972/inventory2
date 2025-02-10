@@ -1,0 +1,211 @@
+[[
+if len(request.path.split('/'))>2:
+  _controller_name = request.path.split('/')[2]
+else:
+  _controller_name = ''
+pass
+]]
+
+
+<aside id="sidebar" class="sidebar break-point-sm has-bg-image">
+    <a id="btn-collapse" class="sidebar-collapser"><i class="ri-arrow-left-s-line text-white"></i></a>
+    <div class="image-wrapper">
+      <img src="#" alt="sidebar background" />
+    </div>
+    <div class="sidebar-layout">
+      <div class="sidebar-header">
+        <div class="pro-sidebar-logo">
+          <div>P</div>
+          <h5>MK</h5>
+        </div>
+      </div>
+      <div class="sidebar-content">
+        <nav class="menu open-current-submenu">
+          <ul>
+            <li class="menu-header"><span>  </span></li>              
+              
+              <li class="menu-item sub-menu">
+                <a href="#">
+                  <span class="menu-icon">
+                    <i class="fa-regular fa-file-lines"></i>
+                  </span>
+                  <span class="menu-title">Chart of Accounts</span>
+                </a>
+                <div class="sub-menu-list">
+                  <ul>                    
+                    [[if  _controller_name=='new_class':]]
+                    <li class="menu-item active_link">
+                    [[else:]]
+                    <li class="menu-item">
+                    [[pass]]
+                        <a href="[[=URL('classes','new_class')]]">
+                        <span class="menu-icon"><i class="fa-solid fa-bars"></i></span>
+                        <span class="menu-title">Class</span>
+                        </a>
+                    </li>
+                    [[if  _controller_name=='new_group':]]
+                    <li class="menu-item active_link">                    
+                    [[else:]]
+                    <li class="menu-item">
+                    [[pass]]
+                        <a href="[[=URL('groups','new_group')]]">
+                        <span class="menu-icon"><i class="fa-solid fa-layer-group"></i></span>
+                        <span class="menu-title">Group</span>
+                        </a>
+                    </li>
+                    [[if  _controller_name=='new_account':]]
+                    <li class="menu-item active_link">
+                    [[else:]]
+                    <li class="menu-item">
+                    [[pass]]
+                        <a href="[[=URL('accounts','new_account')]]">
+                        <span class="menu-icon"><i class="fa-solid fa-money-check-dollar"></i></span>
+                        <span class="menu-title">Accounts</span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </li>
+              <li class="menu-item sub-menu">
+                <a href="#">
+                  <span class="menu-icon">
+                    <i class="fa-solid fa-arrow-right-arrow-left"></i>
+                  </span>
+                  <span class="menu-title">Transactions</span>
+                </a>
+                <div class="sub-menu-list">
+                  <ul>
+                    [[if  _controller_name=='voucher':]]
+                    <li class="menu-item active_link">
+                    [[else:]]
+                    <li class="menu-item">
+                    [[pass]]
+                        <a href="[[=URL('vouchers','voucher')]]">
+                        <span class="menu-icon"><i class="fa-solid fa-receipt"></i></span>
+                        <span class="menu-title">Vouchers</span>
+                        </a>
+                    </li>
+                  </ul>
+                </div>
+              </li>
+              <li class="menu-item sub-menu">
+                <a href="#">
+                  <span class="menu-icon">
+                    <i class="fa-solid fa-gear"></i>
+                  </span>
+                  <span class="menu-title">Account Setup</span>
+                </a>
+                <div class="sub-menu-list">
+                  <ul>
+                    [[if  _controller_name=='cash_bank':]]
+                    <li class="menu-item active_link">
+                    [[else:]]
+                    <li class="menu-item">
+                    [[pass]]
+                        <a href="[[=URL('cash_bank','cash_bank')]]">
+                        <span class="menu-icon"><i class="fa-solid fa-money-bill"></i></span>
+                        <span class="menu-title">Cash-Bank</span>
+                        </a>
+                    </li>
+                    [[if  _controller_name=='ref_type':]]
+                    <li class="menu-item active_link">
+                    [[else:]]
+                    <li class="menu-item">
+                    [[pass]]
+                        <a href="[[=URL('ref_type','ref_type')]]">
+                        <span class="menu-icon"><i class="fa-solid fa-list"></i></span>
+                        <span class="menu-title">Reference Type</span>
+                        </a>
+                    </li>
+                    [[if  _controller_name=='new_ref':]]
+                    <li class="menu-item active_link">
+                    [[else:]]
+                    <li class="menu-item">
+                    [[pass]]
+                        <a href="[[=URL('reference','new_ref')]]">
+                        <span class="menu-icon"><i class="fa-solid fa-forward"></i></span>
+                        <span class="menu-title">Referance</span>
+                        </a>
+                    </li>
+                    [[if  _controller_name=='new_branch':]]
+                    <li class="menu-item active_link">
+                    [[else:]]
+                    <li class="menu-item">
+                    [[pass]]
+                        <a href="[[=URL('branch','new_branch')]]">
+                        <span class="menu-icon"><i class="fa-solid fa-location-dot"></i></span>
+                        <span class="menu-title">Branch</span>
+                        </a>
+                    </li>
+                    [[if  _controller_name=='account_branch':]]
+                    <li class="menu-item active_link">
+                    [[else:]]
+                    <li class="menu-item">
+                    [[pass]]
+                        <a href="[[=URL('account_branch','account_branch')]]">
+                        <span class="menu-icon"><i class="fa-solid fa-right-to-bracket"></i></span>
+                        <span class="menu-title">Account-Branch</span>
+                        </a>
+                    </li>                    
+                  </ul>
+                </div>
+              </li>
+              <li class="menu-item sub-menu">
+                <a href="#">
+                  <span class="menu-icon">
+                    <i class="fa-solid fa-file-excel"></i>
+                  </span>
+                  <span class="menu-title">Reports</span>
+                </a>
+                <div class="sub-menu-list">
+                  <ul>
+                    [[if  _controller_name=='reports':]]
+                    <li class="menu-item active_link">
+                    [[else:]]
+                    <li class="menu-item">
+                    [[pass]]
+                        <a href="[[=URL('reports','reports')]]">
+                        <span class="menu-icon"><i class="fa-regular fa-file-excel"></i></span>
+                        <span class="menu-title">Reports</span>
+                        </a>
+                    </li>                        
+                                    
+                  </ul>
+                </div>
+              </li>
+              [[if role=='ADMIN':]]                  
+              <li class="menu-item sub-menu">
+                <a href="#">
+                  <span class="menu-icon">
+                    <i class="fa-regular fa-user"></i>
+                  </span>
+                  <span class="menu-title">User Management</span>
+                </a>
+                <div class="sub-menu-list">
+                  <ul>                  
+                    [[if  _controller_name=='users':]]
+                      <li class="menu-item active_link">
+                      [[else:]]
+                      <li class="menu-item">
+                      [[pass]]
+                          <a href="[[=URL('users','users')]]">
+                          <span class="menu-icon"><i class="fa fa-users"></i></span>
+                          <span class="menu-title">Users</span>
+                          </a>
+                      </li>
+                      
+                  </ul>
+                </div>
+              </li>
+              [[else:]]
+              [[pass]]
+          </ul>
+        </nav>
+      </div>
+    </div>
+</aside>
+[[end]]
+
+               
+      
+      

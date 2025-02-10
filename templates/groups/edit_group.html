@@ -1,0 +1,52 @@
+[[extend 'layout3.html']]
+
+[[block header]]
+[[icon='fa fa-chart-line']]
+[[breadcamp = 'Accounts Groups']]
+[[end]]
+
+[[block content]]
+
+<div class="container py-5">
+    <div id="custom_input">
+        <div class="col-3">
+            [[=form]]
+        </div>
+        
+    </div>
+    
+</div>
+
+
+
+[[end]]
+
+[[block scripts]]
+<script>
+    
+    $("#ac_accounts_group_class_name").change(function() {    
+    var selectedValue = $(this).val();  
+    $.ajax({
+        url: '[[=URL("get_class_info")]]', // Replace with your endpoint
+        method: 'GET',
+        data: { q: selectedValue },
+        dataType: 'json',
+        success: function(data) {
+            console.log(data['class_code'])            
+            $("#ac_accounts_group_class_code").val(data['class_code']);
+            $("#ac_accounts_group_class_type").val(data['class_type']);
+            $("#ac_accounts_group_group_code").val(data['new_group_code']);
+          }
+    });
+})
+
+var errorElement = $('.py4web-validation-error');
+            if (errorElement.length) {
+                // Change the class to 'text-danger'
+                errorElement.removeClass('py4web-validation-error').addClass('text-danger');
+            }
+
+</script>
+
+
+[[end]]

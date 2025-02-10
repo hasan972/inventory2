@@ -1,0 +1,153 @@
+<aside id="sidebar" class="sidebar break-point-sm has-bg-image">
+    <a id="btn-collapse" class="sidebar-collapser"><i class="ri-arrow-left-s-line text-white"></i></a>
+    <div class="image-wrapper">
+      <img src="#" alt="sidebar background" />
+    </div>
+    <div class="sidebar-layout">
+      <div class="sidebar-header">
+        <div class="pro-sidebar-logo">
+          <div>P</div>
+          <h5>MK</h5>
+        </div>
+      </div>
+      <div class="sidebar-content">
+        <nav class="menu open-current-submenu">
+          <ul>
+            <li class="menu-header"><span> General </span></li>
+              <li class="menu-item sub-menu">
+                <a href="#">
+                  <span class="menu-icon">
+                    <i class="fa-regular fa-file-lines"></i>
+                  </span>
+                  <span class="menu-title">Chart of Accounts</span>
+                </a>
+                <div class="sub-menu-list">
+                  <ul>                    
+                    [[if  request.path.split('/')[2]=='new_class':]]
+                    <li class="menu-item active_link">
+                    [[else:]]
+                    <li class="menu-item">
+                    [[pass]]
+                        <a href="[[=URL('new_class')]]">
+                        <span class="menu-icon"><i class="fa fa-users"></i></span>
+                        <span class="menu-title">Class</span>
+                        </a>
+                    </li>
+                    [[if  request.path.split('/')[2]=='new_group':]]
+                    <li class="menu-item active_link">
+                    [[else:]]
+                    <li class="menu-item">
+                    [[pass]]
+                        <a href="[[=URL('new_group')]]">
+                        <span class="menu-icon"><i class="fa fa-users"></i></span>
+                        <span class="menu-title">Group</span>
+                        </a>
+                    </li>
+                    [[if  request.path.split('/')[2]=='new_account':]]
+                    <li class="menu-item active_link">
+                    [[else:]]
+                    <li class="menu-item">
+                    [[pass]]
+                        <a href="[[=URL('new_account')]]">
+                        <span class="menu-icon"><i class="fa-regular fa-file"></i></span>
+                        <span class="menu-title">Accounts</span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </li>
+              <li class="menu-item sub-menu">
+                <a href="#">
+                  <span class="menu-icon">
+                    <i class="fa-regular fa-file-lines"></i>
+                  </span>
+                  <span class="menu-title">Transactions</span>
+                </a>
+                <div class="sub-menu-list">
+                  <ul>
+                    [[if  request.path.split('/')[2]=='voucher':]]
+                    <li class="menu-item active_link">
+                    [[else:]]
+                    <li class="menu-item">
+                    [[pass]]
+                        <a href="[[=URL('voucher')]]">
+                        <span class="menu-icon"><i class="fa fa-users"></i></span>
+                        <span class="menu-title">Vouchers</span>
+                        </a>
+                    </li>
+                  </ul>
+                </div>
+              </li>
+              <li class="menu-item sub-menu">
+                <a href="#">
+                  <span class="menu-icon">
+                    <i class="fa-regular fa-file-lines"></i>
+                  </span>
+                  <span class="menu-title">Others</span>
+                </a>
+                <div class="sub-menu-list">
+                  <ul>
+                    [[if  request.path.split('/')[2]=='cash_bank':]]
+                    <li class="menu-item active_link">
+                    [[else:]]
+                    <li class="menu-item">
+                    [[pass]]
+                        <a href="[[=URL('cash_bank')]]">
+                        <span class="menu-icon"><i class="fa fa-users"></i></span>
+                        <span class="menu-title">Cash-Bank</span>
+                        </a>
+                    </li>
+                    [[if  request.path.split('/')[2]=='ref_type':]]
+                    <li class="menu-item active_link">
+                    [[else:]]
+                    <li class="menu-item">
+                    [[pass]]
+                        <a href="[[=URL('ref_type')]]">
+                        <span class="menu-icon"><i class="fa fa-users"></i></span>
+                        <span class="menu-title">Reference Type</span>
+                        </a>
+                    </li>
+                    [[if  request.path.split('/')[2]=='new_ref':]]
+                    <li class="menu-item active_link">
+                    [[else:]]
+                    <li class="menu-item">
+                    [[pass]]
+                        <a href="[[=URL('new_ref')]]">
+                        <span class="menu-icon"><i class="fa fa-users"></i></span>
+                        <span class="menu-title">Referance</span>
+                        </a>
+                    </li>
+                    [[if  request.path.split('/')[2]=='new_branch':]]
+                    <li class="menu-item active_link">
+                    [[else:]]
+                    <li class="menu-item">
+                    [[pass]]
+                        <a href="[[=URL('new_branch')]]">
+                        <span class="menu-icon"><i class="fa fa-users"></i></span>
+                        <span class="menu-title">Branch</span>
+                        </a>
+                    </li>
+                    [[if  request.path.split('/')[2]=='account_branch':]]
+                    <li class="menu-item active_link">
+                    [[else:]]
+                    <li class="menu-item">
+                    [[pass]]
+                        <a href="[[=URL('account_branch')]]">
+                        <span class="menu-icon"><i class="fa fa-users"></i></span>
+                        <span class="menu-title">Account-Branch</span>
+                        </a>
+                    </li>
+                    
+                  </ul>
+                </div>
+              </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+</aside>
+
+
+               
+      
+      

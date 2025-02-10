@@ -1,0 +1,1077 @@
+[[extend 'layout4.html']]
+
+[[block header]]
+<style>
+    .custom-radio {
+    width: 15px;
+    height: 15px;
+    }
+        li{
+        list-style: none;
+        cursor: pointer;
+    }
+    ul.suggestion-list-cd,ul.suggestion-list-nm,ul.suggestion-list-rf{
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        
+        }
+
+    .suggestions-cd,.suggestions-nm,.suggestions-rf{
+        display: block; 
+        background: #eee;
+        position: absolute;               
+        z-index: 1000;    
+        
+    }
+
+    .scrollable-table {
+    max-height: 300px;
+    overflow-y: auto;
+    position: relative;
+    z-index: 1;
+}
+
+.table th{
+    background-color: #a8b2bc;
+    color: black;
+    font-weight: bold;
+    position: sticky;
+    top: 0;
+}
+.table tfoot {    
+    color: black;
+    font-weight: bold;
+    position: sticky;
+    bottom:-1;
+    
+}
+.table tbody tr:nth-of-type(even){
+    background-color: #f3f6f8;
+}
+.custom-max-width {
+  max-width: 80%; /* Adjust the value as needed */
+  margin: 0 auto; /* Center the container */
+}
+
+</style>
+
+[[icon='fa fa-chart-line']]
+
+[[breadcamp = 'Edit Voucher']]
+[[icon2='fa-solid fa-plus']]
+[[breadcamp2 = 'Voucher List']]
+
+[[end]]
+
+
+
+[[block content]]
+<div class="container py-1">
+    <div class="card shadow-sm mb-0">
+        <div class="card-body">
+            <div class="row">
+                <!-- Left Column -->
+                <div class="col-md-6">
+                    <div class="mb-2">
+                        <strong>Voucher Type:</strong>
+                        <span id="v_type" class="badge bg-success ms-2">[[ = v_type]]</span>
+                    </div>
+                    <div class="mb-2">
+                        <strong>Voucher Date:</strong>
+                        <span id="v_date" class="ms-2">[[ = v_date]]</span>
+                    </div>
+                    <div class="mb-2">
+                        <strong>Narration:</strong>
+                        [[ if editable: ]]
+                            <input type="text" id="narration" class="form-control-md" style="width: 70%;" value="[[ = narration ]]" >
+                        [[ else: ]]
+                            <span id="narration" class="form-control-md" style="width: 70%;">[[ = narration ]]</span>
+                        [[ pass ]]
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="col-md-6">
+                    <div class="mb-2">
+                        <strong>Serial No:</strong>
+                        <span id="sl" class="ms-2">[[ = sl]]</span>
+                    </div>
+                    <div class="mb-2">
+                        <strong>Status:</strong>
+                        <span id="status" class="badge bg-success ms-2">[[ = status]]</span>
+                    </div>   
+                    <div class="mb-2">
+                        <strong>Branch:</strong>
+                        <span id="vbn" class="ms-2">[[ = voucher_branch_name]]</span>
+                        <span id="vbc" style="display: none;" class="ms-2">[[ = voucher_branch_code]]</span>
+                    </div>   
+                                     
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+[[if editable: ]]
+<div class="container-section">
+    <div class="container py-2">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div id="custom_input">
+                    <div class="row g-3">
+                        <!-- Account Code -->
+                        <div class="col-md-2">
+                            <label for="account_code" class="form-label">Account Code<span class="text-danger">*</span></label>
+                            <input type="text" class="form-control form-control-sm" id="account_code" name="account_code" autocomplete="off">
+                            <div class="suggestions-cd mt-2">
+                                <ul class="suggestion-list-cd list-group" id="dropdata-cd">
+                                    <!-- suggestions will be displayed here -->
+                                </ul>
+                            </div>
+                        </div>
+    
+                        <!-- Account Name -->
+                        <div class="col-md-3">
+                            <label for="account_name" class="form-label">Account Name<span class="text-danger">*</span></label>
+                            <input type="text" class="form-control form-control-sm" id="account_name" name="account_name" autocomplete="off" readonly="true">
+                            <div class="suggestions-nm mt-2">
+                                <ul class="suggestion-list-nm list-group" id="dropdata-nm">
+                                    <!-- suggestions will be displayed here -->
+                                </ul>
+                            </div>
+                        </div>
+    
+                        <!-- Debit/Credit Radio Buttons -->
+                        <div class="col-md-2 d-flex align-items-center">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input custom-radio" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1">
+                                <label class="form-check-label" for="inlineRadio1">Debit<span class="text-danger">*</span></label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input custom-radio" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
+                                <label class="form-check-label" for="inlineRadio2">Credit<span class="text-danger">*</span></label>
+                            </div>
+                        </div>
+    
+                        <!-- Amount -->
+                        <div class="col-md-2">
+                            <label for="amount" class="form-label">Amount<span class="text-danger">*</span></label>
+                            <input type="number" class="form-control form-control-sm" id="amount" name="amount" min="0" max="10000000">
+                        </div>
+
+                        <!-- Add reference  -->
+                        <!-- <div class="col-md-1 d-flex align-items-end">                            
+                            <button type="button" class="btn btn-info btn-sm w-50" id="add-ref" data-toggle="modal" data-target="#refModal">
+                                <i class="fa-solid fa-arrow-left"></i>
+                            </button>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                            <i class="fa-regular fa-trash-can"></i> <span class="ms-2">Cancel</span>
+                        </button>       
+                         -->
+    
+                        <!-- Add Row Button -->
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button type="button" class="btn btn-primary btn-sm w-100" data-bs-toggle="tooltip" data-placement="bottom" title="Add account to the voucher" id="add-row">
+                                <i class="fas fa-plus"></i> Add Account
+                            </button>
+                        </div>                       
+                                          
+                    </div>
+                    
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    [[pass]] 
+
+    <!-- Modal  -->
+
+    
+    
+    
+</div>
+[[end]] 
+
+
+
+
+
+
+[[block scripts]]
+<script>
+    $(document).ready(function () {
+        
+        function formatNumberWithCommas(number) {
+            return number.toLocaleString();
+        }   
+
+        // function to calculate total debit and total credit 
+        function updateTotals() {
+            let totalDebit = 0;
+            let totalCredit = 0;
+
+            $("#tbody tr").each(function () {
+                totalDebit += parseFloat($(this).find("td:eq(2)").text().replace(/,/g, '')) || 0;
+                totalCredit += parseFloat($(this).find("td:eq(3)").text().replace(/,/g, '')) || 0;
+            });
+            // console.log(formatNumberWithCommas(totalDebit.toFixed(2)))
+            // console.log(formatNumberWithCommas(totalCredit.toFixed(2)))
+
+            $("#total-debit").text(formatNumberWithCommas(totalDebit));
+            $("#total-credit").text(formatNumberWithCommas(totalCredit));
+
+
+        }
+        // function to calculate total reference amount 
+        function updateRefTotals() {
+            let tot_ref = 0;            
+
+            $("#reference_table_body tr").each(function () {
+                tot_ref += parseFloat($(this).find("td:eq(2)").text().replace(/,/g, '')) || 0;                
+            });  
+            
+            console.log(tot_ref)
+            $("#rf_tot_amot").text(formatNumberWithCommas(tot_ref));
+        }
+
+       
+        //////////////
+        updateTotals();
+
+        // autofill suggestion for account code
+        $('#account_code').on('input', function() {        
+            var v_branch_code  = $("#vbc").text();
+            var query = $(this).val();            
+            if (query.length >= 3) {
+                $.ajax({
+                    url: '[[=URL("fetch_account_code_voucher_detail")]]',
+                    data: {term: query, v_branch_code: v_branch_code},
+                    success: function(data) {
+                        var suggestions = JSON.parse(data);
+                        var dropdown = $('#dropdata-cd');
+                        dropdown.empty(); 
+                        $.each(suggestions, function(index, value) {
+                            dropdown.append('<li class="list-group-item suggestion-item">' + value + '</li>');
+                        });
+                        $('.suggestions-cd').show();
+                    }
+                });
+            } else {
+                $('.suggestions-cd').hide(); 
+            }
+    });
+
+    //click on a suggestion
+    $(document).on('click', '.suggestion-item', function() {
+        var selectedText = $(this).text();
+        var parts = selectedText.split('|');        
+        $('#account_code').val(parts[0]); 
+        $('#account_name').val(parts[1]); 
+        $('.suggestions-cd').hide();
+        
+    });
+    // click outside
+    $(document).click(function(e) {
+        if (!$(e.target).closest('.suggestions-cd, #account_code').length) {
+            $('.suggestions-cd').hide();
+        }
+    });   
+
+    // autofill suggestion for reference
+    $('#rf_code').on('input', function() {        
+            var r_type= $('#rf_type').val();            
+            // var r_type= 'Vehicle';            
+            var query = $(this).val();            
+            if (query.length >= 3) {
+                $.ajax({
+                    url: '[[=URL("fetch_reference")]]',
+                    data: {term: query, r_type: r_type},
+                    success: function(data) {
+                        var suggestions = JSON.parse(data);
+                        var dropdown = $('#dropdata-rf');
+                        dropdown.empty(); 
+                        $.each(suggestions, function(index, value) {
+                            dropdown.append('<li class="list-group-item suggestion-rf">' + value + '</li>');
+                        });
+                        $('.suggestions-rf').show();
+                    }
+                });
+            } else {
+                $('.suggestions-rf').hide(); 
+            }
+    });
+
+    //click on a suggestion
+    $(document).on('click', '.suggestion-rf', function() {
+        var selectedText = $(this).text();
+        var parts = selectedText.split('|');        
+        $('#rf_code').val(parts[0]); 
+        $('#rf_name').val(parts[1]); 
+        $('.suggestions-rf').hide();
+        
+    });
+    //when clicking outside
+    $(document).click(function(e) {
+    if (!$(e.target).closest('.suggestions-rf, #ac_name').length) {
+        $('.suggestions-rf').hide();
+    }
+});
+            
+        //////////////////////////new add row/////////////////////////////////////////////////
+           //add row to table and update total debit and credit
+           $("#add-row").click(function () {            
+            var account_code = $("#account_code").val();
+            var ac_name = $("#account_name").val();
+            // var ref_code = $("#ref-code").val();
+            // var ref_name = $("#det-ref").val();
+            var amount = $("#amount").val();
+            var v_type = $("#v_type").text();
+            var v_date = $("#v_date").text();   
+            var sl = $("#sl").text();    
+            var voucher_branch_code  = $("#vbc").text();  
+            var type ;
+
+
+            var isDebit =  $("#inlineRadio1").is(":checked");
+            var isCredit =  $("#inlineRadio2").is(":checked");
+            
+            var debit = isDebit ? amount : 0;
+            var credit = isCredit ? amount : 0;   
+            
+            if (amount <= 0) {
+                // alert("Amount must be greater than zero.");
+                // return; 
+                Swal.fire({
+                    title: "Amount",
+                    text: "Amount must be greater than zero",
+                    icon: "error"
+                    });
+                    return;
+            } 
+            
+            if(isDebit){
+                type='debit';
+                amount =  parseFloat(amount);                
+            }
+            else if(isCredit){
+                type='credit'; 
+                amount = parseFloat(amount)*(-1);                 
+            }           
+            
+            var accountExists = false;            
+
+            var obj={
+                acno:account_code,
+                acname :ac_name, 
+                vt:v_type, 
+                vd:v_date,
+                sl:sl, 
+                type:type,
+                amount:amount,
+                // ref_code:ref_code,
+                // ref_name:ref_name, 
+                v_branch_code:voucher_branch_code
+            }
+    
+            // Check if account code already exists in the table
+            $("#tbody tr").each(function() {
+                var existingAccountCode = $(this).find("td:eq(0)").text();
+                var existingRefCode = $(this).find("td:eq(4)").text();
+                if (existingAccountCode === account_code) {
+                    accountExists = true;
+                    return false; 
+                }
+            });
+
+    
+            if (accountExists) {
+                // alert("Account code already exists. Please enter a different account code.");
+                Swal.fire({
+                    title: "Duplicate Entry",
+                    text: "Account already exists !",
+                    icon: "error"
+                    });
+                
+            } else if (account_code && ac_name && (debit || credit)) {
+                $.ajax({
+                    url: "[[=URL('vouchers','check_account_code')]]",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(obj),
+                    success: function (response) {
+                        var result = JSON.parse(response);
+                        // console.log(result.status)
+                        if (result.status === 'valid') {
+
+                            var newRow = "<tr><td>" + account_code + "</td><td>" + ac_name + "</td><td>" + formatNumberWithCommas(parseFloat(debit)) + "</td><td>" + formatNumberWithCommas(parseFloat(credit)) + "</td> <td><button type='button' class='btn btn-outline-danger ref-row'><i class='fa-solid fa-arrow-right'></i></button></td><td> <button type='button' class='btn btn-outline-danger remove-row'><i class='fa-solid fa-x'></i>  </button></td></tr>";
+                            // console.log(newRow)
+                            $("#tbody").append(newRow);                           
+
+                            $('#account_code').val("")
+                            $('#account_name').val("")
+                            $('#amount').val("")
+                            // $('#det-ref').val("")
+                            // $('#ref-code').val("")
+                            $('input[type="radio"]').prop('checked', false)
+                            $("#account_code").focus();
+                            // $("#type-ref").val($("#target option:first").val());
+
+                            updateTotals();
+                        } else if (result.status === 'invalid') {
+                            // alert("Account not valid for "+v_type+" voucher");
+                            Swal.fire({
+                                title: "Invalid Account",
+                                text: "Account not valid for "+v_type+" voucher",
+                                icon: "error"
+                                });
+                            
+                        } else if (result.status === 'not_found') {
+                            // alert("Account not found for the user");
+                            Swal.fire({
+                                title: "Invalid Account",
+                                text: "Account not found for the user",
+                                icon: "error"
+                                });
+                        }else {
+                                // alert("error");
+                                Swal.fire({
+                                    title: "Error",
+                                    text: "Error adding account",
+                                    icon: "error"
+                                    });
+                            }
+                    }
+                });
+            } else {
+                    // alert("Please fill in all required fields.");
+                    Swal.fire({
+                                title: "Empty Fields",
+                                text: "Please fill in all required fields.",
+                                icon: "error"
+                                });
+                }
+        }
+    );
+   
+
+    //    Remove row
+        $(document).on('click', '.remove-row', function () {
+            var row = $(this).closest('tr');
+            var account_code = row.find('td:eq(0)').text(); 
+            // var ref_code = row.find('td:eq(4)').text();
+            
+            // console.log(ref_code)
+
+            var sl = $("#sl").text();
+            $.ajax({
+                url: "[[=URL('vouchers','delete_voucher_detail')]]",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({ account_code: account_code,
+                                        sl:sl
+                                        //ref_code:ref_code 
+                            }),
+                success: function (response) {
+                    if (response.status === 'success') {                        
+                        row.remove();
+                        updateTotals()
+                    } else {
+                        // alert("Error: " + response.message);
+                        Swal.fire({
+                                title: "Error",
+                                text: "Error: " + response.message,
+                                icon: "error"
+                                });
+                    }
+                },
+                error: function () {
+                    // alert("An error occurred while trying to remove the row.");
+                    Swal.fire({
+                                title: "Error",
+                                text: "An error occurred while trying to remove the row.",
+                                icon: "error"
+                                });
+                }
+            });      
+           
+        });
+
+
+        // save button new
+        $("#save-data").click(function () {
+            
+            var narration = $('#narration').val();
+            var sl = $("#sl").text();         
+            
+            // var isPostChecked = $('#post-checkbox').is(':checked');
+
+            var totalDebit = parseFloat($('#total-debit').text().replace(/,/g, ''));
+            var totalCredit = parseFloat($('#total-credit').text().replace(/,/g, ''));
+
+        //     if (isPostChecked && totalDebit !== totalCredit) {
+        //                 Swal.fire({
+        //                         title: "Invalid Total",
+        //                         text: "Total debited amount must equal total credited amount.",
+        //                         icon: "error"
+        //                         });            
+        //     return;
+        // }
+        
+                $.ajax({
+                    type: 'POST',
+                    url: '[[=URL("save_voucher")]]',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        narration: narration,                        
+                        sl:sl,
+                        total: totalDebit
+                    }),
+                    success: function(data) {
+                        if (data.success) {                            
+                                Swal.fire({
+                                title: "Saved",
+                                text: "Voucher saved successfully",
+                                icon: "success"
+                                    }).then(() => {
+                                    location.reload();
+                                });
+
+                        } else {
+                            // Handle error
+                            // alert('Failed to save data: ' + data.error);
+                            Swal.fire({
+                                title: "Error",
+                                text: 'Failed to save data: ' + data.error,
+                                icon: "error"
+                                });
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', error);
+                    }
+
+            }
+        );
+
+
+    });
+
+
+    // post button 
+    $("#post-data").click(function () {
+        
+        var narration = $('#narration').val();
+        var sl = $("#sl").text();         
+        var branch_code  = $("#vbc").text();         
+        
+        var isPostChecked = $('#post-checkbox').is(':checked');
+
+        if(isPostChecked) {
+            var totalDebit = parseFloat($('#total-debit').text().replace(/,/g, ''));
+            var totalCredit = parseFloat($('#total-credit').text().replace(/,/g, ''));
+
+            if (isPostChecked && totalDebit !== totalCredit) {
+                        Swal.fire({
+                                title: "Invalid Total",
+                                text: "Total debited amount must equal total credited amount.",
+                                icon: "error"
+                                });            
+                        return;
+        }
+    
+        $.ajax({
+            type: 'POST',
+            url: '[[=URL("vouchers","post_voucher")]]',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                narration: narration,       
+                post: isPostChecked,                 
+                sl:sl,
+                total: totalDebit,
+                branch_code: branch_code
+            }),
+            success: function(data) {
+                if (data.success) {                            
+                        Swal.fire({
+                        title: "POSTED",
+                        text: "Voucher posted successfully",
+                        icon: "success"
+                            }).then(() => {
+                            location.reload();
+                        });
+
+                } else {
+                    // Handle error
+                    // alert('Failed to post data: ' + data.error);
+                    Swal.fire({
+                        title: "Error",
+                        text: 'Failed to post data: ' + data.error,
+                        icon: "error"
+                        });
+                }
+            },
+            error: function(xhr, status, error) 
+            {
+                console.error('Error:', error);
+            }
+
+        });
+
+            
+    }
+
+        
+
+
+});
+
+
+        // cancel button
+    $("#cancel-data").click(function () {
+        var sl = $("#sl").text();
+        console.log(sl);
+
+    // SweetAlert confirmation dialog
+    Swal.fire({
+        title: 'Cancel?',
+        text: "Do you really want to cancel the voucher?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes',
+        cancelButtonText: 'No'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // User clicked 'Yes'
+            $.ajax({
+                url: '[[=URL("vouchers","cancel_voucher")]]',
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({ sl: sl }),
+                success: function (response) {
+                    Swal.fire({
+                        title: "Cancelled",
+                        text: 'Voucher cancelled successfully',
+                        icon: "success"
+                    }).then(() => {
+                        location.reload();
+                    });
+                },
+                error: function (xhr, status, error) {
+                    Swal.fire({
+                        title: "Error",
+                        text: "An error occurred while cancelling the voucher.",
+                        icon: "error"
+                    });
+                }
+            });
+        } else {
+            // User clicked 'No', do nothing
+            console.log("Voucher cancellation aborted by user.");
+        }
+    });
+});
+
+// Modal part  ///////////////////// 
+
+    // On click reference button in table //
+    $(document).on('click', '.ref-row', function() {            
+            // console.log('Hellooooooooooo')
+            var serialNo = $('#sl').text();
+            var accountCode = $(this).closest('tr').find('td:eq(0)').text();
+            var accountName = $(this).closest('tr').find('td:eq(1)').text();
+            
+
+            var tot;
+            
+            var debit = parseFloat($(this).closest('tr').find('td:eq(2)').text().replace(/,/g, ''));
+            var credit = parseFloat($(this).closest('tr').find('td:eq(3)').text().replace(/,/g, ''));
+            var type = debit > 0 ? 'Debit' : 'Credit';
+
+            var status = $('#status').text();
+
+            if(type=='Debit'){
+                // tot = $('#total-debit').text();
+                tot = debit;
+            }else {
+                // tot = $('#total-credit').text();
+                tot =credit;
+            }
+
+            $('#modal_sl').text(serialNo);
+            $('#modal_ac_code').text(accountCode);
+            $('#modal_ac_name').text(accountName);
+            $('#modal_tr_type').text(type);
+            $('#modal_total').text(tot);
+            $('#modal_status').text(status);
+
+
+            $.ajax({
+            url: '[[=URL("vouchers","load_reference_data")]]', 
+            method: 'GET',
+            data: {
+                sl: serialNo,
+                account_code: accountCode
+            },
+            success: function(response) {
+                if (response.error) {
+                    // alert(response.error);
+                    Swal.fire({
+                        title: "Error",
+                        text: response.error,
+                        icon: "error"
+                    });
+                    return;
+                } else {
+                    var rf_type = response.ref_type;
+                    // console.log(rf_type)
+                    $('#rf_type').val(rf_type);
+
+                    var tableBody = $('#reference_table_body');
+                    tableBody.empty(); // Clear existing table rows
+
+                    response.data.forEach(function(row) {
+                        var tableRow = '<tr>' +
+                            '<td style="text-align: center;">' + row['ref_code'] + '</td>' +
+                            '<td style="text-align: left;">' + row['ref_name'] + '</td>' +
+                            '<td style="text-align: center;">' +formatNumberWithCommas(parseFloat(row['amount']))  + '</td>' 
+                            // '<td style="text-align: center;"><button type="button" class ="btn btn-outline-warning remove-ref" ><i class="fa-solid fa-trash"></i></button></td>' +
+                            // '</tr>';
+                            // console.log(tableRow)
+                            if (response.is_editable) {
+                                tableRow += '<td style="text-align: center;"><button type="button" class="btn btn-outline-warning remove-ref"><i class="fa-solid fa-trash"></i></button></td>';
+                            }
+
+                            tableRow += '</tr>';
+
+                        tableBody.append(tableRow);
+                    });
+                    updateRefTotals();
+                    $('#staticBackdrop').modal('show');
+                    
+                }
+            },
+            error: function() {
+                alert('Failed to fetch reference data.');
+            }
+        });
+            
+            // Show the modal            
+            // $('#staticBackdrop').modal('show');
+            
+           
+        });
+
+        // add reference button in modal //
+        $("#add_ref").click(function () {            
+            var account_code = $("#modal_ac_code").text();
+            var sl = $("#modal_sl").text();
+            var type =$("#modal_tr_type").text();            
+            var modal_amount = $("#rf_amount").val();
+            var ref_type = $("#rf_type").val();
+            var amount;
+            var v_type = $("#v_type").text();
+            var v_date = $("#v_date").text(); 
+
+            var ref_code = $("#rf_code").val();
+            var ref_name = $("#rf_name").val();
+            
+
+            if(type == 'Debit') {
+                amount = parseFloat(modal_amount);                
+            } else if (type == 'Credit') {
+                amount = parseFloat(modal_amount)*(-1); 
+            }
+            else{
+                alert('Type Error')
+            }
+
+            var obj={
+                account_code:account_code,               
+                sl:sl, 
+                type:type,
+                amount:amount,   
+                ref_code: ref_code,
+                ref_name:ref_name             
+            }
+            
+
+            if(ref_type=='Select'){
+                Swal.fire({
+                                title: "Reference Type",
+                                text: 'Please select reference type',
+                                icon: "error"
+                                });
+                return;
+
+
+            }
+            else if(ref_code==''){
+                Swal.fire({
+                                title: "Reference Code",
+                                text: 'Please enter a valid reference code',
+                                icon: "error"
+                                });
+                return;
+
+
+            }
+            else if(ref_name==''){
+                Swal.fire({
+                                title: "Reference Name",
+                                text: 'Please enter reference name',
+                                icon: "error"
+                                });
+                return;
+
+
+            }
+            else if(parseFloat(modal_amount)<=0){
+                Swal.fire({
+                                title: "Amount",
+                                text: 'Amount must be greater than 0',
+                                icon: "error"
+                                });
+                return;
+
+            }else{
+                $.ajax({
+                    url: "[[=URL('vouchers','add_reference')]]",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(obj),
+                    success: function (response) {
+                        var result = JSON.parse(response);
+                        // console.log(result.status)
+                        if (result.status === 'valid') {
+
+                            var newRow = "<tr><td style='text-align: center;'>" + ref_code + "</td><td>" + ref_name + "</td><td style='text-align: center;'>" + formatNumberWithCommas(parseFloat(modal_amount)) +
+                                 "</td><td style='text-align: center;'><button type='button' class ='btn btn-outline-warning remove-ref' ><i class='fa-solid fa-trash'></i></button> </td></tr>";
+                              
+                                
+                            // console.log(newRow)
+                            $("#reference_table_body").append(newRow);                           
+
+                            $('#rf_code').val("")
+                            $('#rf_name').val("")
+                            $('#rf_amount').val("")
+                            $("#rf_code").focus();
+                            
+                            updateRefTotals();
+                            
+                        } else if (result.status === 'not_found') {
+                            // alert("Account not found for the user");
+                            Swal.fire({
+                                title: "Invalid Reference",
+                                text: "Account not found for the user",
+                                icon: "error"
+                                });
+                        }
+                         else if (result.status === 'ref_duplicate') {
+                            // alert("Account not found for the user");
+                            Swal.fire({
+                                title: "Duplicate Reference",
+                                text: "Reference alredy exists for this voucher",
+                                icon: "error"
+                                });
+                        }                 
+                        else {
+                                // alert("error");
+                                Swal.fire({
+                                    title: "Error",
+                                    text: "Error adding account",
+                                    icon: "error"
+                                    });
+                            }
+                    }
+                });
+
+            }     
+            
+        });
+
+        // delete reference row 
+        $(document).on('click', '.remove-ref', function () {
+            var ref_row = $(this).closest('tr');
+            
+            var ref_code = ref_row.find('td:eq(0)').text(); 
+
+            var sl = $('#modal_sl').text()
+            var account_code = $('#modal_ac_code').text()
+            
+            $.ajax({
+                url: '[[=URL("vouchers","delete_reference")]]',
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({ account_code: account_code,
+                                        sl:sl,
+                                        ref_code:ref_code 
+                            }),
+                success: function (response) {
+                    if (response.status === 'success') {                        
+                        ref_row.remove();
+                        updateRefTotals();
+                    } else {
+                        // alert("Error: " + response.message);
+                        Swal.fire({
+                                title: "Error",
+                                text: "Error: " + response.message,
+                                icon: "error"
+                                });
+                    }
+                },
+                error: function () {
+                    // alert("An error occurred while trying to remove the row.");
+                    Swal.fire({
+                                title: "Error",
+                                text: "An error occurred while trying to remove the row.",
+                                icon: "error"
+                                });
+                }
+            });      
+           
+        });
+        
+        // close modal and update debit/credit value of account 
+        $(document).on('click', '#save-modal-btn', function() {
+
+            $('#staticBackdrop').modal('hide');    
+                        
+            var serialNo = $('#modal_sl').text();
+            var accountCode = $('#modal_ac_code').text();
+            var trType = $('#modal_tr_type').text();
+
+            // Make an AJAX request to fetch the amount from the database
+            $.ajax({
+                url: '[[=URL("vouchers","fetch_amount")]]',
+                method: 'GET',
+                data: {
+                    sl: serialNo,
+                    account_code: accountCode
+                },
+                success: function(response) {
+                    if (response.error) {
+                        alert(response.error);
+                    } else {
+                        var amount = response.amount;
+
+                        // Find the corresponding row in the main table and update the debit/credit column
+                        $('#tbody tr').each(function() {
+                            var rowAccountCode = $(this).find('td:eq(0)').text();
+                            if (rowAccountCode === accountCode) {
+                                if (trType === 'Debit') {
+                                    $(this).find('td:eq(2)').text(amount.toLocaleString());
+                                } else {
+                                    $(this).find('td:eq(3)').text(amount.toLocaleString());
+                                }
+                            }
+                        });
+
+                        // Update the total debit/credit in the footer
+                        updateTotals();
+                    }
+                },
+                error: function() {
+                    alert('Failed to fetch amount.');
+                }
+            });
+        });
+
+        // print button 
+        $("#print-data").click(function() {
+            var sl = $("#sl").text();
+            var status = $("#status").text();
+            // console.log(sl);
+            // console.log(status);
+            if(status !="POSTED") {
+                // alert("Please post voucher to print");
+                Swal.fire({
+                            title: "Not Allowed",
+                            text: "Please post voucher to print",
+                            icon: "warning"
+                        });
+            }
+            else {
+                window.open('[[=URL("vouchers","print_voucher",sl)]]')
+            }     
+        });
+        
+        // previeww button 
+        $("#preview-data").click(function() {
+            var sl = $("#sl").text();
+            var status = $("#status").text();
+            console.log(sl);
+            console.log(status);            
+            window.open('[[=URL("vouchers","preview_voucher",sl)]]');
+                
+        });
+
+        // double click on table row- remove the line and fill form
+    //     $(document).on('dblclick', '#tbody tr', function() {
+    //         var status = $("#status").text();
+    //         if(status=="DRAFT"){
+    //             var accountCode = $(this).find('td:eq(0)').text();
+    //             var accountName = $(this).find('td:eq(1)').text();
+    //             var debit = parseFloat($(this).find("td:eq(2)").text().replace(/,/g, ''))
+    //             var credit = parseFloat($(this).find("td:eq(3)").text().replace(/,/g, ''))
+    //             var row = $(this);
+    //             var sl = $("#sl").text();
+    //             $.ajax({
+    //                 url: "[[=URL('vouchers','delete_voucher_detail')]]",
+    //                 type: "POST",
+    //                 contentType: "application/json",
+    //                 data: JSON.stringify({ account_code: accountCode,
+    //                                         sl:sl                                        
+    //                             }),
+    //                             success: function (response) {
+    //                                 if (response.status === 'success') {                        
+    //                                     row.remove();
+    //                                     updateTotals();
+
+    //                                     $('#account_code').val(accountCode);
+    //                                     $('#account_name').val(accountName);
+    //                                     $('#amount').val(debit > 0 ? debit : credit);
+
+    //                                     if (debit > 0) {
+    //                                         $('#inlineRadio1').prop('checked', true);
+    //                                     } else {
+    //                                         $('#inlineRadio2').prop('checked', true);
+    //                                     }
+    //                                 } else {
+    //                                     // alert("Error: " + response.message);
+    //                                     Swal.fire({
+    //                                             title: "Error",
+    //                                             text: "Error: " + response.message,
+    //                                             icon: "error"
+    //                                             });
+    //                                 }
+    //                             },
+    //                                 error: function () {
+    //                                     // alert("An error occurred while trying to remove the row.");
+    //                                     Swal.fire({
+    //                                                 title: "Error",
+    //                                                 text: "An error occurred while trying to remove the row.",
+    //                                                 icon: "error"
+    //                                                 });
+    //                                 }
+    //                             });   
+                    
+    //             }
+
+    //   });
+
+});
+</script>
+
+[[end]]
+
+
+
+

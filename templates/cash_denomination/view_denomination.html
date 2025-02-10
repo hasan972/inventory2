@@ -1,0 +1,119 @@
+[[extend 'layout3.html']]
+
+[[block header]]
+<style>
+    #cash_denomination_form label {
+    font-size: 0.8rem;
+}
+
+</style>
+[[icon='fa fa-chart-line']]
+[[breadcamp = 'Cash Denomination']]
+[[end]]
+
+[[block content]]
+
+<div class="container py-1">
+    <div class="card shadow-sm mb-0">
+        <div class="card-body">
+            <div class="row">
+                <!-- Left Column -->
+                <div class="col-md-4">
+                    <div class="mb-2">
+                        <strong>Trans date:</strong>
+                        <input id="trans_date" name="trans_date" type="date" value="[[=trans_date]]" readonly="true" />                        
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="col-md-4">
+                    <div class="mb-2">
+                        <strong>Branch Code:</strong>
+                        <span id="branch_code" class="ms-2">[[=b_code]]</span>
+                    </div>                                    
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-2">
+                        <strong>Branch Name:</strong>
+                        <span id="branch_name" class="ms-2">[[=b_name]]</span>
+                    </div>                                    
+                </div>                
+            </div>
+            <div class="row">
+                <!-- Left Column -->
+                <div class="col-md-4">
+                    <div class="mb-2">
+                        <strong>Account Code:</strong>
+                        <span id="account_code">[[=account_code]]</span>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="col-md-4">
+                    <div class="mb-2">
+                        <strong>Account Name:</strong>
+                        <span id="account_name" class="ms-2">[[=account_name]]</span>
+                    </div>                                    
+                </div>               
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    <div class="container py-2">             
+        [[for rows in denom_data:]]
+        <div class="row g-0 align-items-center mb-2">
+            <!-- Note Label -->
+            <div class="col-md-2 text-end">
+                <label class="form-label fw-bold" >[[=int(rows['note_amount'])]]</label>
+            </div>
+    
+            <!-- Multiplication Symbol -->
+            <div class="col-md-1 text-center">
+                <label class="form-label fw-bold">x</label>
+            </div>
+    
+            <!-- Quantity Input -->
+            <div class="col-md-1">
+                <input type="number" class="form-control form-control-sm text-end"  value="[[=int(rows['qty'])]]"  readonly >
+            </div>
+    
+            <!-- Equals Symbol -->
+            <div class="col-md-1 text-center">
+                <label class="form-label fw-bold">=</label>
+            </div>
+    
+            <!-- Total -->
+            <div class="col-md-2">
+                <input type="text" class="form-control form-control-sm text-end"  value="[[=rows['total']]]" readonly>
+            </div>
+        </div>
+         
+        [[pass]]
+        <!--  Total Row -->
+        <div class="row g-0 align-items-center mb-2">
+            <div class="col-md-2 text-end">
+                <label class="form-label fw-bold"></label>
+            </div>
+            <div class="col-md-2 text-end">
+                <label class="form-label fw-bold">Total</label>
+            </div>
+            <div class="col-md-1 text-center">
+                <label class="form-label fw-bold">=</label>
+            </div>
+            <div class="col-md-2">
+                <input type="text" class="form-control form-control-sm text-end" id="f_net_total" name="f_net_total"  value="[[=total_amount]]" readonly>
+            </div>
+
+        </div>
+        [[pass]]  
+    </div>
+
+    
+[[end]]
+
+[[block scripts]]
+
+
+[[end]]

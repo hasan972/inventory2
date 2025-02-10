@@ -1,0 +1,119 @@
+[[extend 'layout3.html']]
+
+[[block header]]
+
+<style>
+.voucher-head {
+        display: none;
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin-top: 20px;
+    }
+
+    .hidden-part {
+        display: block;
+    }
+
+    .container-section {
+        padding: 20px;
+    }
+
+    .form-section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        font-weight: bold;
+    }
+
+    #next.btn-primary {
+        margin-top: 32px;
+    }
+    .small-dropdown {
+        font-size: small; /* Smaller font size */
+        height: 28px; /* Adjust height */
+    }
+
+</style>
+
+[[icon='fa fa-chart-line']]
+[[breadcamp = 'Cash Denomination']]
+[[end]]
+
+
+
+[[block content]]
+<div class="container-section">
+    [[if role == 'EDITOR-2nd'  or role== 'EDITOR-1st':]]
+    <div class="form-section-header">
+        
+        <div class="p-1">
+            <a class="btn btn-sm btn-secondary" href="[[=URL('cash_denomination','cash_denomination')]]" role="button">Add Denomination <i class="fa-solid fa-plus"></i> <span class="ms-2"></span></a>
+            
+        </div>               
+    </div>
+    [[pass]]
+
+    
+    
+    <div class="row" >   
+        <div class="col-11">            
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Branch </th>
+                        <th scope="col">Branch Code </th>
+                        <th scope="col">Trans. Date</th>                            
+                        <th scope="col">Total Amount</th>     
+                        <th scope="col">Details</th>
+                    </tr>
+                </thead>
+                
+                [[for row in rows:]]
+                <tbody>
+                    <tr>
+                        <td>[[=row['branch_name']]]</td>
+                        <td>[[=row['branch_code']]]</td>
+                        <td>[[=row['trans_date']]]</td>
+                        <td>[[=f"{row['total_amount']:,.2f}"]]</td>                  
+                        <td>
+                            <a class="button" href="[[=URL('cash_denomination','view_denomination',row['branch_code'],row['trans_date'])]]" ><i class="fa-regular fa-eye"></i></a> </t>                                                          
+                        </td>
+                        
+                    </tr>
+                </tbody>
+                
+                [[pass]]
+                
+
+            </table>
+            
+            <!-- Pagination Controls -->
+            
+        </div>          
+            
+    </div>
+
+        
+        
+    
+
+        
+[[end]]
+
+[[block scripts]]
+<script>
+
+
+</script>
+
+[[end]]
+
+

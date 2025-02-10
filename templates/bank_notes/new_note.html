@@ -1,0 +1,114 @@
+[[extend 'layout3.html']]
+
+[[block header]]
+<style>
+        .action-link {
+        margin-right: 10px; /* Adjust the value as needed */
+    }
+</style>
+[[icon='fa fa-chart-line']]
+[[breadcamp = 'Banknotes']]
+[[end]]
+
+[[block content]]
+
+<div class="container py-2">      
+    
+        
+    [[if role =='ADMIN':]]
+    
+            [[= form.custom.begin ]]
+            <div id="custom_input">        
+                <div class="row">
+                    <div class="col-1">
+                        <div class="mb-3">
+                            <label for="class_name" class="form-label">Note Code</label>
+                            [[= form.custom.widgets['note_code'] ]]
+                            [[ if 'note_code' in form.errors: ]]
+                            <div class="text-danger">[[=form.errors['note_code']]]</div>                           
+                            [[pass]]
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="mb-3">
+                            <label for="class_name" class="form-label">Note in Words</label>
+                            [[= form.custom.widgets['in_words'] ]]
+                            [[ if 'in_words' in form.errors: ]]
+                            <div class="text-danger">[[=form.errors['in_words']]]</div>                           
+                            [[pass]]
+                        </div>
+                    </div>
+                    <div class="col-1">
+                        <div class="mb-3">
+                            <label for="class_name" class="form-label">Amount</label>
+                            [[= form.custom.widgets['note_amount'] ]]
+                            [[ if 'note_amount' in form.errors: ]]
+                            <div class="text-danger">[[=form.errors['note_amount']]]</div>                           
+                            [[pass]]
+                        </div>
+                    </div>                    
+                    <div class="col-2">
+                        <div class="mb-3">
+                            <label for="class_type" class="form-label">Status</label><br>
+                            [[= form.custom.widgets['status'] ]]
+                        </div>
+                    </div>               
+                    <div class="col-md-2 col-sm-6 col-12 d-flex align-items-end">
+                        <button type="submit" class="btn btn-sm btn-primary mb-3" data-toggle="tooltip" data-placement="bottom" title="Add Class">
+                            <i class="fa-solid fa-floppy-disk"></i> <span class="ms-2">Save</span>                        
+                        </button>                    
+                    </div>
+                </div>
+            </div>
+            [[= form.custom.end ]] 
+    
+    [[pass]]
+    
+    <!-- Search and Table Section -->
+
+    
+    <div class="row">
+        <div class="col-8">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Code</th>
+                        <th scope="col">Amount in Words</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Status</th> 
+                        [[if role == 'ADMIN' :]]                   
+                        <th scope="col">Action</th>    
+                        [[pass]]                    
+                    </tr>
+                </thead>
+                <tbody>
+                    [[for row in rows:]]
+                    <tr>
+                        <td>[[=row['note_code']]]</td>
+                        <td>[[=row['in_words']]]</td>
+                        <td>[[=row['note_amount']]]</td>
+                        <td>[[=row['status']]]</td>  
+                        
+                        [[if role == 'ADMIN':]]
+                        <td>
+                            <a class="button action-link" href="" data-toggle="tooltip" data-placement="bottom" title="Edit Class">   <i class="fa-regular fa-pen-to-square"></i> </a>
+    
+                            <a class="button action-link delete-link" href="" data-toggle="tooltip" data-placement="bottom" title="Delete Class" onclick="return confirm('Are you sure to delete?')">
+                                <i class="fa-solid fa-trash"></i>
+                            </a>
+                        </td> 
+                        [[pass]]                       
+                    </tr>
+                    [[pass]]
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+[[end]]
+
+
+[[block script]]
+
+[[end]]
+

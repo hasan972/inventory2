@@ -1,0 +1,219 @@
+[[extend 'layout3.html']]
+
+[[block header]]
+
+[[icon='fa fa-chart-line']]
+[[breadcamp = 'Cash/Bank']]
+<style>
+    li{
+        list-style: none;
+        cursor: pointer;
+        padding: 2px;
+    }
+
+    .suggestions{
+        display: block; 
+        background: #eee; 
+        position: absolute;       
+        
+    }
+    ul.suggestion-list{
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+    }
+    .action-link {
+        margin-right: 10px; /* Adjust the value as needed */
+    }
+
+</style>
+[[end]]
+
+
+[[block content]]
+<div class="container-section">
+
+    <div class="container py-2">
+        [[if role == 'ADMIN':]]
+        [[= form.custom.begin ]]
+        <div id="custom_input">        
+            <div class="row">
+                <div class="col-2">
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Account Code</label><br>
+                        [[= form.custom.widgets['account_code'] ]]
+                        [[ if 'account_code' in form.errors: ]]
+                        <div class="text-danger">[[=form.errors['account_code']]]</div>                           
+                        [[pass]]
+                        <div class="suggestions">
+                            <ul class="suggestion-list" id="dropdata">
+                                <!-- here suggestions will be displayed -->
+                                 
+                            </ul>
+                        </div> 
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Account Name</label>
+                        [[= form.custom.widgets['account_name'] ]]   
+                        [[ if 'account_name' in form.errors: ]]
+                        <div class="text-danger">[[=form.errors['account_name']]]</div>                           
+                        [[pass]]   
+                        <div class="suggestions">
+                            <ul class="suggestion-list" id="dropdata">
+                                <!-- here suggestions will be displayed -->
+                                 
+                            </ul>
+                        </div>                     
+                    </div>
+                      
+                </div>
+                
+                
+                <div class="col-1">
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Select Type</label>
+                        [[= form.custom.widgets['account_type'] ]]   
+                        [[ if 'account_type' in form.errors: ]]
+                        <div class="text-danger">[[=form.errors['account_type']]]</div>                           
+                        [[pass]]                      
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Note</label>
+                        [[= form.custom.widgets['note'] ]]
+                        [[ if 'note' in form.errors: ]]
+                        <div class="text-danger">[[=form.errors['note']]]</div>                           
+                        [[pass]] 
+                    </div>
+                </div>
+                
+                <div class="col-md-2 col-sm-6 col-12 d-flex align-items-end">
+                    <button type="submit" class="btn btn-sm btn-primary mb-3" data-toggle="tooltip" data-placement="bottom" title="Add Cash-Bank">
+                        <i class="fa-solid fa-floppy-disk"></i> <span class="ms-2">Save</span>
+                    </button>
+                </div>
+            </div>
+            
+        </div>
+        [[= form.custom.end ]]   
+        [[pass]]
+
+        <div class="container py-2">
+            <form action="[[=URL('cash_bank','cash_bank')]]" method="GET">
+                <label for="search_by">Search By:</label>
+                <select name="search_by" id="search_by">
+                    <option value="account_code" [[= 'selected' if search_by == 'account_code' else '' ]]>Account Code</option>
+                    <option value="account_name" [[= 'selected' if search_by == 'account_name' else '' ]]>Account Name</option>
+                    <option value="cash" [[ ='selected' if search_by == 'cash' else '' ]]>Cash</option>
+                    <option value="bank" [[ ='selected' if search_by == 'bank' else '' ]]>Bank</option>
+                </select> 
+                <label for="search_term">Search Term:</label>
+                <input type="text" name="search_term" id="search_term" value="[[=search_term]]">
+                <button type="submit" class="btn btn-sm btn-primary me-2" data-toggle="tooltip" data-placement="bottom" title="Search Cash-Bank">Search</button>
+                <a href="[[=URL('cash_bank','cash_bank')]]" class="btn btn-sm btn-secondary" data-toggle="tooltip" data-placement="bottom" title="Clear Search">Clear</a>
+            </form>
+        </div>
+
+
+
+        
+        <div class="row" >
+            <div class="col-10">                                  
+                   
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Account Code</th>
+                                <th scope="col">Account Name</th>
+                                <th scope="col">Account Type</th>
+                                <th scope="col">Note</th>
+                                [[if role == 'ADMIN' :]]
+                                <th scope="col">Action</th>
+                                [[pass]]
+                            </tr>
+                        </thead>
+                        
+                        [[for row in rows:]]
+                        <tbody>
+                            <tr>
+                                <td>[[=row['account_code']]]</td>
+                                <td>[[=row['account_name']]]</td>
+                                <td>[[=row['account_type']]]</td>
+                                <td>[[=row['note']]]</td>
+                                [[if role == 'ADMIN':]]
+                                <td>
+                                    <a class="button action-link" href="[[=URL('cash_bank','edit_cash_bank', row['id'])]]" data-toggle="tooltip" data-placement="bottom" title="Edit Cash-Bank">   <i class="fa-regular fa-pen-to-square"></i> </a>
+    
+                                    <a class="button action-link delete-link" href="[[=URL('cash_bank','delete_cash_bank', row['account_code'])]]" data-toggle="tooltip" data-placement="bottom" title="Delete Cash-Bank" onclick="return confirm('Are you sure to delete?')">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </a>
+                                </td>
+                                [[pass]]
+                                
+                            </tr>
+                        </tbody>
+                        
+                        [[pass]]
+
+                        
+
+                    </table>
+                
+            </div>
+
+        </div>
+        
+    </div>    
+
+[[end]]
+[[block scripts]]
+<script>
+$(document).ready(function() {
+    $('#ac_cash_bank_account_code').on('input', function() {
+        var query = $(this).val();
+        if (query.length >= 3) {
+            $.ajax({
+                url: '[[=URL("fetch_account_info")]]',
+                data: {term: query},
+                success: function(data) {
+                    var suggestions = JSON.parse(data);
+                    var dropdown = $('#dropdata');
+                    dropdown.empty(); // Clear previous suggestions
+                    $.each(suggestions, function(index, value) {
+                        dropdown.append('<li class="list-group-item suggestion-item">' + value + '</li>');
+                    });
+                    $('.suggestions').show();
+                }
+            });
+        } else {
+            $('.suggestions').hide(); // Hide suggestions if fewer than 3 characters
+        }
+    });
+
+    $(document).on('click', '.suggestion-item', function() {
+        var selectedText = $(this).text();
+        var parts = selectedText.split('|');
+        $('#ac_cash_bank_account_name').val(parts[1]); // Set the account_name
+        $('#ac_cash_bank_account_code').val(parts[0]); // Set the account_code (assuming you have an input with this id)
+        $('.suggestions').hide();
+        
+    });
+    $(document).click(function(e) {
+        if (!$(e.target).closest('.suggestions, #ac_account_branch_account_name').length) {
+            $('.suggestions').hide();
+        }
+    });
+
+
+
+
+
+})
+
+</script>
+
+
+[[end]]

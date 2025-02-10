@@ -1,0 +1,236 @@
+[[extend 'layout3.html']]
+
+[[block header]]
+<style>
+    .row-2{
+        display: none;
+    }
+    .action-link {
+        margin-right: 10px; /* Adjust the value as needed */
+    }
+</style>
+[[icon='fa fa-chart-line']]
+[[breadcamp = 'Accounts']]
+[[end]]
+
+
+
+[[block content]]
+
+    <div class="container py-2">
+        [[if role=='ADMIN' :]]
+        [[= form.custom.begin ]]
+        <div id="custom_input">        
+            <div class="row">
+                <div class="col-2">
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Select Class</label><br>
+                        [[= form.custom.widgets['class_name'] ]]
+                        [[ if 'class_name' in form.errors: ]]
+                        <div class="text-danger">[[=form.errors['class_name']]]</div>                           
+                        [[pass]]
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Accounts Group</label><br>
+                        [[= form.custom.widgets['group_name'] ]]
+                        [[ if 'group_name' in form.errors: ]]
+                        <div class="text-danger">[[=form.errors['group_name']]]</div>                           
+                        [[pass]] 
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Account Code</label>
+                        [[= form.custom.widgets['account_code'] ]]   
+                        [[ if 'account_code' in form.errors: ]]
+                        <div class="text-danger">[[=form.errors['account_code']]]</div>                           
+                        [[pass]]                      
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Account Name</label>
+                        [[= form.custom.widgets['account_name'] ]]
+                        [[ if 'account_name' in form.errors: ]]
+                        <div class="text-danger">[[=form.errors['account_name']]]</div>                           
+                        [[pass]]    
+                    </div>
+                </div>               
+                <div class="col-md-2 col-sm-6 col-12 d-flex align-items-end">
+                    <button type="submit" class="btn btn-sm btn-primary mb-3" data-toggle="tooltip" data-placement="bottom" title="Add Account">
+                        <i class="fa-solid fa-floppy-disk"></i> <span class="ms-2">Save</span>
+                    </button>
+                </div>
+            </div>
+            
+            
+        </div>
+        [[= form.custom.end ]]   
+        [[pass]]
+
+        <div class="container py-2">
+            <form action="[[=URL('accounts','new_account')]]" method="GET" >
+                <label for="search_by" >Filter By:</label>
+                <select name="search_by" id="search_by" >
+                    <option value="account_code" [[ ='selected' if search_by == 'account_code' else '' ]]>Account Code</option>
+                    <option value="account_name" [[ ='selected' if search_by == 'account_name' else '' ]]>Account Name</option>
+                    <option value="group_name" [[ ='selected' if search_by == 'group_name' else '' ]]>Group Name</option>
+                </select> 
+                <label for="search_term" >Search Term:</label>
+                <input type="text" name="search_term" id="search_term" value="[[=search_term]]" >
+                <button type="submit" class="btn btn-sm btn-primary me-2" data-toggle="tooltip" data-placement="bottom" title="Filter Accounts">Filter</button>
+                <a href="[[=URL('accounts','new_account')]]" class="btn btn-sm btn-secondary" data-toggle="tooltip" data-placement="bottom" title="Clear Search">Clear</a>
+                <a href="[[=URL('accounts','download_accounts')]]" class="btn btn-sm btn-secondary" data-toggle="tooltip" data-placement="bottom" title="Download Accounts"><i class="fa-solid fa-arrow-down"></i> </a>               
+            </form>
+        </div> 
+        
+        
+        <div class="row" >
+            <div class="col-10">
+                                  
+                   
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Account Code</th>
+                                <th scope="col">Account Name</th>
+                                <th scope="col">Account Group</th>
+                                <th scope="col">Account Class </th>                                
+                                <th scope="col">Class Type</th>                                
+                                [[if role=='ADMIN':]]
+                                <th scope="col">Action</th>
+                                [[pass]]
+                            </tr>
+                        </thead>
+                        
+                        [[for row in rows:]]
+                        <tbody>
+                            <tr>
+                                <td>[[=row['account_code']]]</td>
+                                <td>[[=row['account_name']]]</td>                                
+                                <td>[[=row['group_name']]]</td>
+                                <td>[[=row['class_name']]]</td>
+                                <td>[[=row['class_type']]]</td>
+                                
+                                
+                                [[if role=='ADMIN' :]]
+                                <td>
+                                    <a  class="button action-link" href="[[=URL('accounts','edit_account',row['id'])]]" data-toggle="tooltip" data-placement="bottom" title="Edit Account" ><i class="fa-regular fa-pen-to-square"></i></a>     
+
+                                    <a class="button action-link delete-link" href="[[=URL('accounts','delete_account', row['account_code'])]]" data-toggle="tooltip" data-placement="bottom" title="Delete Account" onclick="return confirm('Are you sure to delete?')">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </a>
+                                       
+                                </td>
+                                [[pass]]
+                            </tr>
+                        </tbody>
+                        
+                        [[pass]]
+
+                        
+
+                    </table>
+                    <!-- Pagination Controls -->
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination">
+                            [[if page > 1:]]
+                            <li class="page-item">
+                                <a class="page-link" href="[[=URL('accounts','new_account', vars=dict(page=page-1))]]" aria-label="Previous">
+                                    <span aria-hidden="true">«</span>
+                                </a>
+                            </li>
+                            [[pass]]
+
+                            [[if page > 6:]]
+                            <li class="page-item">
+                                <a class="page-link" href="[[=URL('accounts','new_account', vars=dict(page=1))]]">1</a>
+                            </li>
+                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                            [[pass]]
+
+                            [[for p in range(max(1, page-5), min(total_pages+1, page+5)):]]
+                            <li class="page-item [[= 'active' if p == page else '']]">
+                                <a class="page-link" href="[[=URL('accounts','new_account', vars=dict(page=p))]]">[[=p]]</a>
+                            </li>
+                            [[pass]]
+
+                            [[if page < total_pages - 5:]]
+                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                            <li class="page-item">
+                                <a class="page-link" href="[[=URL('accounts','new_account', vars=dict(page=total_pages))]]">[[=total_pages]]</a>
+                            </li>
+                            [[pass]]
+
+                            [[if page < total_pages:]]
+                            <li class="page-item">
+                                <a class="page-link" href="[[=URL('accounts','new_account', vars=dict(page=page+1))]]" aria-label="Next">
+                                    <span aria-hidden="true">»</span>
+                                </a>
+                            </li>
+                            [[pass]]
+                        </ul>
+                    </nav>
+                
+            </div>
+
+        </div>
+        
+    </div>
+
+        
+[[end]]
+[[block scripts]]
+<script>
+     $(document).ready(function () {
+     
+    // Listen for changes in the class dropdown
+    $('#ac_accounts_class_name').change(function () {
+      const selectedClass = $(this).val(); // Get the selected class
+
+      // Make an AJAX request to the server
+      $.ajax({
+        url: '[[=URL("get_groups")]]', // Your API endpoint
+        method: 'GET',
+        data: { q: selectedClass }, // Send the selected class as a parameter
+        success: function (data) {
+          const groupDropdown = $('#ac_accounts_group_name');
+          groupDropdown.empty(); // Clear existing options
+
+          // Add new options based on the data received
+          data.groups.forEach((group) => {
+            groupDropdown.append($('<option>', {
+              value: group.group_name,
+              text: group.group_name,
+            }));
+          });
+        },
+        error: function (error) {
+          console.error('Error fetching groups:', error);
+        },
+      });
+    });
+
+//     $("#ac_accounts_group_name").change(function() {    
+//     var selectedValue = $(this).val();  
+//     $.ajax({
+//         url: '[[=URL("get_class_group")]]', 
+//         method: 'GET',
+//         data: { q: selectedValue },
+//         dataType: 'json',
+//         success: function(data) {
+//             console.log(data['class_code'])            
+//             $("#ac_accounts_group_code").val(data['group_code']);
+//             $("#ac_accounts_class_type").val(data['class_type']);
+//             $("#ac_accounts_class_code").val(data['class_code']);
+//           }
+//     });
+// })
+    
+  });
+</script>
+
+
+[[end]]

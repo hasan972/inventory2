@@ -1,0 +1,202 @@
+[[extend 'layout_report.html']]
+
+[[block header]]
+<style>
+    .table th {
+        background-color: #eeeeede7;
+        color: black;
+        font-weight: bold;
+
+    }
+    .table td {
+        border: 1px solid black;
+        font-size: x-small;
+        /* height: 10px; */
+    }
+    .table th {
+        border-left: 1px solid black;
+        border-right: 1px solid black;
+        border-top: 1px solid black;
+        height: 10px;
+    }
+
+
+    .card-body {
+        display: flex;
+        justify-content: space-between;
+    }
+    .report-info {
+        flex: 1;
+    }
+    .date-info {
+        flex: 1;
+        text-align: right;
+    }
+    .logo {
+        width: 100px;
+        height: auto;
+    }
+
+    .company-info {
+        text-align: right;
+    }
+    .signature-box {
+    border-top: 1px solid black;
+    height: 10px;
+    margin-top: 20px;
+    width: 60%; 
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 5px;
+}
+    .signature-name {
+            margin-bottom: 0; 
+        }
+    .placeholder {
+        height: 1.2em; 
+    
+}
+.voucher-title {
+        font-size: 1.2rem;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .table-total {
+        font-weight: bold;
+    }
+    .double-underline {
+    border-bottom: 3px double black;
+    font-weight: bold;
+}
+.logo-container {
+        max-width: 400px; 
+    }
+    .address-text {
+        font-size: smaller;
+        word-wrap: break-word;
+    } 
+</style>
+
+
+
+
+[[end]]
+
+[[block content]]
+
+<div class="container mt-4">
+    
+    <div class="d-flex flex-column align-items-center justify-content-center">
+        <div class="text-center logo-container">
+            <img src="[[=URL('static','tdcl.png')]]" height="25px" width="400px" alt="TDCL">
+            <p class="address-text">[[=address]]</p> 
+        </div>   
+    </div>
+    <div class="voucher-title">
+        [[if v_type=='Receive':]]
+        Credit Voucher
+        [[elif v_type=='Payment':]]
+        Debit Voucher
+        [[elif v_type=='Contra':]]
+        Contra Voucher
+        [[elif v_type=='Journal':]]
+        Journal Voucher
+        [[pass]]
+    </div>
+
+    <!-- Current Date and Time Section -->
+    <div class="d-flex justify-content-between">
+        <p class="text-muted">Date and Time: [[=time]]</p>       
+
+    </div>
+
+    <!-- Header Section -->
+    <div class="card mb-3">
+        <div class="card-body">
+            <div class="report-info">
+                <p class="card-text"><strong>Voucher No:</strong> [[=sl]]</p>
+                <p class="card-text"><strong>Voucher Date:</strong> [[=v_date]]</p>
+                
+                
+            </div>
+            <div class="report-info">
+                <p class="card-text"><strong>Voucher Type:</strong> [[=v_type]]</p>
+                <p class="card-text"><strong>Branch:</strong> [[=branch_name]]</p>
+            </div>
+            <div class="date-info">
+                <p class="card-text"><strong>Status:</strong> [[=status]]</p>                
+                <p class="card-text"><strong>Total Amount:</strong> [[=f"{total:,.2f}"]]</p> 
+            </div>
+        </div>
+    </div>
+    <div class="col-10">
+        <p><strong>Particulars:</strong> [[=narration]]</p>
+    </div>
+
+    <!-- Table Section -->
+    <div class="row">
+        <div class="col-12">
+            <div class="table-responsive">
+                <table id="example" class="table table-sm table-bordered" style="width:100%">
+                  <thead>
+                    <tr>
+                      <th>Sl.</th>
+                      <th>Account Code</th>
+                      <th>Account Name</th>
+                      <th class="text-end">Debit</th>
+                      <th class="text-end">Credit</th>                      
+                     
+                    </tr>
+                  </thead>
+                  <tbody>
+                    [[for idx, row in enumerate(results, start=1):]]
+                    <tr>
+                        <td>[[=idx]]</td>
+                        <td>[[=row['account_code']]]</td>
+                        <td>[[=row['account_name']]]</td>
+                        <td class="text-end">[[=f"{row['debit']:,.2f}"]]</td>
+                        <td class="text-end">[[=f"{row['credit']:,.2f}"]]</td>                       
+                    </tr>
+                    [[pass]]
+                    <tr>
+                        <td style="border-left: none;border-right: none;border-bottom: none;"></td>
+                        <td style="border-left: none;border-right: none;border-bottom: none;"></td>
+                        <td style="border-left: none;border-right: none;border-bottom: none;"></td>
+                        <td style="font-weight: bold;text-align: right; border-left: none;border-right: none;border-bottom: none;text-decoration: underline double;text-underline-offset: 3px;" >[[=f"{total_debit:,.2f}"]]</td>
+                        <td style="font-weight: bold;text-align: right; border-left: none;border-right: none;border-bottom: none;text-decoration: underline double;text-underline-offset: 3px" >[[=f"{total_credit:,.2f}"]]</td>
+                    </tr>
+                </tbody>
+                
+                </table>
+              </div>
+
+        </div>
+    </div>
+
+      <!-- Amount in Words Section -->
+      <div class="row mt-1">
+        <p><strong>Amount in words:</strong> <strong>[[=amt_words]]</strong> </p>
+      </div>
+
+<!-- Signature Section -->
+<div class="row mt-4">
+    <div class="col-4 text-center">
+        <p class="signature-name"><strong>[[=created_by]]</strong></p> 
+        <div class="signature-box"></div>
+        <p>Prepared By</p>
+    </div>
+    <div class="col-4 text-center">
+        <p class="signature-name"><strong>[[=post_by]]</strong></p> 
+        <div class="signature-box"></div>
+        <p>Checked By</p>
+    </div>
+    <div class="col-4 text-center">
+        <div class="placeholder"></div> 
+        <div class="signature-box"></div>
+        <p>Branch In Charge</p>
+    </div>
+</div>
+</div>
+
+[[end]]

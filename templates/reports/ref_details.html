@@ -1,0 +1,184 @@
+[[extend 'layout_report.html']]
+
+[[block header]]
+<style>
+    .table th {
+        background-color: #f1c889e0;
+        color: black;
+        font-weight: bold;
+        font-size: smaller;
+    }
+    .table td {
+        border: 1px solid black;
+        font-size: smaller;
+        
+        /* height: 10px; */
+        
+    }
+    .table th {
+        border-left: 1px solid black;
+        border-right: 1px solid black;
+        border-top: 1px solid black;
+        height: 10px;
+    }
+
+    .header-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .download-link {
+        text-decoration: none;
+        color: #007bff;
+    }
+    .card-body {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+    }
+    .report-info {
+        flex: 1;
+    }
+    .date-info {
+        flex: 1;
+        text-align: right;
+    }
+    .logo {
+        width: 100px;
+        height: auto;
+    }
+
+    .company-info {
+        text-align: right;
+    }
+    .signature-box {
+    border-top: 1px solid black;
+    height: 10px;
+    margin-top: 20px;
+    width: 60%; 
+    margin-left: auto;
+    margin-right: auto;
+}
+    .logo-container {
+        max-width: 400px; 
+    }
+    .address-text {
+        font-size: smaller;
+        word-wrap: break-word;
+    } 
+    
+    .ref-expense{
+        text-align: center;
+        font-size: 1.5em;
+        font-weight: bold;
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+</style>
+
+
+[[end]]
+
+[[block content]]
+
+<div class="container mt-4">
+    <div class="d-flex flex-column align-items-center justify-content-center">
+        <div class="text-center logo-container">
+            <img src="[[=URL('static','tdcl.png')]]" height="25px" width="400px" alt="TDCL">
+            <p class="address-text">[[=address]]</p> 
+        </div>   
+    </div>
+
+
+    <!-- Current Date and Time Section -->
+    <div class="header-container">
+        <p class="text-muted">Date and Time: [[=time]]</p>
+        <a href="[[=URL('reports','download_ref_details', vars=dict(from_date=from_date, to_date=to_date, branch_code=report_branch_code,ref_type=ref_type,reference=reference))]]" class="download-link">Download Report</a>
+
+    </div>
+
+    <!-- Header Section -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="ref-expense">[[=ref_type]] Wise Expense</div>
+            <div class="report-info">
+                <p class="card-text"><strong>Branch Code:</strong> [[=report_branch_code]]</p>
+                <p class="card-text"><strong>Branch Name:</strong> [[=report_branch_name]]</p>
+            </div>
+            <div class="date-info">
+                <p class="card-text"><strong>From Date:</strong> [[=from_date]]</p>
+                <p class="card-text"><strong>To Date:</strong> [[=to_date]]</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Table Section -->
+    <div class="row">        
+        <div class="col-12">            
+            <div class="table-responsive">
+                <table id="example" class="table table-sm table-bordered" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th style="width: 10%;">Trans. Date</th>
+                            <th style="width: 12%;">Voucher Type</th>
+                            <th style="width: 10%;">Voucher No.</th>                        
+                            <th style="width: 31%;">Narration</th>                        
+                            <th style="width: 23%;">Description</th>                        
+                            <th style="width: 14%;">Total Expense</th>                        
+                        </tr>
+                    </thead>
+                    <tbody>
+                        [[for ref in result1:]]
+                        <tr>
+                            <td colspan="5" style="background-color: #b6dae3;">
+                                <strong>[[=ref['ref_code']]] - [[=ref['ref_name']]]</strong>
+                            </td>
+                            <td colspan="1" style="background-color: #b6dae3; text-align: right;">
+                                <strong>[[=f"{ref['tot_amount']:,.2f}"]]</strong> 
+                            </td>
+                        </tr>  
+                        [[for ref2 in result2:]]
+                            [[if ref2['ref_code'] == ref['ref_code'] and ref2['ref_name'] == ref['ref_name']: ]]
+                            <tr>
+                                <td colspan="5" style="background-color: #e4f5e2;">[[=ref2['account']]]</td>
+                                <td colspan="1" style="background-color: #e4f5e2; text-align: right;">[[=f"{ref2['tot']:,.2f}"]]</td>
+                            </tr>
+                            [[for ref3 in result3:]]
+                                [[if ref3['ref_code'] == ref2['ref_code']  and  ref3['account_code'] == ref2['account_code']  : ]]
+                                    <tr style="font-style: italic;">
+                                        <td>[[=ref3['v_date']]]</td>
+                                        <td>[[=ref3['v_type']]]</td>
+                                        <td>[[=ref3['sl']]]</td>
+                                        <td>[[=ref3['narration']]]</td>
+                                        <td>[[=ref3['des']]]</td>
+                                        <td style="text-align: right;">[[=f"{ref3['amount']:,.2f}"]]</td>
+                                    </tr>                                
+                                
+                                [[pass]]
+                                [[pass]]
+                            [[pass]]
+                            [[pass]]
+                        [[pass]]
+                        
+                    </tbody>
+                </table>
+                
+                
+                
+                
+            </div>
+            
+        </div>
+        
+    </div>
+    <!-- Bottom section -->
+    <div class="container mt-4">       
+        <div class="d-flex flex-column align-items-center justify-content-center">
+            <p>This is a system generated statement and does not require any signature</p>
+        </div>
+                                   
+    </div>
+</div>
+
+[[end]]

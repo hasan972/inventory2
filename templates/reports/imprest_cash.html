@@ -1,0 +1,171 @@
+[[extend 'layout_report.html']]
+
+[[block header]]
+<style>
+    
+    .table th {
+        background-color: #f1c889e0;
+        color: black;
+        font-weight: bold;
+    }
+    .table td {
+        border: 1px solid black;
+        font-size: medium;
+        /* height: 10px; */
+        
+    }
+    .table th {
+        border-left: 1px solid black;
+        border-right: 1px solid black;
+        border-top: 1px solid black;
+        height: 10px;
+    }
+    .header-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .download-link {
+        text-decoration: none;
+        color: #007bff;
+    }
+    .card-body {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+    }
+    .report-info {
+        flex: 1;
+    }
+    .date-info {
+        flex: 1;
+        text-align: right;
+    }
+    .logo {
+        width: 100px;
+        height: auto;
+    }
+    .company-info {
+        text-align: right;
+    }
+    .signature-box {
+        border-top: 1px solid black;
+        height: 10px;
+        margin-top: 20px;
+        width: 60%; /* Adjust the width as needed */
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .transaction-listing {
+        text-align: center;
+        font-size: 1.5em;
+        font-weight: bold;
+        width: 100%;
+        margin-bottom: 20px;
+    }
+    .logo-container {
+            max-width: 400px; /* Match the width of the logo */
+    }
+    .address-text {
+        font-size: smaller;
+        word-wrap: break-word; /* Ensure long words are wrapped */
+    } 
+
+
+</style>
+
+
+
+[[block content]]
+
+<div class="container mt-4">
+    
+    <div class="d-flex flex-column align-items-center justify-content-center">
+        <div class="text-center logo-container">
+            <img src="[[=URL('static','tdcl.png')]]" height="25px" width="400px" alt="TDCL">
+            <p class="address-text">[[=address]]</p> 
+        </div>   
+    </div>
+
+    <!-- Current Date and Time Section -->
+    <div class="header-container">
+        <p class="text-muted">Date and Time: [[=time]]</p>        
+        <a href="[[=URL('reports','download_imprest_cash', vars=dict(from_date=from_date, to_date=to_date, branch_code=report_branch_code,branch_name=report_branch_name))]]" class="download-link">Download Report</a>
+
+    </div>
+
+    <!-- Header Section -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="transaction-listing">Imprest Cash</div>
+            <div class="report-info">                
+                <p class="card-text"><strong>Branch:</strong> [[=report_branch_name]]</p>                
+            </div>
+            <div class="report-info">
+                <p class="card-text"><strong>Account:</strong> [[=account_name]]</p>
+                
+            </div>
+            <div class="date-info">                
+                <p class="card-text"><strong>To Date:</strong> [[=to_date]]</p>                
+            </div>
+        </div>
+    </div>
+
+    <!-- Table Section -->
+    <div class="row">
+        <div class="col-12">            
+            <div class="table-responsive" style="align-items: center;">
+                <table id="example" class="table table-sm table-bordered" width="50%">
+                    <thead>
+                        <tr>
+                            <th scope="col" style="text-align: left;" >Trans. Date</th>
+                            <th scope="col" style="text-align: center;">Note Details</th>
+                            <th scope="col" style="text-align: center;">Quantity</th>
+                            <th scope="col" style="text-align: right;">Amount</th>                          
+                        </tr>
+                    </thead>
+                    
+                    <tbody style="border-bottom: 1px solid black;">
+
+                        [[for row in result1:]]  
+                        <tr>
+                            <td style="text-align: left;">[[=row['trans_date']]]</td>
+                            <td style="text-align: center;">[[=int(row['note_amount'])]]</td>
+                            <td style="text-align: center;">[[=int(row['qty'])]]</td>
+                            <td style="text-align: right;">[[=f"{row['total']:,.2f}"]]</td>
+                        </tr>
+                        [[pass]]
+                        
+                    </tbody>
+                    <tfoot>
+                        <td style="text-align: center;"></td>
+                        <td style="text-align: center;"></td>
+                        <td style="text-align: center; font-weight: bold;"> Total:</td>
+                        <td style="text-align: right; font-weight: bold;text-decoration: underline double;text-underline-offset: 3px;">[[=f"{total_amount:,.2f}"]]</td>
+                    </tfoot>
+                    
+                </table>
+
+            </div>
+            
+            
+            
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-4 text-center">
+            <div class="signature-box"></div>
+            <p>Prepared By</p>
+        </div>
+        <div class="col-4 text-center">
+            <div class="signature-box"></div>
+            <p>Checked By</p>
+        </div>
+        <div class="col-4 text-center">
+            <div class="signature-box"></div>
+            <p>Branch In Charge</p>
+        </div>
+    </div>
+</div>
+
+[[end]]

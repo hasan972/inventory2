@@ -1,0 +1,170 @@
+[[extend 'layout_report.html']]
+
+[[block header]]
+<style>
+    .table th {
+        background-color: #f1c889e0;
+        color: black;
+        font-weight: bold;
+        font-size: smaller;
+        border: 1px solid black;
+    }
+    .table td {
+        font-size: smaller;
+        border: 1px solid black;
+    }
+    .header-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .download-link {
+        text-decoration: none;
+        color: #007bff;
+    }
+    .card-body {
+        display: flex;
+        justify-content: space-between;
+    }
+    .report-info {
+        flex: 1;
+    }
+    .date-info {
+        flex: 1;
+        text-align: right;
+    }
+    .logo-container {
+            max-width: 400px; /* Match the width of the logo */
+    }
+    .address-text {
+        font-size: smaller;
+        word-wrap: break-word; /* Ensure long words are wrapped */
+    }    
+
+</style>
+
+
+
+
+[[end]]
+
+[[block content]]
+
+<div class="container mt-4">
+    <div class="d-flex flex-column align-items-center justify-content-center">
+        <div class="text-center logo-container">
+            <img src="[[=URL('static','tdcl.png')]]" height="25px" width="400px" alt="TDCL">
+            <p class="address-text">[[=address]]</p> 
+        </div>   
+    </div>
+    <!-- Current Date and Time Section -->
+    <div class="header-container">
+        <p class="text-muted">Date and Time: [[=time]]</p>
+        <!-- <a href="[[=URL('reports','download_trial_balance_1', vars=dict(from_date=from_date, to_date=to_date, branch_code=report_branch_code,branch_name=report_branch_name))]]" class="download-link">Download Report</a> -->
+        <button class="download-link" id="manualExcel" type="button">
+            Download Report XL
+        </button>
+    </div>
+
+    <!-- Header Section -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="report-info">
+                <p class="card-text"><strong>Report Type:</strong> Trial Balance - Details</p>
+                <p class="card-text"><strong>Branch Code:</strong> <span id="branch_code">[[=report_branch_code]] </span></p>
+                <p class="card-text"><strong>Branch Name:</strong> [[=report_branch_name]]</p>
+            </div>
+            <div class="date-info">
+                <p class="card-text"><strong>From Date:</strong> <span id="from_date">[[=from_date]] </span> </p>
+                <p class="card-text"><strong>To Date:</strong> <span id="to_date">[[=to_date]] </span> </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Table Section -->
+    <div class="row">
+        <div class="col-12">
+            <div class="table-responsive">
+                <table id="example" class="table table-sm table-bordered" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Account Code</th>
+                            <th>Account Name</th>
+                            <th style="text-align: right;">Debit</th>
+                            <th style="text-align: right;">Credit</th>
+                            <th>Ref. Code</th>
+                            <th>Ref. Name</th>
+                            
+                            <th>Trans. Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        [[for row in merged_results:]]
+                        <tr>
+                            <td>[[=row['account_code']]]</td>
+                            <td>[[=row['account_name']]]</td>
+                            <td style="text-align: right;">[[=f"{row['debit']:,.2f}"]]</td>
+                            <td style="text-align: right;">[[=f"{row['credit']:,.2f}"]]</td>
+                            <td>[[=row['ref_code']]]</td>
+                            <td>[[=row['ref_name']]]</td>
+                            <td>[[=row['v_date']]]</td>
+                        </tr>
+                        [[pass]]
+                        <tr>
+                            <td></td>                            
+                            <td style="font-weight: bold;">Total:</td>
+                            <td style="font-weight: bold;text-align: right;text-decoration: underline double;text-underline-offset: 3px;">[[=f"{tot_debit:,.2f}"]]</td>
+                            <td style="font-weight: bold;text-align: right;text-decoration: underline double;text-underline-offset: 3px;"> [[=f"{tot_credit:,.2f}"]] </td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+[[end]]
+
+[[block scripts]]<!-- individual pages can add scripts here -->
+
+<script>
+    $(document).ready(function() {
+    $("#manualExcel").click(function(event) {    
+        event.preventDefault();
+
+        var branchCode = $("#branch_code").text().trim();
+        var fromDate = $("#from_date").text().trim();
+        var toDate = $("#to_date").text().trim();
+
+        $.ajax({
+            url: '[[=URL("reports", "download_trial_balance_xl")]]',
+            method: "GET",
+            dataType: 'json',
+            data: {
+                branch_code: branchCode,
+                from_date: fromDate,
+                to_date: toDate
+            },
+            success: function(data) {
+                data = data.data;
+                
+                // Specify the desired column order via the "header" option.
+                var ws = XLSX.utils.json_to_sheet(data, {
+                    header: ["AccountID", "Description", "Debit", "Credit", "OPTValue", "OPTDescription", "TRANSDATE"]
+                });
+                
+                var wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, "Trial Balance");
+                XLSX.writeFile(wb, "Trial_Balance.xlsx");
+            }
+        });
+    });
+});
+</script>
+
+
+[[end]]

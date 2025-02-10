@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <title>MK</title>
+
+
+  <style>
+    :root {
+
+      --master-primary: rgb(123, 104, 238);
+      --master-primary-active: rgb(84, 77, 201);
+      --master-primary-light: rgba(204, 201, 250);
+
+      --master-text-color: rgb(42, 46, 52);
+      --master-text-color-active: rgb(79, 87, 98);
+      --master-placeholder-color: rgb(79, 87, 98);
+
+      --master-border:rgb(232, 234, 237);
+      --master-border-active:rgb( 214, 217, 222);
+
+      --master-input-border: rgb( 214, 217, 222);
+      --master-input-border-active: rgb( 173, 179, 189 );
+      
+      --master-background: rgb(247, 248, 249);
+      /* --master-font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbo"; */
+      /* --master-font: "Poppins", sans-serif; */
+      --master-font: "Open Sans", sans-serif;;
+  
+    }
+
+  </style>
+
+  <!-- CSS CDN -->
+  <link rel="stylesheet" href="[[=URL('static','fontawesome/css/all.min.css')]]"/>
+
+  <!-- Boostrap -->
+  <link rel="stylesheet" href="[[=URL('static','css/boostrap.css')]]" />
+  <!-- Boostrap -->
+
+
+
+  <!-- select 2 -->
+  <link href="[[=URL('static','css/select2.min.css')]]" rel="stylesheet" />
+  <!-- select 2 -->
+
+  <!-- Common CSS  -->
+  <link rel="stylesheet" href="[[=URL('static','css/sidebar.css')]]" />
+  <link rel="stylesheet" href="[[=URL('static','css/style.css')]]" />
+  <link rel="stylesheet" href="[[=URL('static','css/custom_forms.css')]]" />
+  <!-- Common CSS  -->
+
+  <style>
+
+  </style>
+
+</head>
+
+<body>   
+
+
+  <div class="layout">
+    
+    
+      [[block header]]          
+      
+
+      [[end]]    
+    
+
+      <!--  -->
+      <div class="content-body">
+        
+        [[block content]]
+        
+        [[end]]
+
+      </div>
+      
+      <!--  -->
+
+    
+    
+    <!-- Modal -->
+  </div>
+  
+  <!-- Script CDN -->  
+
+  <!-- common js -->  
+  <script src="[[=URL('static','js/popper.min.js')]]"></script>  
+  <script src="[[=URL('static','js/bootstrap.min.js')]]"></script>
+  <script src="[[=URL('static','js/jquery-3.7.1.min.js')]]"></script>
+  <!-- common js -->
+
+  <!-- sweet alert js -->
+  <script src="[[=URL('static','js/sweetalert2@11.js')]]"></script>
+  <!-- sweet alert js -->
+  
+  <!-- selct2 -->
+  <script src="[[=URL('static','js/select2.min.js')]]"></script>
+  <!-- selct2 -->
+
+  <!-- Datatable -->
+    <script src="[[=URL('static','js/datatable/datatable.js')]]"></script>  
+    
+    <!-- fixed colmn -->
+    <script src="[[=URL('static','js/datatable/dataTables.fixedColumns.js')]]"></script>  
+    <script src="[[=URL('static','js/datatable/fixedColumns.dataTables.js')]]"></script>  
+    <!-- fixed colmn -->  
+    
+    <!-- Export all-->
+    <script src="[[=URL('static','js/datatable/dataTables.buttons.js')]]"></script>    
+    <script src="[[=URL('static','js/datatable/buttons.dataTables.js')]]"></script>  
+    <script src="[[=URL('static','js/datatable/jszip.min.js')]]"></script>  
+    <script src="[[=URL('static','js/datatable/pdfmake.min.js')]]"></script>  
+    <script src="[[=URL('static','js/datatable/vfs_fonts.js')]]"></script>  
+    <script src="[[=URL('static','js/datatable/buttons.html5.min.js')]]"></script>  
+    <script src="[[=URL('static','js/datatable/buttons.print.min.js')]]"></script>
+    <!-- Export all-->
+  <!-- Datatable -->
+  
+  <script src="[[=URL('static','js/script.js')]]"></script>
+  <script src="[[=URL('static','js/common.js')]]"></script>
+  <script src="[[=URL('static','js/manualxlsxexport.js')]]"></script>
+
+  <script>
+  $(document).ready(function() {
+    
+    // select2 start
+    $('.select_custom').select2({
+        dropdownParent: $("#custom_form"),
+        placeholder: "Select an option",
+        allowClear:true,
+    });
+    // select2 end
+
+    // Export datatable
+    $("#ExportExcel").on("click", function() {
+      $('.dt-buttons .buttons-excel' ).click();
+    });
+    $("#ExportExcel").on("click", function() {
+      $('.dt-buttons .buttons-excel' ).click();
+    });
+
+  });
+  </script>
+
+
+  [[block scripts]]<!-- individual pages can add scripts here -->[[end]]
+
+
+  <!-- Flash Message -->
+  [[if globals().get('flash'):]]
+  [[message_text=str(flash['message']).replace('rdrdrd', '<br>')]]
+  <script>  
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      customClass: {
+        popup: "customPopup",
+      },
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.onmouseenter = Swal.stopTimer;
+        toast.onmouseleave = Swal.resumeTimer;
+      }
+    });
+    Toast.fire({
+      icon:"[[=XML(flash['class'])]]",
+      title: "[[=XML(message_text)]]"
+    });
+  </script>
+  [[pass]]
+  <!-- Flash Message -->
+  <script>
+     cellEditable();
+  </script>
+</body>
+</html>
+
+
+

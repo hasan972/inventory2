@@ -1,0 +1,102 @@
+[[extend 'layout3.html']]
+
+[[block header]]
+
+<style>
+        .action-link {
+            margin-right: 10px; }
+</style>
+
+[[icon='fa fa-chart-line']]
+[[breadcamp = 'Reference Type']]
+[[end]]
+
+
+
+[[block content]]
+<div class="container-section">
+    
+    </div>
+    <div class="container py-2">
+        [[if role == 'ADMIN' :]]
+        [[= form.custom.begin ]]
+        <div id="custom_input">        
+            <div class="row">
+                <div class="col-3">
+                    <div class="mb-2">
+                        <label for="exampleFormControlInput1" class="form-label">Ref. Type</label>
+                        [[= form.custom.widgets['ref_type'] ]] 
+                        [[ if 'ref_type' in form.errors: ]]
+                        <div class="text-danger">[[=form.errors['ref_type']]]</div>                           
+                        [[pass]] 
+                                        
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Note</label>
+                        [[= form.custom.widgets['note'] ]]
+                        [[ if 'note' in form.errors: ]]
+                        <div class="text-danger">[[=form.errors['note']]]</div>                           
+                        [[pass]]
+                    </div>
+                </div>                  
+
+                <div class="col-md-2 col-sm-6 col-12 d-flex align-items-end">
+                    <button type="submit" class="btn btn-sm btn-primary mb-3" data-toggle="tooltip" data-placement="bottom" title="Add Ref.Type">
+                        <i class="fa-solid fa-floppy-disk"></i> <span class="ms-2">Save</span>
+                    </button>
+                </div>
+            </div>
+            
+        </div>
+        [[= form.custom.end ]]   
+        [[pass]]
+        
+        
+        <div class="row" >
+            <div class="col-6">            
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Reference Type</th>                               
+                            <th scope="col">Note</th>
+                            [[if role == 'ADMIN' :]]
+                            <th scope="col">Action</th>
+                            [[pass]]
+                        </tr>
+                    </thead>
+                    
+                    [[for row in rows:]]
+                    <tbody>
+                        <tr>
+                            <td>[[=row.id]]</td>
+                            <td>[[=row.ref_type]]</td>
+                            <td>[[=row.note]]</td>   
+                            [[if role == 'ADMIN' :]]                             
+                            
+                            <td>
+                                <a class="button action-link" href="[[=URL('ref_type','edit_ref_type', row.id)]]" data-toggle="tooltip" data-placement="bottom" title="Edit Ref. Type">  <i class="fa-regular fa-pen-to-square"></i>
+                                </a>
+
+                                <a class="button action-link delete-link" href="[[=URL('ref_type','delete_ref_type', row.ref_type)]]" data-toggle="tooltip" data-placement="bottom" title="Delete Ref. Type" onclick="return confirm('Are you sure to delete?')">
+                                    <i class="fa-solid fa-trash"></i>
+                                </a>
+                            </td>
+                            [[pass]]
+                            
+                        </tr>
+                    </tbody>
+                    
+                    [[pass]]
+                </table>
+                
+            </div>
+
+        </div>
+        
+    </div>
+
+        
+[[end]]

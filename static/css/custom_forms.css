@@ -1,0 +1,71 @@
+
+/* Form CSS:Input Customization */
+#custom_form input, #custom_form select{
+    border: 1px var(--master-input-border) solid !important;
+    border-radius: .375rem !important;
+    color: rgb( 42, 46, 52 ) !important;
+    outline: none !important;
+}
+#custom_form input[type='text'], #custom_form input[type='number'], #custom_form input[type='email'], #custom_form input[type='file'], #custom_form select{
+  width: 100%;
+  height: 1.8rem !important;
+  padding: 8px 12px !important;
+  line-height: 1.8rem;
+}
+#custom_form input[type='checkbox']{
+  height: 1rem !important;
+  padding: 8px 8px !important;
+  margin-right: 5px;
+}
+#custom_form input[type='date']{
+  width: 100%;
+  height: 1.7rem !important;
+  padding: 8px 12px !important;
+  line-height: 1.7rem;
+  font-size: .775rem;
+  color: var( --master-text-color);
+}
+
+#custom_form .select2-container{
+  width: 100%!important;
+}
+#custom_form input:hover,#custom_form select:hover {
+    border-color: var(--master-input-border-active) !important;
+}
+/* #custom_form input:focus, input:-webkit-autofill, input:-webkit-autofill:focus {
+    -webkit-box-shadow: inset 0 0 0 9999px #fff !important;
+} */
+#custom_form input:focus, #custom_form input:focus-visible {
+    border-color: rgb( 95, 85, 238 ) !important;
+    box-shadow: 0 0 0 4px rgb( 95, 85, 238 , .16) !important;
+}
+
+#custom_form .form-check{
+  display: flex;
+  align-items: center;
+}
+  
+.form-label {
+  color:var(--master-text-color);
+}
+.custom_input input, .custom_input .select2-container .select2-selection{
+  pointer-events: none;
+  background-color:rgb(240, 241, 243,.5) !important;
+}
+
+.form-check-input:disabled {
+  background-color:rgb(225, 225, 231);
+  opacity: 1;
+}
+
+/* .custom_input input.is_enable{
+  pointer-events:visible;
+  background-color:#fff!important;
+} */
+
+.custom_input input.is_enable, .custom_input .is_enable.select2-container .select2-selection{
+  pointer-events:visible;
+  background-color:#fff!important;
+}
+
+/* Input Customization end */

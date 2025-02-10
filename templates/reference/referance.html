@@ -1,0 +1,196 @@
+[[extend 'layout3.html']]
+
+[[block header]]
+
+<style>
+        .action-link {
+    margin-right: 10px; 
+}
+
+</style>
+
+[[icon='fa fa-chart-line']]
+[[breadcamp = 'Referance']]
+[[end]]
+
+
+
+[[block content]]
+<div class="container-section">
+
+    <div class="container py-2">
+        [[if role == 'ADMIN' :]]
+        [[= form.custom.begin ]]
+        <div id="custom_input">        
+            <div class="row">
+                <div class="col-1">
+                    <div class="mb-2">
+                        <label for="exampleFormControlInput1" class="form-label">Ref. Code</label>
+                        [[= form.custom.widgets['ref_code'] ]] 
+                        [[ if 'ref_code' in form.errors: ]]
+                        <div class="text-danger">[[=form.errors['ref_code']]]</div>                           
+                        [[pass]] 
+                                        
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Ref. Name</label>
+                        [[= form.custom.widgets['ref_name'] ]]
+                        [[ if 'ref_name' in form.errors: ]]
+                        <div class="text-danger">[[=form.errors['ref_name']]]</div>                           
+                        [[pass]]
+                    </div>
+                </div>
+                <div class="col-1">
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Ref. Type</label>
+                        [[= form.custom.widgets['ref_type'] ]]
+                        [[ if 'ref_type' in form.errors: ]]
+                        <div class="text-danger">[[=form.errors['ref_type']]]</div>                           
+                        [[pass]]
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Description</label>
+                        [[= form.custom.widgets['des'] ]]
+                        [[ if 'des' in form.errors: ]]
+                        <div class="text-danger">[[=form.errors['des']]]</div>                           
+                        [[pass]]
+                    </div>
+                </div>
+                <div class="col-1">
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Note</label>
+                        [[= form.custom.widgets['note'] ]]
+                        [[ if 'note' in form.errors: ]]
+                        <div class="text-danger">[[=form.errors['note']]]</div>                           
+                        [[pass]]
+                    </div>
+                </div>                
+
+                <div class="col-md-2 col-sm-6 col-12 d-flex align-items-end">
+                    <button type="submit" class="btn btn-sm btn-primary mb-3" data-toggle="tooltip" data-placement="bottom" title="Add Reference">
+                        <i class="fa-solid fa-floppy-disk"></i> <span class="ms-2">Save</span>
+                    </button>
+                </div>
+            </div>
+            
+        </div>
+        [[= form.custom.end ]] 
+        [[pass]]  
+        <br>
+
+        <div class="container py-2">
+            <form action="[[=URL('reference','new_ref')]]" method="GET" >
+                <label for="search_by" >Filter By:</label>
+                <select name="search_by" id="search_by" >
+                    <option value="ref_code" [[= 'selected' if search_by == 'ref_code' else '' ]]>Ref. Code</option>
+                    <option value="ref_name" [[= 'selected' if search_by == 'ref_name' else '' ]]>Ref. Name</option>                    
+                </select> 
+                <label for="search_term" >Search Term:</label>
+                <input type="text" name="search_term" id="search_term" value="[[=search_term]]" >
+                <button type="submit" class="btn btn-sm btn-primary me-2" data-toggle="tooltip" data-placement="bottom" title="Search Reference">Filter</button>
+                <a href="[[=URL('reference','new_ref')]]" class="btn btn-sm btn-secondary" data-toggle="tooltip" data-placement="bottom" title="Clear Search">Clear</a>
+                <a href="[[=URL('reference','download_reference')]]" class="btn btn-sm btn-secondary" data-toggle="tooltip" data-placement="bottom" title="Download Accounts"><i class="fa-solid fa-arrow-down"></i> </a>
+            </form>
+        </div>  
+
+        <div class="container py-2">
+            <p>Showing [[=start_record]] to [[=end_record]] of [[=total_records]] records</p>  
+        </div>
+        
+    
+        <div class="row" >
+            <div class="col-11">                                                   
+                   
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Ref. Code</th>
+                                <th scope="col">Ref. Name</th>
+                                <th scope="col">Description</th>
+                                <th scope="col">Type</th>
+                                <th scope="col">Note</th>
+                                [[if role == 'ADMIN' :]]           
+                                <th scope="col">Action</th>
+                                [[pass]]
+                            </tr>
+                        </thead>
+                        
+                        [[for row in rows:]]
+                        <tbody>
+                            <tr>
+                                <td>[[=row['ref_code']]]</td>
+                                <td>[[=row['ref_name']]]</td>
+                                <td>[[=row['des']]]</td>
+                                <td>[[=row['ref_type']]]</td>
+                                <td>[[=row['note']]]</td>
+                                [[if role == 'ADMIN' :]]           
+                                
+                                <td>
+                                    <a class="button action-link" href="[[=URL('reference','edit_ref', row['id'])]]" data-toggle="tooltip" data-placement="bottom" title="Edit Reference">  <i class="fa-regular fa-pen-to-square"></i>
+                                    </a>
+
+                                    <a class="button action-link delete-link" href="[[=URL('reference','delete_ref', row['ref_code'])]]" data-toggle="tooltip" data-placement="bottom" title="Delete Reference" onclick="return confirm('Are you sure to delete?')">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </a>
+                                </td>
+                                [[pass]]
+                                
+                            </tr>
+                        </tbody>
+                        
+                        [[pass]]                       
+
+                    </table>
+                    <!-- Pagination Controls -->
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination">
+                            [[if page > 1:]]
+                            <li class="page-item">
+                                <a class="page-link" href="[[=URL('reference','new_ref', vars=dict(page=page-1))]]" aria-label="Previous">
+                                    <span aria-hidden="true">«</span>
+                                </a>
+                            </li>
+                            [[pass]]
+
+                            [[if page > 6:]]
+                            <li class="page-item">
+                                <a class="page-link" href="[[=URL('reference','new_ref', vars=dict(page=1))]]">1</a>
+                            </li>
+                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                            [[pass]]
+
+                            [[for p in range(max(1, page-5), min(total_pages+1, page+5)):]]
+                            <li class="page-item [[= 'active' if p == page else '']]">
+                                <a class="page-link" href="[[=URL('reference','new_ref', vars=dict(page=p))]]">[[=p]]</a>
+                            </li>
+                            [[pass]]
+
+                            [[if page < total_pages - 5:]]
+                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                            <li class="page-item">
+                                <a class="page-link" href="[[=URL('reference','new_ref', vars=dict(page=total_pages))]]">[[=total_pages]]</a>
+                            </li>
+                            [[pass]]
+
+                            [[if page < total_pages:]]
+                            <li class="page-item">
+                                <a class="page-link" href="[[=URL('reference','new_ref', vars=dict(page=page+1))]]" aria-label="Next">
+                                    <span aria-hidden="true">»</span>
+                                </a>
+                            </li>
+                            [[pass]]
+                        </ul>
+                    </nav>
+                
+            </div>
+
+        </div>
+        
+    </div>
+
+        
+[[end]]

@@ -1,0 +1,124 @@
+[[extend 'layout3.html']]
+
+[[block header]]
+
+<style>
+    .action-link {
+    margin-right: 10px; 
+}
+</style>
+
+[[icon='fa fa-chart-line']]
+[[breadcamp = 'Branch']]
+[[end]]
+
+
+
+[[block content]]
+<div class="container-section">    
+
+    <div class="container py-2">
+        <!-- currently new branch adding feature is disabled, replace nonADMIN with  ADMIN to enalbe again -->
+        [[if role == 'nonADMIN' :]]
+        [[= form.custom.begin ]]
+        <div id="custom_input">        
+            <div class="row">
+                <div class="col-2">
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label" >Branch Code</label>
+                        [[= form.custom.widgets['branch_code'] ]]   
+                        [[ if 'branch_code' in form.errors: ]]
+                        <div class="text-danger">[[=form.errors['branch_code']]]</div>                           
+                        [[pass]]                      
+                    </div>
+                </div>
+                
+                <div class="col-2">
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Branch Name</label>
+                        [[= form.custom.widgets['branch_name'] ]]   
+                        [[ if 'branch_name' in form.errors: ]]
+                        <div class="text-danger">[[=form.errors['branch_name']]]</div>                           
+                        [[pass]]                      
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Address</label>
+                        [[= form.custom.widgets['address'] ]]
+                        [[ if 'address' in form.errors: ]]
+                        <div class="text-danger">[[=form.errors['address']]]</div>                           
+                        [[pass]] 
+                    </div>
+                </div>
+                <div class="col-1">
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Note</label><br>
+                        [[= form.custom.widgets['note'] ]]
+                        [[ if 'note' in form.errors: ]]
+                        <div class="text-danger">[[=form.errors['note']]]</div>                           
+                        [[pass]]
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-6 col-12 d-flex align-items-end">
+                    <button type="submit" class="btn btn-sm btn-primary mb-3" data-toggle="tooltip" data-placement="bottom" title="Add Branch">
+                        <i class="fa-solid fa-floppy-disk"></i> <span class="ms-2">Save</span>
+                    </button>
+                </div>
+            </div>
+            
+        </div>
+        [[= form.custom.end ]]
+        [[pass]]   
+
+        <br>
+        
+        <div class="row" >
+            <div class="col-10">
+                                  
+                   
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Branch Code</th>
+                                <th scope="col">Branch Name</th>
+                                <th scope="col">Address</th>  
+                                [[if role == 'ADMIN':]]                              
+                                <th scope="col">Action</th>
+                                [[pass]]
+                            </tr>
+                        </thead>
+                        
+                        [[for row in rows:]]
+                        <tbody>
+                            <tr>
+                                <td>[[=row['branch_code']]]</td>
+                                <td>[[=row['branch_name']]]</td>
+                                <td>[[=row['address']]]</td>  
+                                [[if role == 'ADMIN':]]                              
+
+                                <td>
+                                    <a class="button action-link" href="[[=URL('branch','edit_branch',row['id'])]]" data-toggle="tooltip" data-placement="bottom" title="Edit Branch">   <i class="fa-regular fa-pen-to-square"></i> </a>
+            
+                                    <a class="button action-link delete-link" data-toggle="tooltip" data-placement="bottom" title="Delete Branch" href="[[=URL('branch','delete_branch', row['branch_code'])]]" onclick="return confirm('Are you sure to delete?')">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </a>
+                                </td>
+                                [[pass]]
+                                
+                            </tr>
+                        </tbody>
+                        
+                        [[pass]]
+
+                        
+
+                    </table>
+                
+            </div>
+
+        </div>
+        
+    </div>    
+
+[[end]]

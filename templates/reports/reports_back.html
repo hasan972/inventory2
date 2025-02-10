@@ -1,0 +1,473 @@
+[[extend 'layout3.html']]
+
+[[block header]]
+
+[[icon='fa fa-chart-line']]
+[[breadcamp = 'Reports']]
+<style>
+    .form-container {
+        max-width: 600px;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+    }
+    .form-group {
+        margin-bottom: 15px;
+    }
+    .btn-group {
+        display: flex;
+        flex-direction: column;
+    }
+    .btn-group button {
+        margin-bottom: 10px;
+    }
+
+    li{
+        list-style: none;
+        cursor: pointer;
+    }
+    ul.suggestion-list-cd {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        
+        }
+
+
+    .suggestions-cd {
+        display: block; 
+        background: #eee;
+        position: absolute;               
+        z-index: 1000; /* Add this line to make sure the suggestion list is on top */
+        
+        
+    }
+    ul.suggestion-list-rf {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        
+        }
+
+
+    .suggestions-rf {
+        display: block; 
+        background: #eee;
+        position: absolute;               
+        z-index: 1000; /* Add this line to make sure the suggestion list is on top */
+        
+        
+    }
+</style>
+[[end]]
+
+[[block content]]
+<br>
+<div class="form-container">
+    <form id="reports-form" method="post" target="_blank">
+        <div class="form-group">
+            <label for="from_date">From Date</label>
+            <input type="date" class="form-control" id="from_date" name="from_date" required>
+        </div>
+        <div class="form-group">
+            <label for="to_date">To Date</label>
+            <input type="date" class="form-control" id="to_date" name="to_date" required>
+        </div>
+        <div class="form-group">
+            <label for="branch">Branch</label>
+            <select class="form-control" id="branch" name="branch" required>
+                [[if user_branch_code != 99:]]
+                <option value="[[=branch_diabled]]">[[=branch_diabled]]</option>
+                [[else:]]
+                <option value="">Select Branch</option>
+                [[for branch in branch_names:]]
+                <option value="[[=branch[0]]]">[[=branch[0]]]</option>
+                [[pass]]
+                [[pass]]
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="account_code">Account</label>
+            <input type="text" class="form-control" id="account_code" name="account_code" autocomplete="off">
+            <div class="suggestions-cd mt-2">
+                <ul class="suggestion-list-cd list-group" id="dropdata-cd">
+                    <!-- suggestions will be displayed here -->
+                </ul>
+            </div>
+            <input type="hidden" class="form-control" id="account" name="account" >           
+            
+        </div>
+        <div class="form-group">
+            <label for="ref_type">Ref. Type</label>
+            <select id="ref_type" name="ref_type" class = "form-control">
+                [[for rf in ref_type:]]
+                <option value="[[=rf[0]]]">[[=rf[0]]]</option>    
+                [[pass]]                        
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="ref_code">Reference</label>
+            <input type="text" class="form-control" id="ref_code" name="ref_code" autocomplete="off">
+            <div class="suggestions-rf mt-2">
+                <ul class="suggestion-list-rf list-group" id="dropdata-rf">
+                    <!-- suggestions will be displayed here -->
+                </ul>
+            </div>
+           
+            <input type="hidden" class="form-control" id="ref" name="ref" >
+
+        </div>
+        
+        <div class="btn-group">
+            <button type="button" class="btn btn-primary" id="report1-btn">Trial Balance (Details)</button>
+            <button type="button" class="btn btn-primary" id="report2-btn">Trial Balance (Summary)</button>
+            <button type="button" class="btn btn-primary" id="report3-btn">Transaction Listing</button>
+            <button type="button" class="btn btn-primary" id="report4-btn">Receipt-Payment (Details)</button>
+            <button type="button" class="btn btn-primary" id="report5-btn">Receipt-Payment (Summary)</button>
+            <button type="button" class="btn btn-primary" id="report6-btn">Reference</button>
+        </div>
+    </form>
+</div>
+
+[[end]]
+
+
+[[block scripts]]
+<script>
+    $(document).ready(function() {
+        function validateDateRange() {
+            // Get the dates from the input fields
+            const fromDate = new Date($('#from_date').val());
+            const toDate = new Date($('#to_date').val());
+
+            // Check if the to_date is earlier than the from_date
+            if (toDate < fromDate) {
+                alert("To Date cannot be earlier than From Date.");
+                return false; // Prevent form submission
+            }
+
+            // Calculate the difference in days
+            const timeDifference = toDate - fromDate;
+            const dayDifference = timeDifference / (1000 * 60 * 60 * 24);
+
+            // Check if the difference exceeds 31 days
+            if (dayDifference > 31) {
+                // alert("The interval between From Date and To Date should not be more than 31 days.");
+                Swal.fire({
+                        title: "Invalid Date Range",
+                        text: "The interval between From Date and To Date should not be more than 31 days.",
+                        icon: "error"
+                    });
+                return false; // Prevent form submission
+            }
+            return true; // Allow form submission
+        }
+        // trial balance details
+        $("#report1-btn").click(function() {
+            var branch = $('#branch').val()
+            if($("#to_date").val() == "") {
+                // alert("Please select To Date");     
+                Swal.fire({
+                        title: "Invalid Date",
+                        text: "Please select To Date",
+                        icon: "error"
+                    });           
+            }
+            else if(branch == 'Select Branch' || branch=='') {
+                // alert("Please select branch");
+                Swal.fire({
+                        title: "Invalid Branch",
+                        text: "Please select branch",
+                        icon: "error"
+                    });   
+            }
+            else if(!validateDateRange()) {
+                return;
+            }
+            else {
+                $("#reports-form").attr("action", "[[=URL('reports','trial_balance_1')]]");
+                $("#reports-form").submit();
+            }     
+        });
+        
+        // trial balance summary
+        $("#report2-btn").click(function() {
+            var branch = $('#branch').val()
+            if($("#from_date").val() == "") {
+                // alert("Please select From Date");
+                Swal.fire({
+                        title: "Invalid Date",
+                        text: "Please select From Date",
+                        icon: "error"
+                    });   
+                
+            }            
+            else if ($("#to_date").val() == "") {
+                // alert("Please select To Date");
+                Swal.fire({
+                        title: "Invalid Date",
+                        text: "Please select To Date",
+                        icon: "error"
+                    });  
+            }
+            else if(branch == 'Select Branch' || branch=='') {
+                // alert("Please select branch");
+                Swal.fire({
+                        title: "Invalid Branch",
+                        text: "Please select branch",
+                        icon: "error"
+                    }); 
+            }
+            else if(!validateDateRange()) {
+                return;
+            }
+            else {
+                $("#reports-form").attr("action", "[[=URL('reports','trial_balance_2')]]");
+                $("#reports-form").submit();
+            }
+
+            
+        });
+
+        // transactionlisting 
+        $("#report3-btn").click(function() {
+            if($("#from_date").val() == "") {
+                // alert("Please select From Date");
+                Swal.fire({
+                        title: "Invalid Date",
+                        text: "Please select From Date",
+                        icon: "error"
+                    }); 
+            }            
+            else if ($("#to_date").val() == "") {
+                // alert("Please select To Date");
+                Swal.fire({
+                        title: "Invalid Date",
+                        text: "Please select To Date",
+                        icon: "error"
+                    }); 
+            }
+            else if ($("#account").val() == "") {
+                // alert("Please Select Account");
+                Swal.fire({
+                        title: "Invalid Account",
+                        text: "Please Select Account",
+                        icon: "error"
+                    }); 
+            }
+            else if(!validateDateRange()) {
+                return;
+            }
+            else {
+                $("#reports-form").attr("action", "[[=URL('reports','transaction_listing')]]");
+                $("#reports-form").submit();
+            }
+            
+        });
+
+        // receipt-payment 
+        $("#report4-btn").click(function() {
+            var branch = $('#branch').val()
+            // var branch = $('#branch').val()
+            if($("#from_date").val() == "") {
+                // alert("Please select From Date");
+                Swal.fire({
+                        title: "Invalid Date",
+                        text: "Please select From Date",
+                        icon: "error"
+                    }); 
+                
+            }            
+            else if ($("#to_date").val() == "") {
+                // alert("Please select To Date");
+                Swal.fire({
+                        title: "Invalid Date",
+                        text: "Please select To Date",
+                        icon: "error"
+                    }); 
+            }
+            else if(branch == 'Select Branch' || branch=='') {
+                // alert("Please select branch");
+                Swal.fire({
+                        title: "Invalid Branch",
+                        text: "Please select branch",
+                        icon: "error"
+                    }); 
+            }
+            else if(!validateDateRange()) {
+                return;
+            }
+            else {
+                $("#reports-form").attr("action", "[[=URL('reports','rcp_pay')]]");
+                $("#reports-form").submit();
+            }
+            
+        });
+
+        // receipt-paymen summary 
+        $("#report5-btn").click(function() {
+            var branch = $('#branch').val()
+            // var branch = $('#branch').val()
+            if($("#from_date").val() == "") {
+                // alert("Please select From Date");
+                Swal.fire({
+                        title: "Invalid Date",
+                        text: "Please select From Date",
+                        icon: "error"
+                    }); 
+                
+            }            
+            else if ($("#to_date").val() == "") {
+                // alert("Please select To Date");
+                Swal.fire({
+                        title: "Invalid Date",
+                        text: "Please select To Date",
+                        icon: "error"
+                    }); 
+            }
+            else if(branch == 'Select Branch' || branch=='') {
+                // alert("Please select branch");
+                Swal.fire({
+                        title: "Invalid Branch",
+                        text: "Please select branch",
+                        icon: "error"
+                    }); 
+            }
+            else if(!validateDateRange()) {
+                return;
+            }
+            else {
+                $("#reports-form").attr("action", "[[=URL('reports','rcp_pay_sum')]]");
+                $("#reports-form").submit();
+            }
+            
+        });
+
+        // ref details
+        $("#report6-btn").click(function() {
+            if($("#from_date").val() == "") {
+                Swal.fire({
+                        title: "Invalid Date",
+                        text: "Please select From Date",
+                        icon: "error"
+                    }); 
+            }            
+            else if ($("#to_date").val() == "") {
+                Swal.fire({
+                        title: "Invalid Date",
+                        text: "Please select To Date",
+                        icon: "error"
+                    }); 
+            }
+            // else if ($("#account").val() == "") {
+            //     Swal.fire({
+            //             title: "Invalid Account",
+            //             text: "Please Select Account",
+            //             icon: "error"
+            //         }); 
+            // }
+            else if(!validateDateRange()) {
+                return;
+            }
+            else {
+                $("#reports-form").attr("action", "[[=URL('reports','ref_details')]]");
+                $("#reports-form").submit();
+            }
+            
+        });
+
+        // autofill suggestion for account code
+        $('#account_code').on('input', function() {        
+            var query = $(this).val(); 
+            var selectedText = $('#branch').val();
+            var parts = selectedText.split('-');
+            branch_code= parts[0];
+            // console.log(parts[0]);               
+            if (query.length >= 3) {
+                $.ajax({
+                    url: '[[=URL("fetch_account_code_voucher_detail")]]',
+                    data: {term: query, v_branch_code: branch_code},
+                    success: function(data) {
+                        var suggestions = JSON.parse(data);
+                        var dropdown = $('#dropdata-cd');
+                        dropdown.empty(); 
+                        $.each(suggestions, function(index, value) {
+                            dropdown.append('<li class="list-group-item suggestion-item">' + value + '</li>');
+                        });
+                        $('.suggestions-cd').show();
+                    }
+                });
+            } else {
+                $('.suggestions-cd').hide(); 
+        }
+    });
+
+    //click on a suggestion
+    $(document).on('click', '.suggestion-item', function() {
+        var selectedText = $(this).text();
+        var parts = selectedText.split('|');        
+        $('#account_code').val(selectedText); 
+        $('#account').val(parts[0]); 
+        $('.suggestions-cd').hide();
+        
+    });
+    // click outside
+    $(document).click(function(e) {
+        if (!$(e.target).closest('.suggestions-cd, #account_code').length) {
+            $('.suggestions-cd').hide();
+        }
+    });
+        // autofill suggestion for ref code / ref name
+        $('#ref_code').on('input', function() {        
+            var query = $(this).val(); 
+            var ref_type = $('#ref_type').val();
+            // console.log(ref_type);
+            
+            // console.log(ref_type);               
+            if (query.length >= 3) {
+                // console.log(query)
+                $.ajax({
+                    url: '[[=URL("fetch_reference")]]',
+                    data: {term: query, r_type: ref_type},
+                    success: function(data) {
+                        var suggestions = JSON.parse(data);
+                        var dropdown = $('#dropdata-rf');
+                        dropdown.empty(); 
+                        $.each(suggestions, function(index, value) {
+                            dropdown.append('<li class="list-group-item suggestion-item-rf">' + value + '</li>');
+                        });
+                        $('.suggestions-rf').show();
+                    }
+                });
+            } else if(query.length == 0){
+                $('#ref').val('');
+            }
+            else {
+                $('.suggestions-rf').hide(); 
+                
+        }
+    });
+
+    //click on a ref suggestion
+    $(document).on('click', '.suggestion-item-rf', function() {
+        var selectedText = $(this).text();
+        var parts = selectedText.split('|');        
+        $('#ref_code').val(selectedText); 
+        $('#ref').val(parts[0]); 
+        $('.suggestions-rf').hide();
+        
+    });
+    // click ref outside
+    $(document).click(function(e) {
+        if (!$(e.target).closest('.suggestions-rf, #ref_code').length) {
+            $('.suggestions-rf').hide();
+        }
+    });
+
+});
+    </script>
+[[end]]
+
+

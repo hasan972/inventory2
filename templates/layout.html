@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MK</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+
+      --master-primary: #800000;
+      --master-primary-active: #800000;
+      --master-primary-light: rgba(204, 201, 250);
+
+
+      --master-text-color: rgb(42, 46, 52);
+      --master-text-color-active: rgb(79, 87, 98);
+      --master-placeholder-color: rgb(79, 87, 98);
+
+      --master-border:rgb(232, 234, 237);
+      --master-border-active:rgb( 214, 217, 222);
+
+      --master-input-border: rgb( 214, 217, 222);
+      --master-input-border-active: rgb( 173, 179, 189 );
+      
+      --master-background: rgb(247, 248, 249);
+      /* --master-font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbo"; */
+      /* --master-font: "Poppins", sans-serif; */
+      --master-font: "Open Sans", sans-serif;;
+  
+    }
+
+  </style>
+
+  <!-- CSS CDN -->
+  <link rel="stylesheet" href="[[=URL('static','fontawesome/css/all.min.css')]]"/>
+
+  <!-- Boostrap -->
+  <link rel="stylesheet" href="[[=URL('static','css/boostrap.css')]]" />
+  <!-- Boostrap -->
+
+  <!-- Datatable -->
+  <link rel="stylesheet" href="[[=URL('static','css/datatable/datatable.css')]]" />
+  <link href="[[=URL('static','css/datatable/buttons.dataTables.css')]]" rel="stylesheet">
+
+  <!-- fixed colmn -->
+  <link href="[[=URL('static','css/datatable/fixedColumns.dataTables.css')]]" rel="stylesheet">
+  <!-- fixed colmn -->
+  <!-- Datatable end-->
+
+  <!-- select 2 -->
+  <link href="[[=URL('static','css/select2.min.css')]]" rel="stylesheet" />
+  <!-- select 2 -->
+
+  <!-- Common CSS  -->
+  <link rel="stylesheet" href="[[=URL('static','css/sidebar.css')]]" />
+  <link rel="stylesheet" href="[[=URL('static','css/style.css')]]" />
+  <link rel="stylesheet" href="[[=URL('static','css/custom_forms.css')]]" />
+  <!-- Common CSS  -->
+
+  <style>
+    :focus-visible { outline: -webkit-focus-ring-color auto 0px; 
+    }
+    textarea::placeholder {
+      color: var(--master-placeholder-color) !important;
+      font-family: var(--master-font) !important;
+      font-weight: 400 !important;
+
+    }
+ 
+::placeholder {
+  font-family: var(--master-font) !important;
+  color: var(--master-placeholder-color) !important;
+  font-size: 0.775rem !important;
+  font-weight: 400 !important;
+}
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active{
+  -webkit-text-fill-color: var(--master-text-color);
+  -webkit-box-shadow: 0 0 0px 1000px #fff inset;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+
+
+
+
+  </style>
+
+</head>
+
+<body>
+  <div style="height: 40px;background: #323452;position: fixed; width: 100%;">
+    <div class="d-flex align-items-center justify-content-between mx-3" style="height: 100%;">
+      <!-- <div class="bg-white ms-1">
+        <img src="[[=URL('static','tsmall.png')]]" width="20" height="20" alt="">
+      </div> -->
+      <div class="bg-white ms-1">
+        
+      </div>
+      <div>
+        <div class="avatar-container">
+          <a href="[[=URL('logout')]]">
+            <div class="avatar" id="profile_button">
+              <i class="fa-regular fa-user"></i>
+            </div>
+          </a>
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
+  <div class="layout has-sidebar fixed-sidebar fixed-header" style="padding-top: 40px;">
+
+    <div id="overlay" class="overlay"></div>
+    <div class="layout">
+      <main class="content">
+       
+        [[block header]]
+        <!-- individual pages can customize header here -->
+        [[icon='fa fa-home']]
+        [[breadcamp='']]
+
+        [[end]]
+        [[include 'header.html']]
+      
+
+        <!--  -->
+        <div class="content-body">
+          
+          [[block content]]
+
+          [[end]]
+        </div>
+
+        [[block footer]]
+
+        
+        [[end]]
+        [[include 'footer.html']]
+    
+        <!--  -->
+
+      </main>
+      <div class="overlay"></div>
+      <!-- Modal -->
+    </div>
+  </div>
+  <div class="modal" id="staticBackdrop" tabindex="-1">
+    <div style="height: 40px; background: #323452; position: fixed; width: 100%; z-index: 1000;">
+    <div class="d-flex align-items-center justify-content-between mx-3" style="height: 100%;">
+      <!-- Left: Logo -->
+      <div class="bg-white ms-1">
+        <img src="[[=URL('static', 'tsmall.png')]]" width="20" height="20" alt="">
+      </div>
+
+      <div style="width: 80%;">        
+        <div class="text-white mx-3" >
+          <span id="user-name" class="me-3"></span>          
+        </div>    
+      </div>
+      <div>        
+        <div class="text-white mx-3" >
+          <span id="user-name" class="me-3"> Branch: [[=branch_name]]</span>          
+        </div>
+    
+      </div>
+  
+      <!-- Center: User Name and Branch -->
+      <div class="text-white mx-3">
+        <span id="user-name" class="me-3">[[=user]]</span>
+        
+      </div>
+  
+      <!-- Right: Profile Dropdown -->
+      <div>
+        <div>
+          <button class="btn btn-primary btn-sm btn-circle" type="button" aria-haspopup="true" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fa-regular fa-user"></i>
+          </button>
+          <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" href="#"><i class="fa-solid fa-user me-1"></i> Profile</a>
+            <a class="dropdown-item" href="[[=URL('change_password')]]"><i class="fa-solid fa-user-gear me-1"></i> Change Password</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="[[=URL('logout')]]"><i class="fas fa-sign-out-alt me-1"></i> Logout</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Script CDN -->  
+
+  <!-- common js -->  
+  <script src="[[=URL('static','js/popper.min.js')]]"></script>  
+  <script src="[[=URL('static','js/bootstrap.min.js')]]"></script>
+  <script src="[[=URL('static','js/jquery-3.7.1.min.js')]]"></script>
+  <!-- common js -->
+
+  <!-- sweet alert js -->
+  <script src="[[=URL('static','js/sweetalert2@11.js')]]"></script>
+  <!-- sweet alert js -->
+  
+  <!-- selct2 -->
+  <script src="[[=URL('static','js/select2.min.js')]]"></script>
+  <!-- selct2 -->
+
+  <!-- Datatable -->
+    <script src="[[=URL('static','js/datatable/datatable.js')]]"></script>  
+    
+    <!-- fixed colmn -->
+    <script src="[[=URL('static','js/datatable/dataTables.fixedColumns.js')]]"></script>  
+    <script src="[[=URL('static','js/datatable/fixedColumns.dataTables.js')]]"></script>  
+    <!-- fixed colmn -->  
+    
+    <!-- Export all-->
+    <script src="[[=URL('static','js/datatable/dataTables.buttons.js')]]"></script>    
+    <script src="[[=URL('static','js/datatable/buttons.dataTables.js')]]"></script>  
+    <script src="[[=URL('static','js/datatable/jszip.min.js')]]"></script>  
+    <script src="[[=URL('static','js/datatable/pdfmake.min.js')]]"></script>  
+    <script src="[[=URL('static','js/datatable/vfs_fonts.js')]]"></script>  
+    <script src="[[=URL('static','js/datatable/buttons.html5.min.js')]]"></script>  
+    <script src="[[=URL('static','js/datatable/buttons.print.min.js')]]"></script>
+    <!-- Export all-->
+  <!-- Datatable -->
+  
+  <script src="[[=URL('static','js/script.js')]]"></script>
+  <script src="[[=URL('static','js/common.js')]]"></script>
+  <script src="[[=URL('static','js/manualxlsxexport.js')]]"></script>
+
+  <script>
+  $(document).ready(function() {
+    
+    // select2 start
+    $('.select_custom').select2({
+        dropdownParent: $("#custom_form"),
+        placeholder: "Select an option",
+        allowClear:true,
+    });
+    // select2 end
+
+    // Export datatable
+    $("#ExportExcel").on("click", function() {
+      $('.dt-buttons .buttons-excel' ).click();
+    });
+    $("#ExportExcel").on("click", function() {
+      $('.dt-buttons .buttons-excel' ).click();
+    });
+
+  });
+  </script>
+
+
+  [[block scripts]]<!-- individual pages can add scripts here -->[[end]]
+
+
+  <!-- Flash Message -->
+  [[if globals().get('flash'):]]
+  [[message_text=str(flash['message']).replace('rdrdrd', '<br>')]]
+  <script>  
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      customClass: {
+        popup: "customPopup",
+      },
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.onmouseenter = Swal.stopTimer;
+        toast.onmouseleave = Swal.resumeTimer;
+      }
+    });
+    Toast.fire({
+      icon:"[[=XML(flash['class'])]]",
+      title: "[[=XML(message_text)]]"
+    });
+  </script>
+  [[pass]]
+  <!-- Flash Message -->
+  <script>
+     cellEditable();
+  </script>
+
+</body>
+
+</html>

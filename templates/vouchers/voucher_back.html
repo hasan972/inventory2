@@ -1,0 +1,292 @@
+[[extend 'layout3.html']]
+
+[[block header]]
+
+<style>
+.voucher-head {
+        display: none;
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin-top: 20px;
+    }
+
+    .hidden-part {
+        display: block;
+    }
+
+    .container-section {
+        padding: 20px;
+    }
+
+    .form-section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        font-weight: bold;
+    }
+
+    #next.btn-primary {
+        margin-top: 32px;
+    }
+
+</style>
+
+[[icon='fa fa-chart-line']]
+[[breadcamp = 'Voucher']]
+[[end]]
+
+
+
+[[block content]]
+<div class="container-section">
+    [[if role == 'EDITOR' :]]
+    <div class="form-section-header">
+        
+        <div class="p-1">
+            <button type="button" class="btn btn-sm btn-secondary" onclick="openForm()">
+                <i class="fa-solid fa-plus"></i> <span class="ms-2">Create Voucher</span>
+            </button>
+        </div>
+        
+
+        
+    </div>
+    [[pass]]
+
+    <div class="voucher-head" id="vhead">
+        <div>
+            <form id="voucherForm" method="POST">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label for="v_date" class="form-label">Voucher Date</label>
+                            <input class="form-control form-control-sm date" id="v_date" name="v_date" type="date" value="[[=today]]" readonly="true" />
+                            <span class="text-danger" id="v_date_error"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="narration" class="form-label">Narration</label>
+                            <input class="form-control form-control-sm select-custom" id="narration" name="narration" type="text" value=""/>
+                            <span class="text-danger" id="narration_error"></span>
+                           
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="mb-3">
+                            <label for="v_type" class="form-label">Select Type</label>
+                            <select class="form-control form-control-sm select-custom" id="v_type" name="v_type">
+                                <option value=""></option>
+                                <option value="Journal">Journal</option>
+                                <option value="Contra">Contra</option>
+                                <option value="Payment">Payment</option>
+                                <option value="Receive">Receive</option>
+                            </select>
+                            <span class="text-danger" id="v_type_error"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="mb-3">
+                            <label for="branch_name" class="form-label">Select Branch</label>
+                            <select name="branch_name" id="branch_name" class="form-control form-control-sm">
+                                [[if user_branch_code!=99:]]
+                                <option value="[[=branch_disabled]]">[[=branch_disabled]]</option>
+                                [[else:]]
+                                <option value="">Select Branch</option>
+                                [[ for branch in branch_names: ]]
+                                <option value="[[=branch[0]]]">[[=branch[0]]]</option>
+                                [[ pass ]]
+                                [[pass]]
+                            </select>
+                            <span class="text-danger" id="branch_name_error"></span>                     
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary" id="next">
+                            <i class="fa-solid fa-arrow-right"></i> <span class="ms-2">Next</span>
+                        </button>
+                    </div>
+                </div>
+                
+            </form>
+        </div>
+    </div>
+
+
+        
+    <div class="row" >
+        <div class="col-11">
+            <p>Showing [[=start_voucher]] to [[=end_voucher]] of [[=total_records]] vouchers</p>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Voucher No.</th>
+                        <th scope="col">Narration</th>                            
+                        <th scope="col">Voucher Type</th>                            
+                        <th scope="col">Total</th>
+                        <th scope="col">Voucher Date</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                
+                [[for row in rows:]]
+                <tbody>
+                    <tr>
+                        <td>[[=row['sl']]]</td>
+                        <td>[[=row['narration']]]</td>                            
+                        <td>[[=row['v_type']]]</td>                            
+                        <td>[[=row['total_amount']]]</td>
+                        <td>[[=row['v_date']]]</td>
+                        <td> 
+                            [[if row['status'] == 'POSTED':]]
+                            <span class="badge badge-success">[[=row['status']]]</span>
+                            [[elif row['status'] == 'CANCEL':]]
+                            <span class="badge badge-secondary">[[=row['status']]]</span>
+                            [[elif row['status'] == 'DRAFT':]]
+                            <span class="badge badge-danger">[[=row['status']]]</span>
+                            [[else:]]
+                            <span class="badge badge-info">[[=row['status']]]</span>
+                            [[pass]]
+                        </td>
+                        <td>
+                            <a class="button" href="[[=URL('vouchers','edit_voucher',row['sl'])]]" ><i class="fa-regular fa-pen-to-square"></i></a> </t>     
+                                                        
+                        </td>
+                        
+                    </tr>
+                </tbody>
+                
+                [[pass]]
+                
+
+            </table>
+            
+            <!-- Pagination Controls -->
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    [[if page > 1:]]
+                    <li class="page-item">
+                        <a class="page-link" href="[[=URL('vouchers','voucher', vars=dict(page=page-1))]]" aria-label="Previous">
+                            <span aria-hidden="true">«</span>
+                        </a>
+                    </li>
+                    [[pass]]
+                    [[for p in range(1, total_pages + 1):]]
+                    <li class="page-item [[= 'active' if p == page else '']]">
+                        <a class="page-link" href="[[=URL('vouchers','voucher', vars=dict(page=p))]]">[[=p]]</a>
+                    </li>
+                    [[pass]]
+                    [[if page < total_pages:]]
+                    <li class="page-item">
+                        <a class="page-link" href="[[=URL('vouchers','voucher', vars=dict(page=page+1))]]" aria-label="Next">
+                            <span aria-hidden="true">»</span>
+                        </a>
+                    </li>
+                    [[pass]]
+                </ul>
+            </nav>
+        </div>          
+            
+    </div>
+
+        
+        
+    
+
+        
+[[end]]
+
+[[block scripts]]
+<script>
+
+ function openForm() {
+            const formElement = $("#vhead");
+        if (formElement.css("display") === "none") {
+            formElement.css("display", "block"); 
+        } else {
+            formElement.css("display", "none"); 
+    }    
+}
+    $("#createVoucherBtn").click(function(){
+        openForm();
+    });
+
+    $("#branch_name").change(function() {    
+    var selectedText = $(this).val();  
+    var parts = selectedText.split('-');
+    var branch_code= parts[0]
+    $('#ac_voucher_head_branch_code').val(branch_code);
+    $.ajax({
+        url: '[[=URL("get_sl")]]', // Replace with your endpoint
+        method: 'GET',
+        data: { q: branch_code },
+        dataType: 'json',
+        success: function(data) {
+            console.log(data['newsl'])            
+            $("#ac_voucher_head_sl").val(data['newsl']);
+            
+          }
+    }); 
+}) ;
+
+$(document).ready(function() {
+    $("#voucherForm").on("submit", function(event) {
+        event.preventDefault(); // Prevents form submission if there are errors
+        let isValid = true;
+
+        // Clear previous error messages
+        $(".text-danger").text("");
+
+        // Validate Voucher Date
+        const v_date = $("#v_date").val();
+        if (!v_date) {
+            $("#v_date_error").text("Please select a date.");
+            isValid = false;
+        }
+
+        // Validate Narration
+        const narration = $("#narration").val().trim();
+        if (!narration) {
+            $("#narration_error").text("Please enter narration.");
+            isValid = false;
+        }
+
+        // Validate Voucher Type
+        const v_type = $("#v_type").val();
+        if (!v_type) {
+            $("#v_type_error").text("Please select voucher type.");
+            isValid = false;
+        }
+
+        // Validate Branch Name
+        const branch_name = $("#branch_name").val();
+        if (!branch_name) {
+            $("#branch_name_error").text("Please select branch.");
+            isValid = false;
+        }
+
+        // Submit form if validation passes
+        if (isValid) {
+            this.submit();
+        }
+    });
+});
+
+</script>
+
+[[end]]
+
+

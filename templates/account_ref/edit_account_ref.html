@@ -1,0 +1,75 @@
+[[extend 'layout3.html']]
+
+[[block header]]
+[[icon='fa fa-chart-line']]
+[[breadcamp = 'Edit Accounts-Reference']]
+[[end]]
+
+[[block content]]
+
+<div class="container py-5">
+    <div id="custom_input">
+        <div class="col-3">
+            [[=form]]
+        </div>
+        
+    </div>
+    
+</div>
+[[end]]
+
+[[block scripts]]
+<script>
+    $(document).ready(function() {
+        var errorElement = $('.py4web-validation-error');
+            if (errorElement.length) {
+                // Change the class to 'text-danger'
+                errorElement.removeClass('py4web-validation-error').addClass('text-danger');
+            }
+    
+        $('#ac_account_ref_account_code').on('input', function() {
+            var query = $(this).val();
+            if (query.length >= 3) {
+                $.ajax({
+                    url: '[[=URL("fetch_account_info")]]',
+                    data: {term: query},
+                    success: function(data) {
+                        var suggestions = JSON.parse(data);
+                        var dropdown = $('#dropdata');
+                        dropdown.empty(); // Clear previous suggestions
+                        $.each(suggestions, function(index, value) {
+                            dropdown.append('<li class="list-group-item suggestion-item">' + value + '</li>');
+                        });
+                        $('.suggestions').show();
+                    }
+                });
+            } else {
+                $('.suggestions').hide(); // Hide suggestions if fewer than 3 characters
+            }
+        });
+
+    // Handle click on a suggestion
+    $(document).on('click', '.suggestion-item', function() {
+        var selectedText = $(this).text();
+        var parts = selectedText.split('|');
+        $('#ac_account_ref_account_code').val(parts[0]); // Set the account_name
+        $('#ac_account_ref_account_name').val(parts[1]); // Set the account_code (assuming you have an input with this id)
+        $('.suggestions').hide();
+        
+    });
+
+    // Hide suggestions when clicking outside
+    $(document).click(function(e) {
+        if (!$(e.target).closest('.suggestions, #ac_account_ref_account_name').length) {
+            $('.suggestions').hide();
+        }
+    });
+
+});
+
+
+</script>
+
+[[end]]
+
+

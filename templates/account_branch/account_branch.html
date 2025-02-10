@@ -1,0 +1,276 @@
+[[extend 'layout3.html']]
+
+[[block header]]
+
+[[icon='fa fa-chart-line']]
+<style>
+    li{
+        list-style: none;
+        cursor: pointer;
+        padding: 2px;;
+        
+    }
+
+    .suggestions{
+        display: block; 
+        background: #eee; 
+        position: absolute;       
+        
+    }
+    ul.suggestion-list{
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+    }
+    .action-link {
+        margin-right: 10px; /* Adjust the value as needed */
+    }
+</style>
+
+[[breadcamp = 'Account-Branch']]
+[[end]]
+
+
+
+
+[[block content]]
+<div class="container-section">
+
+    <div class="container py-2">
+        [[if role == 'ADMIN' :]]
+        [[= form.custom.begin ]]
+        <div id="custom_input">        
+            <div class="row">
+                <div class="col-2">
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Account Code</label><br>
+                        [[= form.custom.widgets['account_code'] ]]
+                        [[ if 'account_code' in form.errors: ]]
+                        <div class="text-danger">[[=form.errors['account_code']]]</div>                           
+                        [[pass]]
+                        <div class="suggestions">
+                            <ul id="dropdata" class="suggestion-list">
+                                <!-- here suggestions will be displayed -->
+                                 
+                            </ul>
+                        </div>    
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Account Name</label>
+                        [[= form.custom.widgets['account_name'] ]]
+                        [[ if 'account_name' in form.errors: ]]
+                        <div class="text-danger">[[=form.errors['account_name']]]</div>                           
+                        [[pass]] 
+                        
+                    </div>                
+
+                </div>
+                <div class="col-2">
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Select Branch</label>
+                        [[= form.custom.widgets['branch_name'] ]]   
+                        [[ if 'branch_name' in form.errors: ]]
+                        <div class="text-danger">[[=form.errors['branch_name']]]</div>                           
+                        [[pass]]                      
+                    </div>
+                </div>   
+                <div class="col-2">
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Branch Code</label>
+                        [[= form.custom.widgets['branch_code'] ]]   
+                        [[ if 'branch_code' in form.errors: ]]
+                        <div class="text-danger">[[=form.errors['branch_code']]]</div>                           
+                        [[pass]]                      
+                    </div>
+                </div>          
+                
+                <div class="col-md-2 col-sm-6 col-12 d-flex align-items-end">
+                    <button type="submit" class="btn btn-sm btn-primary mb-3" data-toggle="tooltip" data-placement="bottom" title="Add Account-Branch">
+                        <i class="fa-solid fa-floppy-disk"></i> <span class="ms-2">Save</span>
+                    </button>
+                </div>
+            </div>
+            
+        </div>
+        [[= form.custom.end ]]  
+        [[pass]] 
+        <br>
+
+        <div class="container py-2">
+            <form action="[[=URL('account_branch','account_branch')]]" method="GET">
+                <label for="search_by">Search By:</label>
+                <select name="search_by" id="search_by">
+                    <option value="account_name" [[ ='selected' if search_by == 'account_name' else '' ]]>Account Name</option>
+                    <option value="account_code" [[ ='selected' if search_by == 'account_code' else '' ]]>Account Code</option>
+                    <option value="branch_name" [[ ='selected' if search_by == 'branch_name' else '' ]]>Branch Name</option>
+                    <option value="branch_code" [[ ='selected' if search_by == 'branch_code' else '' ]]>Branch Code</option>
+                </select> 
+                <label for="search_term">Search Term:</label>
+                <input type="text" name="search_term" id="search_term" value="[[=search_term]]">
+                <button type="submit" class="btn btn-sm btn-primary me-2" data-toggle="tooltip" data-placement="bottom" title="Search Account">Search</button>
+                <a href="[[=URL('account_branch','account_branch')]]" class="btn btn-sm btn-secondary" data-toggle="tooltip" data-placement="bottom" title="Clear Search">Clear</a>
+                <a href="[[=URL('account_branch','download_account_branch')]]" class="btn btn-sm btn-secondary" data-toggle="tooltip" data-placement="bottom" title="Download Accounts"><i class="fa-solid fa-arrow-down"></i> </a>
+            </form>
+        </div>
+
+        <div class="container py-2">
+            <p>Showing [[=start_record]] to [[=end_record]] of [[=total_records]] records</p>   
+        </div>
+        
+        <div class="row" >
+            <div class="col-11">                                
+                
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Account Code</th> 
+                            <th scope="col">Account Name</th>
+                            <th scope="col">Branch Code</th>
+                            <th scope="col">Branch Name</th>                                 
+                                
+                            [[if role == 'ADMIN':]]                            
+                            <th scope="col">Action</th>
+                            [[pass]]
+                        </tr>
+                    </thead>
+                    
+                    [[for row in rows:]]
+                    <tbody>
+                        <tr>
+                            <td>[[=row['account_code']]]</td> 
+                            <td>[[=row['account_name']]]</td> 
+                            <td>[[=row['branch_code']]]</td>
+                            <td>[[=row['branch_name']]]</td>                                                              
+                                    
+                            [[if role == 'ADMIN' :]]                        
+                            <td>
+                                <a class="button action-link" href="[[=URL('account_branch','edit_account_branch',row['id'])]]" data-toggle="tooltip" data-placement="bottom" title="Edit Account-Branch"><i class="fa-regular fa-pen-to-square"></i></a>
+                                <a class="button action-link delete-link" href="[[=URL('account_branch','delete_account_branch',row['account_code'],row['branch_code'])]]" data-toggle="tooltip" data-placement="bottom" title="Delete Account-Branch" onclick="return confirm('Are you sure to delete?')">
+                                    <i class="fa-solid fa-trash"></i>
+                                </a>
+                            </td>
+                            
+                            [[pass]]
+                            
+                        </tr>
+                    </tbody>
+                    
+                    [[pass]]
+
+                    
+
+                </table>
+                <!-- Pagination Controls -->
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination">
+                            [[if page > 1:]]
+                            <li class="page-item">
+                                <a class="page-link" href="[[=URL('account_branch','account_branch', vars=dict(page=page-1))]]" aria-label="Previous">
+                                    <span aria-hidden="true">«</span>
+                                </a>
+                            </li>
+                            [[pass]]
+
+                            [[if page > 6:]]
+                            <li class="page-item">
+                                <a class="page-link" href="[[=URL('account_branch','account_branch', vars=dict(page=1))]]">1</a>
+                            </li>
+                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                            [[pass]]
+
+                            [[for p in range(max(1, page-5), min(total_pages+1, page+5)):]]
+                            <li class="page-item [[= 'active' if p == page else '']]">
+                                <a class="page-link" href="[[=URL('account_branch','account_branch', vars=dict(page=p))]]">[[=p]]</a>
+                            </li>
+                            [[pass]]
+
+                            [[if page < total_pages - 5:]]
+                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                            <li class="page-item">
+                                <a class="page-link" href="[[=URL('account_branch','account_branch', vars=dict(page=total_pages))]]">[[=total_pages]]</a>
+                            </li>
+                            [[pass]]
+
+                            [[if page < total_pages:]]
+                            <li class="page-item">
+                                <a class="page-link" href="[[=URL('account_branch','account_branch', vars=dict(page=page+1))]]" aria-label="Next">
+                                    <span aria-hidden="true">»</span>
+                                </a>
+                            </li>
+                            [[pass]]
+                        </ul>
+                    </nav>
+
+                
+            </div>
+
+        </div>
+        
+    </div>    
+
+[[end]]
+[[block scripts]]
+<script>
+    $(document).ready(function() {
+    $('#ac_account_branch_account_code').on('input', function() {
+        var query = $(this).val();
+        if (query.length >= 3) {
+            $.ajax({
+                url: '[[=URL("fetch_account_info")]]',
+                data: {term: query},
+                success: function(data) {
+                    var suggestions = JSON.parse(data);
+                    var dropdown = $('#dropdata');
+                    dropdown.empty(); // Clear previous suggestions
+                    $.each(suggestions, function(index, value) {
+                        dropdown.append('<li class="list-group-item suggestion-item">' + value + '</li>');
+                    });
+                    $('.suggestions').show();
+                }
+            });
+        } else {
+            $('.suggestions').hide(); // Hide suggestions if fewer than 3 characters
+        }
+    });
+
+    // Handle click on a suggestion
+    $(document).on('click', '.suggestion-item', function() {
+        var selectedText = $(this).text();
+        var parts = selectedText.split('|');
+        $('#ac_account_branch_account_name').val(parts[1]); // Set the account_name
+        $('#ac_account_branch_account_code').val(parts[0]); // Set the account_code (assuming you have an input with this id)
+        $('.suggestions').hide();
+        
+    });
+
+    // Hide suggestions when clicking outside
+    $(document).click(function(e) {
+        if (!$(e.target).closest('.suggestions, #ac_account_branch_account_name').length) {
+            $('.suggestions').hide();
+        }
+    });
+});
+///////////////////////////////////////////////////////////
+    $("#ac_account_branch_branch_name").change(function() {    
+    var selectedValue = $(this).val();  
+    $.ajax({
+        url: '[[=URL("get_branch_code")]]', // Replace with your endpoint
+        method: 'GET',
+        data: { q: selectedValue },
+        dataType: 'json',
+        success: function(data) {
+            // console.log(data['branh_code'])            
+            $("#ac_account_branch_branch_code").val(data['branch_code']);
+            
+          }
+    });  
+})
+
+
+    
+</script>
+
+
+[[end]]
