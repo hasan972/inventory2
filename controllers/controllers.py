@@ -58,9 +58,9 @@ def login():
         username = str(request.forms.get('username')).strip().upper()      
         password = str(request.forms.get('password')).strip()     
         
-        # print('cid: '+cid)
-        # print('Username: '+username)
-        # print('Password: '+password)
+        print('cid: '+cid)
+        print('Username: '+username)
+        print('Password: '+password)
 
         
 
@@ -76,6 +76,7 @@ def login():
             # useRecords = db.executesql(sqlQuery, as_dict=True)
             # print(useRecords[0]['branch_code'])            # return sqlQuery
             hashed_password = hashlib.sha256(password.encode()).hexdigest()
+            # print(ha)
 
             useRecords =  db((db.ac_auth_user.cid == cid) & 
                       (db.ac_auth_user.username == username) & 
