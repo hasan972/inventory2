@@ -53,6 +53,16 @@
                         <span class="menu-title">Accounts</span>
                       </a>
                     </li>
+                    [[if  request.path.split('/')[2]=='item_class':]]
+                    <li class="menu-item active_link">
+                    [[else:]]
+                    <li class="menu-item">
+                    [[pass]]
+                        <a href="[[=URL('item_class')]]">
+                        <span class="menu-icon"><i class="fa fa-users"></i></span>
+                        <span class="menu-title">Item Add</span>
+                        </a>
+                    </li>
                   </ul>
                 </div>
               </li>

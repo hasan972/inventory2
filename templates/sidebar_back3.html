@@ -62,6 +62,16 @@ pass
                         <span class="menu-title">Accounts</span>
                       </a>
                     </li>
+                    [[if  _controller_name=='item_class':]]
+                    <li class="menu-item active_link">
+                    [[else:]]
+                    <li class="menu-item">
+                    [[pass]]
+                        <a href="[[=URL('addItem','item_class')]]">
+                        <span class="menu-icon"><i class="fa-solid fa-bars"></i></span>
+                        <span class="menu-title">Class</span>
+                        </a>
+                    </li>
                   </ul>
                 </div>
               </li>                
