@@ -1,0 +1,101 @@
+[[extend 'layout3.html']]
+
+[[block header]]
+<style>
+    .action-link {
+        margin-right: 10px;
+    }
+</style>
+[[icon='fa fa-list']]
+[[breadcamp = 'Brand Management']]
+[[end]]
+
+[[block content]]
+
+<div class="container py-2">      
+    
+    [[if role =='ADMIN':]]
+    
+        [[= form.custom.begin ]]
+        <div id="custom_input">        
+            <div class="row">
+                <div class="col-2">
+                    <div class="mb-3">
+                        <label for="brand_code" class="form-label">Brand Code</label>
+                        [[= form.custom.widgets['brand_code'] ]]
+                        [[ if 'brand_code' in form.errors: ]]
+                        <div class="text-danger">[[=form.errors['brand_code']]]</div>                           
+                        [[pass]]
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="mb-3">
+                        <label for="brand_name" class="form-label">Brand Name</label>
+                        [[= form.custom.widgets['brand_name'] ]]
+                        [[ if 'brand_name' in form.errors: ]]
+                        <div class="text-danger">[[=form.errors['brand_name']]]</div>                           
+                        [[pass]]
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-6 col-12 d-flex align-items-end">
+                    <button type="submit" class="btn btn-sm btn-primary mb-3" data-toggle="tooltip" data-placement="bottom" title="Add Brand">
+                        <i class="fa-solid fa-floppy-disk"></i> <span class="ms-2">Save</span>                        
+                    </button>                    
+                </div>
+            </div>
+        </div>
+        [[= form.custom.end ]] 
+    
+    [[pass]]
+    
+    <!-- Search and Table Section -->
+
+    <div class="container py-2">
+        <form action="[[=URL('brand','new_brand')]]" method="GET">
+            <label for="search_by">Search By:</label>
+            <select name="search_by" id="search_by">
+                <option value="brand_name" [[= 'selected' if search_by == 'brand_name' else '' ]]>Brand Name</option>
+                <option value="brand_code" [[= 'selected' if search_by == 'brand_code' else '' ]]>Brand Code</option>
+            </select> 
+            <label for="search_term">Search Term:</label>
+            <input type="text" name="search_term" id="search_term" value="[[=search_term]]">
+            <button type="submit" class="btn btn-sm btn-primary me-2" data-toggle="tooltip" data-placement="bottom" title="Search">Search</button>
+            <a href="[[=URL('brand','new_brand')]]" class="btn btn-sm btn-secondary" data-toggle="tooltip" data-placement="bottom" title="Clear Search">Clear</a>
+        </form>
+    </div>   
+    
+    <div class="row">
+        <div class="col-9">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Brand Code</th>
+                        <th scope="col">Brand Name</th>                   
+                        [[if role == 'ADMIN' :]]                    
+                        <th scope="col">Action</th>    
+                        [[pass]]                    
+                    </tr>
+                </thead>
+                <tbody>
+                    [[for row in rows:]]
+                    <tr>
+                        <td>[[=row['brand_code']]]</td>
+                        <td>[[=row['brand_name']]]</td>  
+                        
+                        [[if role == 'ADMIN':]]
+                        <td>
+                            <a class="button action-link" href="[[=URL('brand','edit_brand', row['id'])]]" data-toggle="tooltip" data-placement="bottom" title="Edit Brand">   <i class="fa-regular fa-pen-to-square"></i> </a>
+    
+                            <a class="button action-link delete-link" href="[[=URL('brand','delete_brand', row['id'])]]" data-toggle="tooltip" data-placement="bottom" title="Delete Brand" onclick="return confirm('Are you sure to delete?')">
+                                <i class="fa-solid fa-trash"></i>
+                            </a>
+                        </td> 
+                        [[pass]]                       
+                    </tr>
+                    [[pass]]
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+[[end]]

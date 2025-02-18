@@ -1,0 +1,101 @@
+[[extend 'layout3.html']]
+
+[[block header]]
+<style>
+    .action-link {
+        margin-right: 10px;
+    }
+</style>
+[[icon='fa fa-list']]
+[[breadcamp = 'Unit Management']]
+[[end]]
+
+[[block content]]
+
+<div class="container py-2">      
+    
+    [[if role =='ADMIN':]]
+    
+        [[= form.custom.begin ]]
+        <div id="custom_input">        
+            <div class="row">
+                <div class="col-2">
+                    <div class="mb-3">
+                        <label for="unit_code" class="form-label">Unit Code</label>
+                        [[= form.custom.widgets['unit_code'] ]]
+                        [[ if 'unit_code' in form.errors: ]]
+                        <div class="text-danger">[[=form.errors['unit_code']]]</div>                           
+                        [[pass]]
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="mb-3">
+                        <label for="unit_name" class="form-label">Unit Name</label>
+                        [[= form.custom.widgets['unit_name'] ]]
+                        [[ if 'unit_name' in form.errors: ]]
+                        <div class="text-danger">[[=form.errors['unit_name']]]</div>                           
+                        [[pass]]
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-6 col-12 d-flex align-items-end">
+                    <button type="submit" class="btn btn-sm btn-primary mb-3" data-toggle="tooltip" data-placement="bottom" title="Add Unit">
+                        <i class="fa-solid fa-floppy-disk"></i> <span class="ms-2">Save</span>                        
+                    </button>                    
+                </div>
+            </div>
+        </div>
+        [[= form.custom.end ]] 
+    
+    [[pass]]
+    
+    <!-- Search and Table Section -->
+
+    <div class="container py-2">
+        <form action="[[=URL('unit','new_unit')]]" method="GET">
+            <label for="search_by">Search By:</label>
+            <select name="search_by" id="search_by">
+                <option value="unit_name" [[= 'selected' if search_by == 'unit_name' else '' ]]>Unit Name</option>
+                <option value="unit_code" [[= 'selected' if search_by == 'unit_code' else '' ]]>Unit Code</option>
+            </select> 
+            <label for="search_term">Search Term:</label>
+            <input type="text" name="search_term" id="search_term" value="[[=search_term]]">
+            <button type="submit" class="btn btn-sm btn-primary me-2" data-toggle="tooltip" data-placement="bottom" title="Search">Search</button>
+            <a href="[[=URL('unit','new_unit')]]" class="btn btn-sm btn-secondary" data-toggle="tooltip" data-placement="bottom" title="Clear Search">Clear</a>
+        </form>
+    </div>   
+    
+    <div class="row">
+        <div class="col-9">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Unit Code</th>
+                        <th scope="col">Unit Name</th>                   
+                        [[if role == 'ADMIN' :]]                    
+                        <th scope="col">Action</th>    
+                        [[pass]]                    
+                    </tr>
+                </thead>
+                <tbody>
+                    [[for row in rows:]]
+                    <tr>
+                        <td>[[=row['unit_code']]]</td>
+                        <td>[[=row['unit_name']]]</td>  
+                        
+                        [[if role == 'ADMIN':]]
+                        <td>
+                            <a class="button action-link" href="[[=URL('unit','edit_unit', row['id'])]]" data-toggle="tooltip" data-placement="bottom" title="Edit Unit">   <i class="fa-regular fa-pen-to-square"></i> </a>
+    
+                            <a class="button action-link delete-link" href="[[=URL('unit','delete_unit', row['id'])]]" data-toggle="tooltip" data-placement="bottom" title="Delete Unit" onclick="return confirm('Are you sure to delete?')">
+                                <i class="fa-solid fa-trash"></i>
+                            </a>
+                        </td> 
+                        [[pass]]                       
+                    </tr>
+                    [[pass]]
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+[[end]]

@@ -314,6 +314,55 @@ db.define_table('ac_denomination_details',
                 migrate=False
             )
 
+#-----------This Is for Add Item Table------------------#
+
+db.define_table('inventory_items',
+                Field('id', 'integer'),
+                Field('cid', 'string', length=10, default="TDCLPC", writable=False, readable=False),
+                Field('item_code', 'string', length=20, requires=[IS_NOT_EMPTY(), IS_NOT_IN_DB(db, 'inventory_items.item_code', 'Item code already exists')]),
+                Field('item_name', 'string', length=100, requires=[IS_NOT_EMPTY('Enter Item Name'), IS_NOT_IN_DB(db, 'inventory_items.item_name', 'Item name already exists')]),
+                Field('category', 'string', length=50, requires=IS_NOT_EMPTY('Enter Category')),
+                Field('unit', 'string', length=20, requires=IS_IN_SET(['Piece', 'Kg', 'Liter', 'Pack', 'Box', 'Dozen'])),
+                # signature,
+                migrate=False
+            )
+db.define_table('unit',
+                Field('id', 'integer'),
+                Field('cid', 'string', length=10, default="TDCLPC", writable=False, readable=False),
+                Field('unit_code', 'string', length=20, requires=[IS_NOT_EMPTY(), IS_NOT_IN_DB(db, 'unit.unit_code', 'Unit code already exists')]),
+                Field('unit_name', 'string', length=50, unique=True, requires=IS_NOT_EMPTY('Enter Unit Name')),
+                migrate=False
+            )
+db.define_table('category',
+                Field('id', 'integer'),
+                Field('cid', 'string', length=10, default="TDCLPC", writable=False, readable=False),
+                Field('category_code', 'string', length=20, requires=[IS_NOT_EMPTY(), IS_NOT_IN_DB(db, 'category.category_code', 'Category code already exists')]),
+                Field('category_name', 'string', length=100, unique=True, requires=IS_NOT_EMPTY('Enter Category Name')),
+                migrate=False
+            )
+db.define_table('brand',
+                Field('id', 'integer'),
+                Field('cid', 'string', length=10, default="TDCLPC", writable=False, readable=False),
+                Field('brand_code', 'string', length=20, requires=[IS_NOT_EMPTY(), IS_NOT_IN_DB(db, 'brand.brand_code', 'Brand code already exists')]),
+                Field('brand_name', 'string', length=100, unique=True, requires=IS_NOT_EMPTY('Enter Brand Name')),
+                migrate=False
+            )
+db.define_table('product',
+                Field('id', 'integer'),
+                Field('cid', 'string', length=10, default="TDCLPC", writable=False, readable=False),
+                Field('item_code', 'string', length=20,requires=[IS_NOT_EMPTY(), IS_NOT_IN_DB(db, 'inventory_items.item_code', 'Item code already exists')]),
+                Field('item_name', 'string', length=100,requires=[IS_NOT_EMPTY('Enter Item Name'), IS_NOT_IN_DB(db, 'inventory_items.item_name', 'Item name already exists')]),
+                Field('category', 'string', length=50, requires=[IS_IN_DB(db, 'category.category_name', '%(category_name)s'),IS_NOT_EMPTY('Select Category')]), 
+                Field('unit', 'string', length=20, requires=IS_NOT_EMPTY('Enter Unit')),
+                signature,
+                migrate=True
+            )
+
+
+
+
+
+
 
 # db.commit()
 

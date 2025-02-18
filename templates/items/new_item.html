@@ -1,0 +1,141 @@
+[[extend 'layout3.html']]
+
+[[block header]]
+<style>
+    .action-link {
+        margin-right: 10px; /* Adjust the value as needed */
+    }
+</style>
+[[icon='fa fa-plus']]
+
+[[breadcamp = 'Add New Item']]
+
+[[end]]
+
+[[block content]]
+
+<div class="container py-2">
+    <!-- Item Form Section -->
+[[if role == 'ADMIN':]]
+
+    [[= form.custom.begin ]]
+    <div id="custom_input">        
+        <div class="row">
+            <div class="col-4">
+                <div class="mb-3">
+                    <label for="item_code" class="form-label">Item Code</label>
+                    [[= form.custom.widgets['item_code'] ]]
+                    [[ if 'item_code' in form.errors: ]]
+                    <div class="text-danger">[[=form.errors['item_code']]]</div>                           
+                    [[pass]]
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="mb-3">
+                    <label for="item_name" class="form-label">Item Name</label>
+                    [[= form.custom.widgets['item_name'] ]]
+                    [[ if 'item_name' in form.errors: ]]
+                    <div class="text-danger">[[=form.errors['item_name']]]</div>                           
+                    [[pass]]
+                </div>
+            </div>
+            <div class="col-2">
+                <div class="mb-3">
+                    <label for="category" class="form-label">Category</label>
+                    [[= form.custom.widgets['category'] ]]
+                    [[ if 'category' in form.errors: ]]
+                    <div class="text-danger">[[=form.errors['category']]]</div>                           
+                    [[pass]]
+                </div>
+            </div>
+            <div class="col-2">
+                <div class="mb-3">
+                    <label for="unit" class="form-label">Unit</label>
+                    [[= form.custom.widgets['unit'] ]]
+                    [[ if 'unit' in form.errors: ]]
+                    <div class="text-danger">[[=form.errors['unit']]]</div>                           
+                    [[pass]]
+                </div>
+            </div>           
+            <div class="col-md-2 col-sm-6 col-12 d-flex align-items-end">
+                <button type="submit" class="btn btn-sm btn-primary mb-3" data-toggle="tooltip" data-placement="bottom" title="Save Item">
+                    <i class="fa-solid fa-floppy-disk"></i> <span class="ms-2">Save</span>                        
+                </button>                    
+            </div>
+        </div>
+    </div>
+    [[= form.custom.end ]] 
+
+[[pass]]
+
+    <!-- Search and Table Section -->
+    <div class="container py-2">
+        <form action="[[=URL('items','new_item')]]" method="GET">
+            <label for="search_by">Search By:</label>
+            <select name="search_by" id="search_by">
+                <option value="item_name" [[= 'selected' if search_by == 'item_name' else '' ]]>Item Name</option>
+                <option value="item_code" [[= 'selected' if search_by == 'item_code' else '' ]]>Item Code</option>
+            </select> 
+            <label for="search_term">Search Term:</label>
+            <input type="text" name="search_term" id="search_term" value="[[=search_term]]">
+            <button type="submit" class="btn btn-sm btn-primary me-2" data-toggle="tooltip" data-placement="bottom" title="Search">Search</button>
+            <a href="[[=URL('items','new_item')]]" class="btn btn-sm btn-secondary" data-toggle="tooltip" data-placement="bottom" title="Clear Search">Clear</a>
+        </form>
+    </div>   
+
+    <div class="row">
+        <div class="col-9">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Item Code</th>
+                        <th scope="col">Item Name</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Unit</th>
+                        [[if role == 'ADMIN' :]]                   
+                        <th scope="col">Action</th>    
+                        [[pass]]                    
+                    </tr>
+                </thead>
+                <tbody>
+                    [[for row in rows:]]
+                    <tr>
+                        <td>[[=row['item_code']]]</td>
+                        <td>[[=row['item_name']]]</td>
+                        <td>[[=row['category']]]</td>
+                        <td>[[=row['unit']]]</td>
+                       
+                        
+                        [[if role == 'ADMIN':]]
+                        <td>
+                            <a class="button action-link" href="[[=URL('items','edit_item', row['id'])]]" data-toggle="tooltip" data-placement="bottom" title="Edit Item">   <i class="fa-regular fa-pen-to-square"></i> </a>
+    
+                            <a class="button action-link delete-link" href="[[=URL('items','delete_item', row['item_code'])]]" data-toggle="tooltip" data-placement="bottom" title="Delete Item" onclick="return confirm('Are you sure to delete?')">
+                                <i class="fa-solid fa-trash"></i>
+                            </a>
+                        </td> 
+                        [[pass]]                       
+                    </tr>
+                    [[pass]]
+                </tbody>
+            </table>
+            
+        </div>
+    </div>
+</div>
+
+[[end]]
+
+[[block script]]
+<!-- <script>
+    $(document).ready(function() {
+        $('.delete-link').on('click', function(e) {
+            e.preventDefault(); // Prevent the default action
+            var link = $(this).attr('href'); // Get the href attribute
+            if (confirm("Are you sure you want to delete this item?")) {
+                window.location.href = link; // Navigate to the URL if confirmed
+            }
+        });
+    });
+</script> -->
+[[end]]

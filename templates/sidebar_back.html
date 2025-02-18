@@ -19,11 +19,41 @@
                   <span class="menu-icon">
                     <i class="fa-regular fa-file-lines"></i>
                   </span>
-                  <span class="menu-title">Chart of Accounts</span>
+                  <span class="menu-title">Product & Inventory</span>
                 </a>
                 <div class="sub-menu-list">
-                  <ul>                    
-                    [[if  request.path.split('/')[2]=='new_class':]]
+                  <ul>    
+                    [[if  _controller_name=='new_unit':]]
+                    <li class="menu-item active_link">
+                    [[else:]]
+                    <li class="menu-item">
+                    [[pass]]
+                        <a href="[[=URL('unit','new_unit')]]">
+                        <span class="menu-icon"><i class="fa-solid fa-bars"></i></span>
+                        <span class="menu-title">Unit</span>
+                        </a>
+                    </li>
+                    [[if  _controller_name=='new_category':]]
+                    <li class="menu-item active_link">                    
+                    [[else:]]
+                    <li class="menu-item">
+                    [[pass]]
+                        <a href="[[=URL('categories','new_category')]]">
+                        <span class="menu-icon"><i class="fa-solid fa-layer-group"></i></span>
+                        <span class="menu-title">Category</span>
+                        </a>
+                    </li>
+                    [[if  _controller_name=='new_brand':]]
+                    <li class="menu-item active_link">
+                    [[else:]]
+                    <li class="menu-item">
+                    [[pass]]
+                        <a href="[[=URL('brand','new_brand')]]">
+                        <span class="menu-icon"><i class="fa-solid fa-money-check-dollar"></i></span>
+                        <span class="menu-title">Brand</span>
+                      </a>
+                    </li>                
+                    <!-- [[if  request.path.split('/')[2]=='new_class':]]
                     <li class="menu-item active_link">
                     [[else:]]
                     <li class="menu-item">
@@ -61,6 +91,16 @@
                         <a href="[[=URL('item_class')]]">
                         <span class="menu-icon"><i class="fa fa-users"></i></span>
                         <span class="menu-title">Item Add</span>
+                        </a>
+                    </li> -->
+                    [[if  request.path.split('/')[2]=='new_item':]]
+                    <li class="menu-item active_link">
+                    [[else:]]
+                    <li class="menu-item">
+                    [[pass]]
+                        <a href="[[=URL('item','new_item')]]">
+                        <span class="menu-icon"><i class="fa fa-users"></i></span>
+                        <span class="menu-title">Item</span>
                         </a>
                     </li>
                   </ul>

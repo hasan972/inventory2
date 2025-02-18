@@ -175,3 +175,104 @@ timestamp: 2025-01-29T11:04:28.312618
 ALTER TABLE `ac_denomination_details` ADD `trans_id` VARCHAR(20);
 success!
 success!
+timestamp: 2025-02-16T22:44:34.107585
+CREATE TABLE `inventory_items`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `cid` VARCHAR(10),
+    `item_code` VARCHAR(20),
+    `item_name` VARCHAR(100),
+    `category` VARCHAR(50),
+    `unit` VARCHAR(20),
+    `purchase_price` DOUBLE,
+    `selling_price` DOUBLE,
+    `stock_quantity` INTEGER,
+    `reorder_level` INTEGER,
+    `active` VARCHAR(10),
+    `field1` VARCHAR(100),
+    `field2` INTEGER,
+    `note` VARCHAR(100),
+    `created_by` VARCHAR(100),
+    `created_on` DATETIME,
+    `updated_by` VARCHAR(100),
+    `updated_on` DATETIME,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+success!
+timestamp: 2025-02-17T15:03:07.298923
+CREATE TABLE `unit`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `unit_name` VARCHAR(50) UNIQUE,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+success!
+timestamp: 2025-02-17T15:03:07.549459
+CREATE TABLE `category`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `category_name` VARCHAR(100) UNIQUE,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+success!
+timestamp: 2025-02-17T15:03:07.657024
+CREATE TABLE `brand`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `brand_name` VARCHAR(100) UNIQUE,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+success!
+timestamp: 2025-02-17T15:26:15.124488
+ALTER TABLE `unit` ADD `unit_code` VARCHAR(20);
+success!
+success!
+timestamp: 2025-02-17T15:26:15.263480
+ALTER TABLE `category` ADD `category_code` VARCHAR(20);
+success!
+success!
+timestamp: 2025-02-17T15:26:15.341175
+ALTER TABLE `brand` ADD `brand_code` VARCHAR(20);
+success!
+success!
+timestamp: 2025-02-17T15:31:14.294627
+ALTER TABLE `unit` ADD `cid` VARCHAR(10);
+success!
+success!
+timestamp: 2025-02-17T15:31:14.778992
+ALTER TABLE `category` ADD `cid` VARCHAR(10);
+success!
+success!
+timestamp: 2025-02-17T15:31:14.878555
+ALTER TABLE `brand` ADD `cid` VARCHAR(10);
+success!
+success!
+timestamp: 2025-02-18T01:27:18.839097
+ALTER TABLE `inventory_items` DROP COLUMN `purchase_price`;
+success!
+timestamp: 2025-02-18T01:27:19.129506
+ALTER TABLE `inventory_items` DROP COLUMN `selling_price`;
+success!
+timestamp: 2025-02-18T01:27:19.173503
+ALTER TABLE `inventory_items` DROP COLUMN `stock_quantity`;
+success!
+timestamp: 2025-02-18T01:27:19.203583
+ALTER TABLE `inventory_items` DROP COLUMN `reorder_level`;
+success!
+timestamp: 2025-02-18T01:27:19.226503
+ALTER TABLE `inventory_items` DROP COLUMN `active`;
+success!
+timestamp: 2025-02-18T11:36:00.631080
+CREATE TABLE `product`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `cid` VARCHAR(10),
+    `item_code` VARCHAR(20),
+    `item_name` VARCHAR(100),
+    `category` VARCHAR(50),
+    `unit` VARCHAR(20),
+    `field1` VARCHAR(100),
+    `field2` INTEGER,
+    `note` VARCHAR(100),
+    `created_by` VARCHAR(100),
+    `created_on` DATETIME,
+    `updated_by` VARCHAR(100),
+    `updated_on` DATETIME,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+success!
