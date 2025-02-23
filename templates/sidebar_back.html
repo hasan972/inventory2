@@ -1,5 +1,5 @@
 <aside id="sidebar" class="sidebar break-point-sm has-bg-image">
-    <a id="btn-collapse" class="sidebar-collapser"><i class="ri-arrow-left-s-line text-white"></i></a>
+    <a id="btn-collapse" class="sidebar-collapser"><i class="fa-solid fa-angle-left text-white"></i></a>
     <div class="image-wrapper">
       <img src="#" alt="sidebar background" />
     </div>
@@ -19,7 +19,7 @@
                   <span class="menu-icon">
                     <i class="fa-regular fa-file-lines"></i>
                   </span>
-                  <span class="menu-title">Product & Inventory</span>
+                  <span class="menu-title">Product Setup</span>
                 </a>
                 <div class="sub-menu-list">
                   <ul>    
@@ -29,7 +29,7 @@
                     <li class="menu-item">
                     [[pass]]
                         <a href="[[=URL('unit','new_unit')]]">
-                        <span class="menu-icon"><i class="fa-solid fa-bars"></i></span>
+                        <span class="menu-icon"><i class="fa-brands fa-unity"></i></i></span>
                         <span class="menu-title">Unit</span>
                         </a>
                     </li>
@@ -51,6 +51,16 @@
                         <a href="[[=URL('brand','new_brand')]]">
                         <span class="menu-icon"><i class="fa-solid fa-money-check-dollar"></i></span>
                         <span class="menu-title">Brand</span>
+                      </a>
+                    </li>  
+                    [[if  _controller_name=='new_supplier':]]
+                    <li class="menu-item active_link">
+                    [[else:]]
+                    <li class="menu-item">
+                    [[pass]]
+                        <a href="[[=URL('supplier','new_supplier')]]">
+                        <span class="menu-icon"><i class="fa-solid fa-truck-field"></i></i></span>
+                        <span class="menu-title">Supplier</span>
                       </a>
                     </li>                
                     <!-- [[if  request.path.split('/')[2]=='new_class':]]
@@ -99,7 +109,7 @@
                     <li class="menu-item">
                     [[pass]]
                         <a href="[[=URL('item','new_item')]]">
-                        <span class="menu-icon"><i class="fa fa-users"></i></span>
+                        <span class="menu-icon"><i class="fa-solid fa-sitemap"></i></i></span>
                         <span class="menu-title">Item</span>
                         </a>
                     </li>
@@ -125,6 +135,16 @@
                         <span class="menu-title">Vouchers</span>
                         </a>
                     </li>
+                    [[if  _controller_name=='new_receive':]]
+                        <li class="menu-item active_link">
+                        [[else:]]
+                        <li class="menu-item">
+                        [[pass]]
+                            <a href="[[=URL('receive','new_receive')]]">
+                            <span class="menu-icon"><i class="fa-solid fa-bangladeshi-taka-sign"></i></span>
+                            <span class="menu-title">Receive Product</span>
+                            </a>
+                        </li>
                   </ul>
                 </div>
               </li>

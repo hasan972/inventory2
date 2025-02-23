@@ -347,6 +347,13 @@ db.define_table('brand',
                 Field('brand_name', 'string', length=100, unique=True, requires=IS_NOT_EMPTY('Enter Brand Name')),
                 migrate=False
             )
+db.define_table('supplier',
+                Field('id', 'integer'),
+                Field('cid', 'string', length=10, default="TDCLPC", writable=False, readable=False),
+                Field('supplier_code', 'string', length=20, requires=[IS_NOT_EMPTY(), IS_NOT_IN_DB(db, 'supplier.supplier_code', 'supplier code already exists')]),
+                Field('supplier_name', 'string', length=100, unique=True, requires=IS_NOT_EMPTY('Enter Supplier Name')),
+                migrate=False
+            )
 db.define_table('product',
                 Field('id', 'integer'),
                 Field('cid', 'string', length=10, default="TDCLPC", writable=False, readable=False),
@@ -355,8 +362,39 @@ db.define_table('product',
                 Field('category', 'string', length=50, requires=[IS_IN_DB(db, 'category.category_name', '%(category_name)s'),IS_NOT_EMPTY('Select Category')]), 
                 Field('unit', 'string', length=20, requires=IS_NOT_EMPTY('Enter Unit')),
                 signature,
+                migrate=False
+            )
+
+db.define_table('product_receives',
+                Field('id', 'integer'),
+                Field('cid', 'string', length=10, default="TDCLPC", writable=False, readable=False),
+                Field('receive_code','integer', requires=[IS_NOT_EMPTY(), IS_NOT_IN_DB(db,'product_receives.receive_code','Code already exists')]),
+                Field('receive_date', 'datetime', default="", requires=IS_NOT_EMPTY()),
+                
+                # Supplier Information
+                Field('supplier_code', 'reference supplier', requires=IS_IN_DB(db, 'supplier.id', 'supplier.supplier_name')),
+                Field('supplier_name', 'string', length=100, compute=lambda r: db.supplier[r['supplier_code']].supplier_name if r['supplier_code'] else None),
+                
+                # Product Information
+                Field('item_code', 'reference inventory_items', requires=IS_IN_DB(db, 'inventory_items.id', 'inventory_items.item_name')),
+                Field('item_name', 'string', length=100, compute=lambda r: db.inventory_items[r['item_code']].item_name if r['item_code'] else None),
+                
+                # Unit Information
+                Field('unit_code', 'string', length=20, requires=[IS_NOT_EMPTY(), IS_NOT_IN_DB(db, 'unit.unit_code', 'Unit code already exists')]),
+                Field('unit_name', 'string', length=50, unique=True, requires=IS_NOT_EMPTY('Enter Unit Name')),
+                
+                # Quantity and Pricing
+                Field('quantity_received', 'integer', requires=IS_INT_IN_RANGE(1, None, error_message='Quantity must be at least 1')),
+                Field('unit_price', 'double', requires=IS_FLOAT_IN_RANGE(0.01, None, error_message='Enter a valid price')),
+                Field('total_price', 'double', compute=lambda r: r['quantity_received'] * r['unit_price']),
+                
+                # Other Info
+                Field('received_by', 'string', length=100, requires=IS_NOT_EMPTY()),
+                Field('remarks', 'text', default=None),
+                
                 migrate=True
             )
+
 
 
 

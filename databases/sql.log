@@ -276,3 +276,35 @@ CREATE TABLE `product`(
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB CHARACTER SET utf8;
 success!
+timestamp: 2025-02-18T15:49:30.090870
+CREATE TABLE `supplier`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `cid` VARCHAR(10),
+    `supplier_code` VARCHAR(20),
+    `supplier_name` VARCHAR(100) UNIQUE,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+success!
+timestamp: 2025-02-19T15:49:40.495725
+CREATE TABLE `product_receives`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `cid` VARCHAR(10),
+    `receive_date` DATETIME,
+    `supplier_code` INT  , INDEX `supplier_code__idx` (`supplier_code`), FOREIGN KEY (`supplier_code`) REFERENCES `supplier` (`id`) ON DELETE CASCADE,
+    `supplier_name` VARCHAR(100),
+    `item_code` INT  , INDEX `item_code__idx` (`item_code`), FOREIGN KEY (`item_code`) REFERENCES `inventory_items` (`id`) ON DELETE CASCADE,
+    `item_name` VARCHAR(100),
+    `unit_code` VARCHAR(20),
+    `unit_name` VARCHAR(50) UNIQUE,
+    `quantity_received` INTEGER,
+    `unit_price` DOUBLE,
+    `total_price` DOUBLE,
+    `received_by` VARCHAR(100),
+    `remarks` LONGTEXT,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+success!
+timestamp: 2025-02-19T16:03:03.241736
+ALTER TABLE `product_receives` ADD `receive_code` INTEGER;
+success!
+success!
