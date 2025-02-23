@@ -33,7 +33,7 @@ def new_receive():
         else:
             query = "SELECT * FROM product_receives"
         
-        # print(query)
+        print(query)
         rows = db.executesql(query, as_dict=True)
 
         # db.receive_code.created_by.default = user
@@ -61,6 +61,7 @@ def new_receive():
     if form.accepted:
         flash.set('Product receive entry added successfully', 'success')
         redirect(URL('receive/new_receive'))
+        # print()
 
     return dict(form=form, rows=rows,search_term=search_term, search_by=search_by, role=role, user=user, branch_name=branch_name)
 
