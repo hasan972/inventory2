@@ -308,3 +308,41 @@ timestamp: 2025-02-19T16:03:03.241736
 ALTER TABLE `product_receives` ADD `receive_code` INTEGER;
 success!
 success!
+timestamp: 2025-02-24T14:57:34.310223
+CREATE TABLE `product_receives`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `cid` VARCHAR(10),
+    `receive_code` INTEGER,
+    `receive_date` DATETIME,
+    `supplier_code` INT  , INDEX `supplier_code__idx` (`supplier_code`), FOREIGN KEY (`supplier_code`) REFERENCES `supplier` (`id`) ON DELETE CASCADE,
+    `supplier_name` VARCHAR(100),
+    `item_code` INT  , INDEX `item_code__idx` (`item_code`), FOREIGN KEY (`item_code`) REFERENCES `inventory_items` (`id`) ON DELETE CASCADE,
+    `item_name` VARCHAR(100),
+    `unit_code` VARCHAR(20),
+    `unit_name` VARCHAR(50) UNIQUE,
+    `quantity_received` INTEGER,
+    `unit_price` DOUBLE,
+    `total_price` DOUBLE,
+    `received_by` VARCHAR(100),
+    `remarks` LONGTEXT,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+timestamp: 2025-02-24T14:59:02.999296
+CREATE TABLE `product_receives`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `cid` VARCHAR(10),
+    `receive_code` INTEGER,
+    `receive_date` DATETIME,
+    `supplier_code` INT  , INDEX `supplier_code__idx` (`supplier_code`), FOREIGN KEY (`supplier_code`) REFERENCES `supplier` (`id`) ON DELETE CASCADE,
+    `supplier_name` VARCHAR(100),
+    `item_code` INT  , INDEX `item_code__idx` (`item_code`), FOREIGN KEY (`item_code`) REFERENCES `inventory_items` (`id`) ON DELETE CASCADE,
+    `item_name` VARCHAR(100),
+    `unit_code` VARCHAR(20),
+    `unit_name` VARCHAR(50) UNIQUE,
+    `quantity_received` INTEGER,
+    `unit_price` DOUBLE,
+    `total_price` DOUBLE,
+    `received_by` VARCHAR(100),
+    `remarks` LONGTEXT,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;

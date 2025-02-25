@@ -392,7 +392,7 @@ db.define_table('product_receives',
                 Field('received_by', 'string', length=100, requires=IS_NOT_EMPTY()),
                 Field('remarks', 'text', default=None),
                 
-                migrate=True
+                migrate=False
             )
 
 

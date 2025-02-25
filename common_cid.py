@@ -1,7 +1,7 @@
 import datetime
 
 
-db_conn='mysql://root:@localhost/pettycash2'
+db_conn='mysql://root:@localhost/inventory'
 
 
 
