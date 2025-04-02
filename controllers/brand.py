@@ -40,9 +40,15 @@ def new_brand():
             form.custom.widgets['brand_code']['_class'] = 'form-control form-control-sm'
         if 'brand_name' in form.custom.widgets:
             form.custom.widgets['brand_name']['_class'] = 'form-control form-control-sm'
+        if 'supplier_name' in form.custom.widgets:
+            form.custom.widgets['supplier_name']['_class'] = 'form-control form-control-sm'
+        if 'supplier_code' in form.custom.widgets:
+            form.custom.widgets['supplier_code']['_class'] = 'form-control form-control-sm'
+        if 'supplier_code' in form.custom.widgets:
+            form.custom.widgets['supplier_code']['_readonly'] = 'true'
         
         if form.accepted:
-            flash.set('brand added successfully', 'success')
+            flash.set('Brand added successfully', 'success')
             redirect(URL('brand/new_brand'))
 
     return dict(form=form, rows=rows, search_term=search_term, search_by=search_by, role=role, user=user, branch_name=branch_name)
@@ -94,3 +100,15 @@ def delete_brand(brand_id=None):
     redirect(URL('brand', 'new_brand'))    
     
     return dict(role=role, user=user, branch_name=branch_name)
+
+# End-point to fetch supplier code
+@action('brand/get_sup_code',method=["GET"])
+@action.uses(db)
+def get_sup_code():   
+    sup_name = request.query.get("q")        
+    sup_row = db(db.supplier.supplier_name == sup_name).select().first()  
+    sup_code=sup_row.supplier_code   
+    # print(db._lastsql)
+
+    return dict(supplier_code=sup_code)
+

@@ -8,7 +8,7 @@ from ..common_cid import date_fixed
 import math
 
 
-# voucher list/create 
+# demonination list/create 
 @action("cash_denomination/cash_denomination_list", method=["GET", "POST"])
 @action.uses("cash_denomination/cash_denomination_list.html", auth, T, db, session)
 def cash_denomination_list():

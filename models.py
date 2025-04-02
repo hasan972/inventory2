@@ -32,7 +32,7 @@ signature=db.Table(db,'signature',
                 Field('created_by','string',length=100,writable=False,readable=False),                
                 Field('created_on','datetime',default=date_fixed,writable=False,readable=False),
                 Field('updated_by','string',length=100,writable=False,readable=False),
-                Field('updated_on','datetime',writable=False),
+                Field('updated_on','datetime',writable=True),
                 )
 
 db.define_table('ac_accounts_class',
@@ -160,7 +160,7 @@ db.define_table('ac_voucher_details',
                 Field('status','string',length=100),
                 Field('branch_code','integer'),
                 Field('balance','double'),
-                Field('post_time','timestamp without time zone'),
+                Field('post_time','datetime'),
                 signature,
                 migrate=False
                 )
@@ -199,7 +199,7 @@ db.define_table('ac_auth_user',
                 Field('cid','string',length=10,default="TDCLPC",readable=False,writable=False),           
                 Field('username','string',length=100,requires=[IS_NOT_EMPTY('Enter user name'),IS_NOT_IN_DB(db,'ac_auth_user.username','User name already exists')]),
                 Field('email','string',length=100,requires = is_optional_email),
-                Field('password', 'string',length=50,requires=[IS_NOT_EMPTY('Enter password'),IS_LENGTH(minsize=8,error_message="Password must be of 8 charachters")]),
+                Field('password', 'string',length=100,requires=[IS_NOT_EMPTY('Enter password'),IS_LENGTH(minsize=8,error_message="Password must be of 8 charachters")]),
                 Field('first_name','string',length=50,requires=IS_NOT_EMPTY('Enter first name')), 
                 Field('last_name','string',length=50,requires=IS_NOT_EMPTY('Enter last name')),               
                 Field('sso_id','string',length=50,readable=False,writable=False),
@@ -321,30 +321,46 @@ db.define_table('inventory_items',
                 Field('cid', 'string', length=10, default="TDCLPC", writable=False, readable=False),
                 Field('item_code', 'string', length=20, requires=[IS_NOT_EMPTY(), IS_NOT_IN_DB(db, 'inventory_items.item_code', 'Item code already exists')]),
                 Field('item_name', 'string', length=100, requires=[IS_NOT_EMPTY('Enter Item Name'), IS_NOT_IN_DB(db, 'inventory_items.item_name', 'Item name already exists')]),
-                Field('category', 'string', length=50, requires=IS_NOT_EMPTY('Enter Category')),
-                Field('unit', 'string', length=20, requires=IS_IN_SET(['Piece', 'Kg', 'Liter', 'Pack', 'Box', 'Dozen'])),
-                # signature,
+
+                Field('supplier_code', 'string', length=20, requires=IS_NOT_EMPTY('Enter Supplier Code'),),
+                Field('supplier_name', 'string', length=100, requires=IS_NOT_EMPTY('Enter Supplier Name')),
+                
+                Field('brand_code', 'string', length=20, requires=IS_NOT_EMPTY('Enter Brand Code')),
+                Field('brand_name', 'string', length=100, requires=IS_IN_DB(db, 'brand.brand_name', '%(brand_name)s'),),
+                
+                Field('category_code', 'string', length=20, requires=IS_NOT_EMPTY('Enter Category Code'), ),
+                Field('category_name', 'string', length=100, requires=[IS_NOT_EMPTY('Enter Category Name'),IS_IN_DB(db, 'category.category_name', '%(category_name)s')],),
+                
+                Field('unit', 'string', length=20, requires=IS_IN_DB(db, 'unit.unit_name', '%(unit_name)s',error_message='Select Valid Unit')),
+                Field('trade_price', 'double', requires=IS_NOT_EMPTY('Enter Trade Price')),
+                Field('retail_price', 'double',  requires=IS_NOT_EMPTY('Enter Retail Price')),
+                signature,
                 migrate=False
             )
+
 db.define_table('unit',
                 Field('id', 'integer'),
                 Field('cid', 'string', length=10, default="TDCLPC", writable=False, readable=False),
-                Field('unit_code', 'string', length=20, requires=[IS_NOT_EMPTY(), IS_NOT_IN_DB(db, 'unit.unit_code', 'Unit code already exists')]),
-                Field('unit_name', 'string', length=50, unique=True, requires=IS_NOT_EMPTY('Enter Unit Name')),
+                Field('unit_name', 'string', length=50, unique=True, requires=[IS_NOT_EMPTY('Enter Unit Name'),IS_NOT_IN_DB(db, 'unit.unit_name', 'Unit already exists')]),
+                signature,
                 migrate=False
             )
 db.define_table('category',
                 Field('id', 'integer'),
                 Field('cid', 'string', length=10, default="TDCLPC", writable=False, readable=False),
-                Field('category_code', 'string', length=20, requires=[IS_NOT_EMPTY(), IS_NOT_IN_DB(db, 'category.category_code', 'Category code already exists')]),
+                Field('category_code', 'integer', length=20, requires=[IS_NOT_EMPTY(), IS_NOT_IN_DB(db, 'category.category_code', 'Category code already exists')]),
                 Field('category_name', 'string', length=100, unique=True, requires=IS_NOT_EMPTY('Enter Category Name')),
+                signature,
                 migrate=False
             )
 db.define_table('brand',
                 Field('id', 'integer'),
                 Field('cid', 'string', length=10, default="TDCLPC", writable=False, readable=False),
                 Field('brand_code', 'string', length=20, requires=[IS_NOT_EMPTY(), IS_NOT_IN_DB(db, 'brand.brand_code', 'Brand code already exists')]),
-                Field('brand_name', 'string', length=100, unique=True, requires=IS_NOT_EMPTY('Enter Brand Name')),
+                Field('brand_name', 'string', length=100,  requires=IS_NOT_EMPTY('Enter Brand Name')),
+                Field('supplier_code', 'string', length=20,  requires=IS_NOT_EMPTY('Enter supplier code')),
+                Field('supplier_name', 'string', length=100,  requires=[IS_NOT_EMPTY('Enter supplier Name'),IS_IN_DB(db, 'supplier.supplier_name', '%(supplier_name)s')]),
+                signature,
                 migrate=False
             )
 db.define_table('supplier',
@@ -352,6 +368,7 @@ db.define_table('supplier',
                 Field('cid', 'string', length=10, default="TDCLPC", writable=False, readable=False),
                 Field('supplier_code', 'string', length=20, requires=[IS_NOT_EMPTY(), IS_NOT_IN_DB(db, 'supplier.supplier_code', 'supplier code already exists')]),
                 Field('supplier_name', 'string', length=100, unique=True, requires=IS_NOT_EMPTY('Enter Supplier Name')),
+                signature,
                 migrate=False
             )
 db.define_table('product',
@@ -365,39 +382,66 @@ db.define_table('product',
                 migrate=False
             )
 
-db.define_table('product_receives',
-                Field('id', 'integer'),
-                Field('cid', 'string', length=10, default="TDCLPC", writable=False, readable=False),
-                Field('receive_code','integer', requires=[IS_NOT_EMPTY(), IS_NOT_IN_DB(db,'product_receives.receive_code','Code already exists')]),
-                Field('receive_date', 'datetime', default="", requires=IS_NOT_EMPTY()),
+db.define_table('product_receive_head',
+                Field('id', 'integer'),                
+                Field('receive_code','integer'),
+                Field('receive_date', 'date'),                
                 
-                # Supplier Information
-                Field('supplier_code', 'reference supplier', requires=IS_IN_DB(db, 'supplier.id', 'supplier.supplier_name')),
-                Field('supplier_name', 'string', length=100, compute=lambda r: db.supplier[r['supplier_code']].supplier_name if r['supplier_code'] else None),
-                
-                # Product Information
-                Field('item_code', 'reference inventory_items', requires=IS_IN_DB(db, 'inventory_items.id', 'inventory_items.item_name')),
-                Field('item_name', 'string', length=100, compute=lambda r: db.inventory_items[r['item_code']].item_name if r['item_code'] else None),
-                
-                # Unit Information
-                Field('unit_code', 'string', length=20, requires=[IS_NOT_EMPTY(), IS_NOT_IN_DB(db, 'unit.unit_code', 'Unit code already exists')]),
-                Field('unit_name', 'string', length=50, unique=True, requires=IS_NOT_EMPTY('Enter Unit Name')),
-                
-                # Quantity and Pricing
-                Field('quantity_received', 'integer', requires=IS_INT_IN_RANGE(1, None, error_message='Quantity must be at least 1')),
-                Field('unit_price', 'double', requires=IS_FLOAT_IN_RANGE(0.01, None, error_message='Enter a valid price')),
-                Field('total_price', 'double', compute=lambda r: r['quantity_received'] * r['unit_price']),
-                
-                # Other Info
-                Field('received_by', 'string', length=100, requires=IS_NOT_EMPTY()),
-                Field('remarks', 'text', default=None),
-                
-                migrate=True
+                Field('supplier_code', 'string',length=50),
+                Field('supplier_name', 'string', length=100),  
+
+                Field('desc', 'string', length=100),                  
+             
+                Field('total_amount', 'double',),                
+ 
+                Field('remarks', 'string', ),
+                Field('status', 'string', ),       
+                Field('post_by', 'string',length=100 ),       
+                Field('post_on', 'datetime' ),       
+                Field('branch_code', 'integer' ),       
+                Field('branch_name', 'string',length=100 ),       
+                signature,         
+                migrate=False
             )
 
+db.define_table('product_receive_details',
+                Field('id', 'integer'),                
+                Field('receive_code','integer',),
+                Field('receive_date', 'datetime'),              
 
+                
+                # Product Information
+                Field('item_code', 'string', length=50),
+                Field('item_name', 'string', length=100),
+                
+                # Unit Information
+                Field('unit_code', 'string', length=20),
+                Field('unit_name', 'string', length=50),
+                
+                # Quantity and Pricing
+                Field('quantity', 'double'),
+                Field('trade_price', 'double',),
+                Field('total', 'double', ),        
+                Field('status', 'string',length=10 ),        
+                signature,                  
+                migrate=False
+            )
 
-
+db.define_table('product_stock',
+                Field('id', 'integer'),                
+                Field('trx_code','string',length=100),
+                Field('trx_date', 'datetime'),
+                Field('trx_type', 'string',length=20),                
+ 
+                Field('item_code', 'string', length=50),
+                Field('item_name', 'string', legth=100),               
+                
+                Field('quantity', 'double'),
+                Field('branch_code', 'integer'),
+                
+                signature,                  
+                migrate=False
+            )
 
 
 

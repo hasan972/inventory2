@@ -308,3 +308,1252 @@ timestamp: 2025-02-19T16:03:03.241736
 ALTER TABLE `product_receives` ADD `receive_code` INTEGER;
 success!
 success!
+timestamp: 2025-02-24T00:50:55.370467
+CREATE TABLE `product_receives`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `cid` VARCHAR(10),
+    `receive_code` INTEGER,
+    `receive_date` DATETIME,
+    `supplier_code` INT  , INDEX `supplier_code__idx` (`supplier_code`), FOREIGN KEY (`supplier_code`) REFERENCES `supplier` (`id`) ON DELETE CASCADE,
+    `supplier_name` VARCHAR(100),
+    `item_code` INT  , INDEX `item_code__idx` (`item_code`), FOREIGN KEY (`item_code`) REFERENCES `inventory_items` (`id`) ON DELETE CASCADE,
+    `item_name` VARCHAR(100),
+    `unit_code` VARCHAR(20),
+    `unit_name` VARCHAR(50) UNIQUE,
+    `quantity_received` INTEGER,
+    `unit_price` DOUBLE,
+    `total_price` DOUBLE,
+    `received_by` VARCHAR(100),
+    `remarks` LONGTEXT,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+timestamp: 2025-02-24T00:51:00.182716
+CREATE TABLE `product_receives`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `cid` VARCHAR(10),
+    `receive_code` INTEGER,
+    `receive_date` DATETIME,
+    `supplier_code` INT  , INDEX `supplier_code__idx` (`supplier_code`), FOREIGN KEY (`supplier_code`) REFERENCES `supplier` (`id`) ON DELETE CASCADE,
+    `supplier_name` VARCHAR(100),
+    `item_code` INT  , INDEX `item_code__idx` (`item_code`), FOREIGN KEY (`item_code`) REFERENCES `inventory_items` (`id`) ON DELETE CASCADE,
+    `item_name` VARCHAR(100),
+    `unit_code` VARCHAR(20),
+    `unit_name` VARCHAR(50) UNIQUE,
+    `quantity_received` INTEGER,
+    `unit_price` DOUBLE,
+    `total_price` DOUBLE,
+    `received_by` VARCHAR(100),
+    `remarks` LONGTEXT,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+timestamp: 2025-02-24T00:52:48.803784
+CREATE TABLE `ac_accounts_class`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `cid` VARCHAR(10),
+    `class_code` INTEGER,
+    `class_name` VARCHAR(100),
+    `class_type` VARCHAR(50),
+    `active` VARCHAR(10),
+    `is_default` VARCHAR(10),
+    `field1` VARCHAR(100),
+    `field2` INTEGER,
+    `note` VARCHAR(100),
+    `created_by` VARCHAR(100),
+    `created_on` DATETIME,
+    `updated_by` VARCHAR(100),
+    `updated_on` DATETIME,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+timestamp: 2025-02-24T00:54:13.395581
+CREATE TABLE `ac_accounts_class`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `cid` VARCHAR(10),
+    `class_code` INTEGER,
+    `class_name` VARCHAR(100),
+    `class_type` VARCHAR(50),
+    `active` VARCHAR(10),
+    `is_default` VARCHAR(10),
+    `field1` VARCHAR(100),
+    `field2` INTEGER,
+    `note` VARCHAR(100),
+    `created_by` VARCHAR(100),
+    `created_on` DATETIME,
+    `updated_by` VARCHAR(100),
+    `updated_on` DATETIME,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+success!
+timestamp: 2025-02-24T00:54:13.422169
+CREATE TABLE `ac_accounts_group`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `cid` VARCHAR(10),
+    `group_code` INTEGER,
+    `group_name` VARCHAR(100),
+    `class_code` INTEGER,
+    `class_name` VARCHAR(100),
+    `class_type` VARCHAR(50),
+    `seq_in_trial_balance` VARCHAR(50),
+    `active` VARCHAR(50),
+    `is_default` VARCHAR(50),
+    `field1` VARCHAR(100),
+    `field2` INTEGER,
+    `note` VARCHAR(100),
+    `created_by` VARCHAR(100),
+    `created_on` DATETIME,
+    `updated_by` VARCHAR(100),
+    `updated_on` DATETIME,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+success!
+timestamp: 2025-02-24T00:54:13.448303
+CREATE TABLE `ac_accounts`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `cid` VARCHAR(10),
+    `account_code` VARCHAR(50),
+    `account_name` VARCHAR(100),
+    `group_code` INTEGER,
+    `group_name` VARCHAR(100),
+    `class_code` INTEGER,
+    `class_name` VARCHAR(100),
+    `class_type` VARCHAR(100),
+    `active` VARCHAR(10),
+    `is_default` VARCHAR(10),
+    `field1` VARCHAR(100),
+    `field2` INTEGER,
+    `note` VARCHAR(100),
+    `created_by` VARCHAR(100),
+    `created_on` DATETIME,
+    `updated_by` VARCHAR(100),
+    `updated_on` DATETIME,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+success!
+timestamp: 2025-02-24T00:54:13.462389
+CREATE TABLE `ac_ref_type`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `cid` VARCHAR(10),
+    `ref_type` VARCHAR(100),
+    `field1` VARCHAR(100),
+    `field2` INTEGER,
+    `note` VARCHAR(100),
+    `created_by` VARCHAR(100),
+    `created_on` DATETIME,
+    `updated_by` VARCHAR(100),
+    `updated_on` DATETIME,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+success!
+timestamp: 2025-02-24T00:54:13.473102
+CREATE TABLE `ac_reference`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `cid` VARCHAR(10),
+    `ref_code` VARCHAR(100),
+    `ref_name` VARCHAR(100),
+    `des` VARCHAR(100),
+    `active` VARCHAR(10),
+    `ref_type` VARCHAR(100),
+    `field1` VARCHAR(100),
+    `field2` INTEGER,
+    `note` VARCHAR(100),
+    `created_by` VARCHAR(100),
+    `created_on` DATETIME,
+    `updated_by` VARCHAR(100),
+    `updated_on` DATETIME,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+success!
+timestamp: 2025-02-24T00:54:13.489183
+CREATE TABLE `ac_cash_bank`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `cid` VARCHAR(10),
+    `account_code` VARCHAR(50),
+    `account_name` VARCHAR(100),
+    `account_type` VARCHAR(100),
+    `field1` VARCHAR(100),
+    `field2` INTEGER,
+    `note` VARCHAR(100),
+    `created_by` VARCHAR(100),
+    `created_on` DATETIME,
+    `updated_by` VARCHAR(100),
+    `updated_on` DATETIME,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+success!
+timestamp: 2025-02-24T00:54:13.501658
+CREATE TABLE `ac_voucher_head`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `sl` INTEGER,
+    `cid` VARCHAR(10),
+    `branch_code` INTEGER,
+    `v_type` VARCHAR(100),
+    `v_type_sl` INTEGER,
+    `v_date` DATETIME,
+    `narration` VARCHAR(255),
+    `status` VARCHAR(100),
+    `total_amount` DOUBLE,
+    `post_by` VARCHAR(100),
+    `post_time` DATETIME,
+    `field1` VARCHAR(100),
+    `field2` INTEGER,
+    `note` VARCHAR(100),
+    `created_by` VARCHAR(100),
+    `created_on` DATETIME,
+    `updated_by` VARCHAR(100),
+    `updated_on` DATETIME,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+success!
+timestamp: 2025-02-24T00:54:43.867899
+CREATE TABLE `ac_voucher_details`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `cid` VARCHAR(10),
+    `sl` INTEGER,
+    `account_code` VARCHAR(50),
+    `account_name` VARCHAR(100),
+    `amount` DOUBLE,
+    `class_code` INTEGER,
+    `class_type` VARCHAR(50),
+    `group_code` INTEGER,
+    `group_type` VARCHAR(50),
+    `v_type` VARCHAR(100),
+    `v_type_sl` INTEGER,
+    `v_date` DATETIME,
+    `status` VARCHAR(100),
+    `branch_code` INTEGER,
+    `balance` DOUBLE,
+    `post_time` DATETIME,
+    `field1` VARCHAR(100),
+    `field2` INTEGER,
+    `note` VARCHAR(100),
+    `created_by` VARCHAR(100),
+    `created_on` DATETIME,
+    `updated_by` VARCHAR(100),
+    `updated_on` DATETIME,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+success!
+timestamp: 2025-02-24T00:54:43.883007
+CREATE TABLE `ac_branch`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `cid` VARCHAR(10),
+    `branch_code` INTEGER,
+    `branch_name` VARCHAR(100),
+    `address` VARCHAR(255),
+    `field1` VARCHAR(100),
+    `field2` INTEGER,
+    `note` VARCHAR(100),
+    `created_by` VARCHAR(100),
+    `created_on` DATETIME,
+    `updated_by` VARCHAR(100),
+    `updated_on` DATETIME,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+success!
+timestamp: 2025-02-24T00:54:43.893684
+CREATE TABLE `ac_account_branch`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `cid` VARCHAR(10),
+    `account_code` VARCHAR(50),
+    `account_name` VARCHAR(100),
+    `branch_code` INTEGER,
+    `branch_name` VARCHAR(100),
+    `field1` VARCHAR(100),
+    `field2` INTEGER,
+    `note` VARCHAR(100),
+    `created_by` VARCHAR(100),
+    `created_on` DATETIME,
+    `updated_by` VARCHAR(100),
+    `updated_on` DATETIME,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+success!
+timestamp: 2025-02-24T00:54:43.908144
+CREATE TABLE `ac_auth_user`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `cid` VARCHAR(10),
+    `username` VARCHAR(100),
+    `email` VARCHAR(100),
+    `password` VARCHAR(100),
+    `first_name` VARCHAR(50),
+    `last_name` VARCHAR(50),
+    `sso_id` VARCHAR(50),
+    `action_token` VARCHAR(100),
+    `last_password_change` DATETIME,
+    `past_passwords_hash` VARCHAR(100),
+    `branch_code` INTEGER,
+    `branch_name` VARCHAR(100),
+    `role` VARCHAR(100),
+    `status` VARCHAR(100),
+    `contact` VARCHAR(20),
+    `f_password` INTEGER,
+    `field1` VARCHAR(100),
+    `field2` INTEGER,
+    `note` VARCHAR(100),
+    `created_by` VARCHAR(100),
+    `created_on` DATETIME,
+    `updated_by` VARCHAR(100),
+    `updated_on` DATETIME,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+success!
+timestamp: 2025-02-24T00:54:43.918175
+CREATE TABLE `ac_voucher_reference`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `cid` VARCHAR(10),
+    `sl` INTEGER,
+    `account_code` VARCHAR(50),
+    `ref_code` VARCHAR(100),
+    `ref_name` VARCHAR(100),
+    `amount` DOUBLE,
+    `v_type` VARCHAR(100),
+    `v_date` DATETIME,
+    `status` VARCHAR(100),
+    `branch_code` INTEGER,
+    `post_time` DATETIME,
+    `field1` VARCHAR(100),
+    `field2` INTEGER,
+    `note` VARCHAR(100),
+    `created_by` VARCHAR(100),
+    `created_on` DATETIME,
+    `updated_by` VARCHAR(100),
+    `updated_on` DATETIME,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+success!
+timestamp: 2025-02-24T00:54:43.929921
+CREATE TABLE `ac_account_ref`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `cid` VARCHAR(10),
+    `account_code` VARCHAR(50),
+    `account_name` VARCHAR(100),
+    `ref_type` VARCHAR(100),
+    `ref_type_id` INTEGER,
+    `field1` VARCHAR(100),
+    `field2` INTEGER,
+    `note` VARCHAR(100),
+    `created_by` VARCHAR(100),
+    `created_on` DATETIME,
+    `updated_by` VARCHAR(100),
+    `updated_on` DATETIME,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+success!
+timestamp: 2025-02-24T00:54:43.941031
+CREATE TABLE `ac_bank_note`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `cid` VARCHAR(10),
+    `note_code` VARCHAR(50),
+    `note_amount` DOUBLE,
+    `in_words` VARCHAR(100),
+    `type` VARCHAR(100),
+    `status` VARCHAR(100),
+    `field1` VARCHAR(100),
+    `field2` INTEGER,
+    `note` VARCHAR(100),
+    `created_by` VARCHAR(100),
+    `created_on` DATETIME,
+    `updated_by` VARCHAR(100),
+    `updated_on` DATETIME,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+success!
+timestamp: 2025-02-24T00:54:43.951880
+CREATE TABLE `ac_denomination`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `cid` VARCHAR(10),
+    `note_code` VARCHAR(50),
+    `note_amount` DOUBLE,
+    `in_words` VARCHAR(100),
+    `type` VARCHAR(100),
+    `qty` INTEGER,
+    `total` DOUBLE,
+    `account_code` VARCHAR(50),
+    `account_name` VARCHAR(100),
+    `branch_code` INTEGER,
+    `branch_name` VARCHAR(100),
+    `trans_date` DATE,
+    `created_by` VARCHAR(100),
+    `created_on` DATETIME,
+    `updated_by` VARCHAR(100),
+    `updated_on` DATETIME,
+    `field1` VARCHAR(100),
+    `field2` INTEGER,
+    `note` VARCHAR(100),
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+success!
+timestamp: 2025-02-24T00:54:43.962222
+CREATE TABLE `ac_denomination_head`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `cid` VARCHAR(10),
+    `trans_id` VARCHAR(20),
+    `total_amount` DOUBLE,
+    `account_code` VARCHAR(50),
+    `account_name` VARCHAR(100),
+    `branch_code` INTEGER,
+    `branch_name` VARCHAR(100),
+    `trans_date` DATE,
+    `field1` VARCHAR(100),
+    `field2` INTEGER,
+    `note` VARCHAR(100),
+    `created_by` VARCHAR(100),
+    `created_on` DATETIME,
+    `updated_by` VARCHAR(100),
+    `updated_on` DATETIME,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+success!
+timestamp: 2025-02-24T00:54:43.977827
+CREATE TABLE `ac_denomination_details`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `cid` VARCHAR(10),
+    `trans_id` VARCHAR(20),
+    `note_code` VARCHAR(50),
+    `note_amount` DOUBLE,
+    `in_words` VARCHAR(100),
+    `type` VARCHAR(100),
+    `qty` INTEGER,
+    `total` DOUBLE,
+    `account_code` VARCHAR(50),
+    `account_name` VARCHAR(100),
+    `branch_code` INTEGER,
+    `branch_name` VARCHAR(100),
+    `trans_date` DATE,
+    `field1` VARCHAR(100),
+    `field2` INTEGER,
+    `note` VARCHAR(100),
+    `created_by` VARCHAR(100),
+    `created_on` DATETIME,
+    `updated_by` VARCHAR(100),
+    `updated_on` DATETIME,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+success!
+timestamp: 2025-02-24T00:54:43.988011
+CREATE TABLE `inventory_items`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `cid` VARCHAR(10),
+    `item_code` VARCHAR(20),
+    `item_name` VARCHAR(100),
+    `category` VARCHAR(50),
+    `unit` VARCHAR(20),
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+success!
+timestamp: 2025-02-24T00:54:43.997142
+CREATE TABLE `unit`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `cid` VARCHAR(10),
+    `unit_code` VARCHAR(20),
+    `unit_name` VARCHAR(50) UNIQUE,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+success!
+timestamp: 2025-02-24T00:54:44.011831
+CREATE TABLE `category`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `cid` VARCHAR(10),
+    `category_code` VARCHAR(20),
+    `category_name` VARCHAR(100) UNIQUE,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+success!
+timestamp: 2025-02-24T00:54:44.024069
+CREATE TABLE `brand`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `cid` VARCHAR(10),
+    `brand_code` VARCHAR(20),
+    `brand_name` VARCHAR(100) UNIQUE,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+success!
+timestamp: 2025-02-24T00:54:44.035676
+CREATE TABLE `supplier`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `cid` VARCHAR(10),
+    `supplier_code` VARCHAR(20),
+    `supplier_name` VARCHAR(100) UNIQUE,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+success!
+timestamp: 2025-02-24T00:54:44.060125
+CREATE TABLE `product`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `cid` VARCHAR(10),
+    `item_code` VARCHAR(20),
+    `item_name` VARCHAR(100),
+    `category` VARCHAR(50),
+    `unit` VARCHAR(20),
+    `field1` VARCHAR(100),
+    `field2` INTEGER,
+    `note` VARCHAR(100),
+    `created_by` VARCHAR(100),
+    `created_on` DATETIME,
+    `updated_by` VARCHAR(100),
+    `updated_on` DATETIME,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+success!
+timestamp: 2025-02-24T00:54:44.077990
+CREATE TABLE `product_receives`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `cid` VARCHAR(10),
+    `receive_code` INTEGER,
+    `receive_date` DATETIME,
+    `supplier_code` INT  , INDEX `supplier_code__idx` (`supplier_code`), FOREIGN KEY (`supplier_code`) REFERENCES `supplier` (`id`) ON DELETE CASCADE,
+    `supplier_name` VARCHAR(100),
+    `item_code` INT  , INDEX `item_code__idx` (`item_code`), FOREIGN KEY (`item_code`) REFERENCES `inventory_items` (`id`) ON DELETE CASCADE,
+    `item_name` VARCHAR(100),
+    `unit_code` VARCHAR(20),
+    `unit_name` VARCHAR(50) UNIQUE,
+    `quantity_received` INTEGER,
+    `unit_price` DOUBLE,
+    `total_price` DOUBLE,
+    `received_by` VARCHAR(100),
+    `remarks` LONGTEXT,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+success!
+timestamp: 2025-03-06T03:26:34.647555
+CREATE TABLE `product_receives_head`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `receive_code` INTEGER,
+    `receive_date` DATETIME,
+    `supplier_code` VARCHAR(50),
+    `supplier_name` VARCHAR(100),
+    `total_amount` DOUBLE,
+    `remarks` VARCHAR(512),
+    `status` VARCHAR(512),
+    `post_by` VARCHAR(100),
+    `post_on` DATETIME,
+    `field1` VARCHAR(100),
+    `field2` INTEGER,
+    `note` VARCHAR(100),
+    `created_by` VARCHAR(100),
+    `created_on` DATETIME,
+    `updated_by` VARCHAR(100),
+    `updated_on` DATETIME,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+success!
+timestamp: 2025-03-06T03:26:34.694821
+CREATE TABLE `product_receive_details`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `receive_code` INTEGER,
+    `receive_date` DATETIME,
+    `supplier_code` VARCHAR(50),
+    `supplier_name` VARCHAR(100),
+    `item_code` VARCHAR(50),
+    `item_name` VARCHAR(100),
+    `unit_code` VARCHAR(20),
+    `unit_name` VARCHAR(50),
+    `quantity` DOUBLE,
+    `trade_price` DOUBLE,
+    `total` DOUBLE,
+    `field1` VARCHAR(100),
+    `field2` INTEGER,
+    `note` VARCHAR(100),
+    `created_by` VARCHAR(100),
+    `created_on` DATETIME,
+    `updated_by` VARCHAR(100),
+    `updated_on` DATETIME,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+success!
+timestamp: 2025-03-06T03:26:34.726116
+CREATE TABLE `product_stock`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `trx_code` VARCHAR(100),
+    `trx_date` DATETIME,
+    `trx_type` VARCHAR(20),
+    `item_code` VARCHAR(50),
+    `item_name` VARCHAR(512),
+    `quantity` DOUBLE,
+    `trade_price` DOUBLE,
+    `total` DOUBLE,
+    `field1` VARCHAR(100),
+    `field2` INTEGER,
+    `note` VARCHAR(100),
+    `created_by` VARCHAR(100),
+    `created_on` DATETIME,
+    `updated_by` VARCHAR(100),
+    `updated_on` DATETIME,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+success!
+timestamp: 2025-03-06T03:27:18.010197
+CREATE TABLE `product_receive_head`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `receive_code` INTEGER,
+    `receive_date` DATETIME,
+    `supplier_code` VARCHAR(50),
+    `supplier_name` VARCHAR(100),
+    `total_amount` DOUBLE,
+    `remarks` VARCHAR(512),
+    `status` VARCHAR(512),
+    `post_by` VARCHAR(100),
+    `post_on` DATETIME,
+    `field1` VARCHAR(100),
+    `field2` INTEGER,
+    `note` VARCHAR(100),
+    `created_by` VARCHAR(100),
+    `created_on` DATETIME,
+    `updated_by` VARCHAR(100),
+    `updated_on` DATETIME,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+success!
+timestamp: 2025-03-08T01:09:52.452502
+ALTER TABLE `product_stock` ADD `balance` DOUBLE;
+success!
+success!
+timestamp: 2025-03-08T01:11:11.625997
+ALTER TABLE `product_stock` ADD `post_time` DATETIME;
+success!
+success!
+timestamp: 2025-03-08T01:12:01.688771
+ALTER TABLE `product_stock` ADD `status` VARCHAR(20);
+success!
+success!
+timestamp: 2025-03-08T01:22:49.393703
+ALTER TABLE `brand` DROP COLUMN `cid`;
+success!
+timestamp: 2025-03-08T01:43:33.899643
+ALTER TABLE `inventory_items` ADD `category_code` VARCHAR(20);
+success!
+timestamp: 2025-03-08T01:43:33.918499
+ALTER TABLE `inventory_items` ADD `category_name` VARCHAR(100);
+success!
+timestamp: 2025-03-08T01:43:33.919685
+ALTER TABLE `inventory_items` ADD `brand_code` VARCHAR(50);
+success!
+timestamp: 2025-03-08T01:43:33.928445
+ALTER TABLE `inventory_items` ADD `brand_name` VARCHAR(50);
+success!
+timestamp: 2025-03-08T01:43:33.939904
+ALTER TABLE `inventory_items` ADD `supplier_code` VARCHAR(50);
+success!
+timestamp: 2025-03-08T01:43:33.939904
+ALTER TABLE `inventory_items` ADD `supplier_name` VARCHAR(100);
+success!
+timestamp: 2025-03-08T01:43:33.951572
+ALTER TABLE `inventory_items` ADD `field1` VARCHAR(100);
+success!
+timestamp: 2025-03-08T01:43:33.959722
+ALTER TABLE `inventory_items` ADD `field2` INTEGER;
+success!
+timestamp: 2025-03-08T01:43:33.968870
+ALTER TABLE `inventory_items` ADD `note` VARCHAR(100);
+success!
+timestamp: 2025-03-08T01:43:33.983712
+ALTER TABLE `inventory_items` ADD `created_by` VARCHAR(100);
+success!
+timestamp: 2025-03-08T01:43:33.988748
+ALTER TABLE `inventory_items` ADD `created_on` DATETIME;
+success!
+timestamp: 2025-03-08T01:43:33.999794
+ALTER TABLE `inventory_items` ADD `updated_by` VARCHAR(100);
+success!
+timestamp: 2025-03-08T01:43:34.008325
+ALTER TABLE `inventory_items` ADD `updated_on` DATETIME;
+success!
+timestamp: 2025-03-08T01:43:34.019981
+ALTER TABLE `inventory_items` DROP COLUMN `cid`;
+success!
+timestamp: 2025-03-08T01:43:34.039773
+ALTER TABLE `inventory_items` DROP COLUMN `category`;
+success!
+timestamp: 2025-03-08T01:43:34.068692
+ALTER TABLE `unit` ADD `unit_name__tmp` VARCHAR(50);
+success!
+UPDATE `unit` SET `unit_name__tmp`=`unit_name`;
+success!
+ALTER TABLE `unit` DROP COLUMN `unit_name`;
+success!
+ALTER TABLE `unit` ADD `unit_name` VARCHAR(50);
+success!
+UPDATE `unit` SET `unit_name`=`unit_name__tmp`;
+success!
+ALTER TABLE `unit` DROP COLUMN `unit_name__tmp`;
+success!
+timestamp: 2025-03-08T01:43:34.138303
+ALTER TABLE `unit` ADD `field1` VARCHAR(100);
+success!
+timestamp: 2025-03-08T01:43:34.141805
+ALTER TABLE `unit` ADD `field2` INTEGER;
+success!
+timestamp: 2025-03-08T01:43:34.149757
+ALTER TABLE `unit` ADD `note` VARCHAR(100);
+success!
+timestamp: 2025-03-08T01:43:34.168478
+ALTER TABLE `unit` ADD `created_by` VARCHAR(100);
+success!
+timestamp: 2025-03-08T01:43:34.173580
+ALTER TABLE `unit` ADD `created_on` DATETIME;
+success!
+timestamp: 2025-03-08T01:43:34.178616
+ALTER TABLE `unit` ADD `updated_by` VARCHAR(100);
+success!
+timestamp: 2025-03-08T01:43:34.189711
+ALTER TABLE `unit` ADD `updated_on` DATETIME;
+success!
+timestamp: 2025-03-08T01:43:34.190231
+ALTER TABLE `unit` DROP COLUMN `cid`;
+success!
+timestamp: 2025-03-08T01:43:34.198284
+ALTER TABLE `unit` DROP COLUMN `unit_code`;
+success!
+timestamp: 2025-03-08T01:43:34.208353
+ALTER TABLE `category` ADD `category_code__tmp` VARCHAR(50);
+success!
+UPDATE `category` SET `category_code__tmp`=`category_code`;
+success!
+ALTER TABLE `category` DROP COLUMN `category_code`;
+success!
+ALTER TABLE `category` ADD `category_code` VARCHAR(50);
+success!
+UPDATE `category` SET `category_code`=`category_code__tmp`;
+success!
+ALTER TABLE `category` DROP COLUMN `category_code__tmp`;
+success!
+timestamp: 2025-03-08T01:43:34.268799
+ALTER TABLE `category` ADD `field1` VARCHAR(100);
+success!
+timestamp: 2025-03-08T01:43:34.284459
+ALTER TABLE `category` ADD `field2` INTEGER;
+success!
+timestamp: 2025-03-08T01:43:34.299792
+ALTER TABLE `category` ADD `note` VARCHAR(100);
+success!
+timestamp: 2025-03-08T01:43:34.308316
+ALTER TABLE `category` ADD `created_by` VARCHAR(100);
+success!
+timestamp: 2025-03-08T01:43:34.317835
+ALTER TABLE `category` ADD `created_on` DATETIME;
+success!
+timestamp: 2025-03-08T01:43:34.319263
+ALTER TABLE `category` ADD `updated_by` VARCHAR(100);
+success!
+timestamp: 2025-03-08T01:43:34.331837
+ALTER TABLE `category` ADD `updated_on` DATETIME;
+success!
+timestamp: 2025-03-08T01:43:34.339563
+ALTER TABLE `category` DROP COLUMN `cid`;
+success!
+timestamp: 2025-03-08T01:43:34.363581
+ALTER TABLE `brand` ADD `brand_code__tmp` VARCHAR(50);
+success!
+UPDATE `brand` SET `brand_code__tmp`=`brand_code`;
+success!
+ALTER TABLE `brand` DROP COLUMN `brand_code`;
+success!
+ALTER TABLE `brand` ADD `brand_code` VARCHAR(50);
+success!
+UPDATE `brand` SET `brand_code`=`brand_code__tmp`;
+success!
+ALTER TABLE `brand` DROP COLUMN `brand_code__tmp`;
+success!
+timestamp: 2025-03-08T01:43:34.411845
+ALTER TABLE `brand` ADD `field1` VARCHAR(100);
+success!
+timestamp: 2025-03-08T01:43:34.418702
+ALTER TABLE `brand` ADD `field2` INTEGER;
+success!
+timestamp: 2025-03-08T01:43:34.429832
+ALTER TABLE `brand` ADD `note` VARCHAR(100);
+success!
+timestamp: 2025-03-08T01:43:34.439295
+ALTER TABLE `brand` ADD `created_by` VARCHAR(100);
+success!
+timestamp: 2025-03-08T01:43:34.448767
+ALTER TABLE `brand` ADD `created_on` DATETIME;
+success!
+timestamp: 2025-03-08T01:43:34.455583
+ALTER TABLE `brand` ADD `updated_by` VARCHAR(100);
+success!
+timestamp: 2025-03-08T01:43:34.462747
+ALTER TABLE `brand` ADD `updated_on` DATETIME;
+success!
+timestamp: 2025-03-08T01:43:34.478486
+ALTER TABLE `supplier` ADD `supplier_code__tmp` VARCHAR(50);
+success!
+UPDATE `supplier` SET `supplier_code__tmp`=`supplier_code`;
+success!
+ALTER TABLE `supplier` DROP COLUMN `supplier_code`;
+success!
+ALTER TABLE `supplier` ADD `supplier_code` VARCHAR(50);
+success!
+UPDATE `supplier` SET `supplier_code`=`supplier_code__tmp`;
+success!
+ALTER TABLE `supplier` DROP COLUMN `supplier_code__tmp`;
+success!
+timestamp: 2025-03-08T01:43:34.539638
+ALTER TABLE `supplier` ADD `field1` VARCHAR(100);
+success!
+timestamp: 2025-03-08T01:43:34.539638
+ALTER TABLE `supplier` ADD `field2` INTEGER;
+success!
+timestamp: 2025-03-08T01:43:34.552692
+ALTER TABLE `supplier` ADD `note` VARCHAR(100);
+success!
+timestamp: 2025-03-08T01:43:34.559638
+ALTER TABLE `supplier` ADD `created_by` VARCHAR(100);
+success!
+timestamp: 2025-03-08T01:43:34.568668
+ALTER TABLE `supplier` ADD `created_on` DATETIME;
+success!
+timestamp: 2025-03-08T01:43:34.568668
+ALTER TABLE `supplier` ADD `updated_by` VARCHAR(100);
+success!
+timestamp: 2025-03-08T01:43:34.579627
+ALTER TABLE `supplier` ADD `updated_on` DATETIME;
+success!
+timestamp: 2025-03-08T01:43:34.588696
+ALTER TABLE `supplier` DROP COLUMN `cid`;
+success!
+timestamp: 2025-03-08T01:43:34.628594
+ALTER TABLE `product_receive_details` ADD `brand_code` VARCHAR(50);
+success!
+timestamp: 2025-03-08T01:43:34.639792
+ALTER TABLE `product_receive_details` ADD `brand_name` VARCHAR(100);
+success!
+timestamp: 2025-03-08T01:43:34.648651
+ALTER TABLE `product_receive_details` ADD `unit_code__tmp` VARCHAR(50);
+success!
+UPDATE `product_receive_details` SET `unit_code__tmp`=`unit_code`;
+success!
+ALTER TABLE `product_receive_details` DROP COLUMN `unit_code`;
+success!
+ALTER TABLE `product_receive_details` ADD `unit_code` VARCHAR(50);
+success!
+UPDATE `product_receive_details` SET `unit_code`=`unit_code__tmp`;
+success!
+ALTER TABLE `product_receive_details` DROP COLUMN `unit_code__tmp`;
+success!
+timestamp: 2025-03-08T01:43:34.698332
+ALTER TABLE `product_receive_details` ADD `unit_name__tmp` VARCHAR(100);
+success!
+UPDATE `product_receive_details` SET `unit_name__tmp`=`unit_name`;
+success!
+ALTER TABLE `product_receive_details` DROP COLUMN `unit_name`;
+success!
+ALTER TABLE `product_receive_details` ADD `unit_name` VARCHAR(100);
+success!
+UPDATE `product_receive_details` SET `unit_name`=`unit_name__tmp`;
+success!
+ALTER TABLE `product_receive_details` DROP COLUMN `unit_name__tmp`;
+success!
+timestamp: 2025-03-08T01:43:34.729910
+ALTER TABLE `product_receive_details` ADD `category_code` VARCHAR(50);
+success!
+timestamp: 2025-03-08T01:43:34.729910
+ALTER TABLE `product_receive_details` ADD `category_name` VARCHAR(100);
+success!
+success!
+timestamp: 2025-03-08T01:44:53.488107
+ALTER TABLE `inventory_items` ADD `cid` VARCHAR(10);
+success!
+timestamp: 2025-03-08T01:44:53.517292
+ALTER TABLE `unit` ADD `cid` VARCHAR(10);
+success!
+timestamp: 2025-03-08T01:44:53.538939
+ALTER TABLE `category` ADD `cid` VARCHAR(10);
+success!
+timestamp: 2025-03-08T01:44:53.559112
+ALTER TABLE `brand` ADD `cid` VARCHAR(10);
+success!
+timestamp: 2025-03-08T01:44:53.577974
+ALTER TABLE `supplier` ADD `cid` VARCHAR(10);
+success!
+timestamp: 2025-03-08T01:44:53.589246
+ALTER TABLE `product_receive_head` ADD `cid` VARCHAR(10);
+success!
+timestamp: 2025-03-08T01:44:53.609328
+ALTER TABLE `product_receive_details` ADD `cid` VARCHAR(10);
+success!
+timestamp: 2025-03-08T01:47:44.909092
+ALTER TABLE `brand` ADD `brand_code__tmp` VARCHAR(20);
+success!
+UPDATE `brand` SET `brand_code__tmp`=`brand_code`;
+success!
+ALTER TABLE `brand` DROP COLUMN `brand_code`;
+success!
+ALTER TABLE `brand` ADD `brand_code` VARCHAR(20);
+success!
+UPDATE `brand` SET `brand_code`=`brand_code__tmp`;
+success!
+ALTER TABLE `brand` DROP COLUMN `brand_code__tmp`;
+success!
+timestamp: 2025-03-08T01:47:44.959241
+ALTER TABLE `brand` DROP COLUMN `field1`;
+success!
+timestamp: 2025-03-08T01:47:44.967841
+ALTER TABLE `brand` DROP COLUMN `field2`;
+success!
+timestamp: 2025-03-08T01:47:44.967841
+ALTER TABLE `brand` DROP COLUMN `note`;
+success!
+timestamp: 2025-03-08T01:47:44.979128
+ALTER TABLE `brand` DROP COLUMN `created_by`;
+success!
+timestamp: 2025-03-08T01:47:44.988262
+ALTER TABLE `brand` DROP COLUMN `created_on`;
+success!
+timestamp: 2025-03-08T01:47:44.999045
+ALTER TABLE `brand` DROP COLUMN `updated_by`;
+success!
+timestamp: 2025-03-08T01:47:45.009036
+ALTER TABLE `brand` DROP COLUMN `updated_on`;
+success!
+timestamp: 2025-03-08T01:47:45.031973
+ALTER TABLE `product_receive_head` DROP COLUMN `cid`;
+success!
+timestamp: 2025-03-08T01:47:45.057082
+ALTER TABLE `product_receive_details` ADD `unit_code__tmp` VARCHAR(20);
+success!
+UPDATE `product_receive_details` SET `unit_code__tmp`=`unit_code`;
+success!
+ALTER TABLE `product_receive_details` DROP COLUMN `unit_code`;
+success!
+ALTER TABLE `product_receive_details` ADD `unit_code` VARCHAR(20);
+success!
+UPDATE `product_receive_details` SET `unit_code`=`unit_code__tmp`;
+success!
+ALTER TABLE `product_receive_details` DROP COLUMN `unit_code__tmp`;
+success!
+timestamp: 2025-03-08T01:47:45.087922
+ALTER TABLE `product_receive_details` ADD `unit_name__tmp` VARCHAR(50);
+success!
+UPDATE `product_receive_details` SET `unit_name__tmp`=`unit_name`;
+success!
+ALTER TABLE `product_receive_details` DROP COLUMN `unit_name`;
+success!
+ALTER TABLE `product_receive_details` ADD `unit_name` VARCHAR(50);
+success!
+UPDATE `product_receive_details` SET `unit_name`=`unit_name__tmp`;
+success!
+ALTER TABLE `product_receive_details` DROP COLUMN `unit_name__tmp`;
+success!
+timestamp: 2025-03-08T01:47:45.119776
+ALTER TABLE `product_receive_details` DROP COLUMN `brand_code`;
+success!
+timestamp: 2025-03-08T01:47:45.135592
+ALTER TABLE `product_receive_details` DROP COLUMN `brand_name`;
+success!
+timestamp: 2025-03-08T01:47:45.141697
+ALTER TABLE `product_receive_details` DROP COLUMN `category_code`;
+success!
+timestamp: 2025-03-08T01:47:45.151452
+ALTER TABLE `product_receive_details` DROP COLUMN `category_name`;
+success!
+timestamp: 2025-03-08T01:47:45.161637
+ALTER TABLE `product_receive_details` DROP COLUMN `cid`;
+success!
+timestamp: 2025-03-08T01:47:45.529689
+ALTER TABLE `product_stock` DROP COLUMN `balance`;
+success!
+timestamp: 2025-03-08T01:47:45.542118
+ALTER TABLE `product_stock` DROP COLUMN `post_time`;
+success!
+timestamp: 2025-03-08T01:47:45.556867
+ALTER TABLE `product_stock` DROP COLUMN `status`;
+success!
+timestamp: 2025-03-08T02:06:59.001690
+ALTER TABLE `unit` ADD `unit_name__tmp` VARCHAR(50) UNIQUE;
+success!
+UPDATE `unit` SET `unit_name__tmp`=`unit_name`;
+success!
+ALTER TABLE `unit` DROP COLUMN `unit_name`;
+success!
+ALTER TABLE `unit` ADD `unit_name` VARCHAR(50) UNIQUE;
+success!
+UPDATE `unit` SET `unit_name`=`unit_name__tmp`;
+success!
+ALTER TABLE `unit` DROP COLUMN `unit_name__tmp`;
+success!
+timestamp: 2025-03-08T02:06:59.140999
+ALTER TABLE `unit` DROP COLUMN `field1`;
+success!
+timestamp: 2025-03-08T02:06:59.146358
+ALTER TABLE `unit` DROP COLUMN `field2`;
+success!
+timestamp: 2025-03-08T02:06:59.151910
+ALTER TABLE `unit` DROP COLUMN `note`;
+success!
+timestamp: 2025-03-08T02:06:59.162845
+ALTER TABLE `unit` DROP COLUMN `created_by`;
+success!
+timestamp: 2025-03-08T02:06:59.171916
+ALTER TABLE `unit` DROP COLUMN `created_on`;
+success!
+timestamp: 2025-03-08T02:06:59.179282
+ALTER TABLE `unit` DROP COLUMN `updated_by`;
+success!
+timestamp: 2025-03-08T02:06:59.188998
+ALTER TABLE `unit` DROP COLUMN `updated_on`;
+success!
+timestamp: 2025-03-08T03:07:25.885221
+ALTER TABLE `unit` ADD `field1` VARCHAR(100);
+success!
+timestamp: 2025-03-08T03:07:25.906620
+ALTER TABLE `unit` ADD `field2` INTEGER;
+success!
+timestamp: 2025-03-08T03:07:25.913666
+ALTER TABLE `unit` ADD `note` VARCHAR(100);
+success!
+timestamp: 2025-03-08T03:07:25.913666
+ALTER TABLE `unit` ADD `created_by` VARCHAR(100);
+success!
+timestamp: 2025-03-08T03:07:25.933150
+ALTER TABLE `unit` ADD `created_on` DATETIME;
+success!
+timestamp: 2025-03-08T03:07:25.938213
+ALTER TABLE `unit` ADD `updated_by` VARCHAR(100);
+success!
+timestamp: 2025-03-08T03:07:25.943744
+ALTER TABLE `unit` ADD `updated_on` DATETIME;
+success!
+timestamp: 2025-03-08T03:09:18.121185
+ALTER TABLE `category` ADD `category_code__tmp` INTEGER;
+success!
+UPDATE `category` SET `category_code__tmp`=`category_code`;
+success!
+ALTER TABLE `category` DROP COLUMN `category_code`;
+success!
+ALTER TABLE `category` ADD `category_code` INTEGER;
+success!
+UPDATE `category` SET `category_code`=`category_code__tmp`;
+success!
+ALTER TABLE `category` DROP COLUMN `category_code__tmp`;
+success!
+timestamp: 2025-03-08T03:09:18.154779
+ALTER TABLE `category` DROP COLUMN `field1`;
+success!
+timestamp: 2025-03-08T03:09:18.163800
+ALTER TABLE `category` DROP COLUMN `field2`;
+success!
+timestamp: 2025-03-08T03:09:18.174062
+ALTER TABLE `category` DROP COLUMN `note`;
+success!
+timestamp: 2025-03-08T03:09:18.178584
+ALTER TABLE `category` DROP COLUMN `created_by`;
+success!
+timestamp: 2025-03-08T03:09:18.184710
+ALTER TABLE `category` DROP COLUMN `created_on`;
+success!
+timestamp: 2025-03-08T03:09:18.193914
+ALTER TABLE `category` DROP COLUMN `updated_by`;
+success!
+timestamp: 2025-03-08T03:09:18.205216
+ALTER TABLE `category` DROP COLUMN `updated_on`;
+success!
+timestamp: 2025-03-08T03:10:19.944936
+ALTER TABLE `category` ADD `field1` VARCHAR(100);
+success!
+timestamp: 2025-03-08T03:10:19.959668
+ALTER TABLE `category` ADD `field2` INTEGER;
+success!
+timestamp: 2025-03-08T03:10:19.968451
+ALTER TABLE `category` ADD `note` VARCHAR(100);
+success!
+timestamp: 2025-03-08T03:10:19.979002
+ALTER TABLE `category` ADD `created_by` VARCHAR(100);
+success!
+timestamp: 2025-03-08T03:10:19.987653
+ALTER TABLE `category` ADD `created_on` DATETIME;
+success!
+timestamp: 2025-03-08T03:10:19.993829
+ALTER TABLE `category` ADD `updated_by` VARCHAR(100);
+success!
+timestamp: 2025-03-08T03:10:20.005940
+ALTER TABLE `category` ADD `updated_on` DATETIME;
+success!
+timestamp: 2025-03-08T03:14:42.859525
+ALTER TABLE `brand` ADD `field1` VARCHAR(100);
+success!
+timestamp: 2025-03-08T03:14:42.875159
+ALTER TABLE `brand` ADD `field2` INTEGER;
+success!
+timestamp: 2025-03-08T03:14:42.875159
+ALTER TABLE `brand` ADD `note` VARCHAR(100);
+success!
+timestamp: 2025-03-08T03:14:42.890845
+ALTER TABLE `brand` ADD `created_by` VARCHAR(100);
+success!
+timestamp: 2025-03-08T03:14:42.890845
+ALTER TABLE `brand` ADD `created_on` DATETIME;
+success!
+timestamp: 2025-03-08T03:14:42.890845
+ALTER TABLE `brand` ADD `updated_by` VARCHAR(100);
+success!
+timestamp: 2025-03-08T03:14:42.909732
+ALTER TABLE `brand` ADD `updated_on` DATETIME;
+success!
+timestamp: 2025-03-08T03:18:35.847722
+ALTER TABLE `supplier` ADD `supplier_code__tmp` VARCHAR(20);
+success!
+UPDATE `supplier` SET `supplier_code__tmp`=`supplier_code`;
+success!
+ALTER TABLE `supplier` DROP COLUMN `supplier_code`;
+success!
+ALTER TABLE `supplier` ADD `supplier_code` VARCHAR(20);
+success!
+UPDATE `supplier` SET `supplier_code`=`supplier_code__tmp`;
+success!
+ALTER TABLE `supplier` DROP COLUMN `supplier_code__tmp`;
+success!
+timestamp: 2025-03-08T03:18:35.903389
+ALTER TABLE `supplier` DROP COLUMN `field1`;
+success!
+timestamp: 2025-03-08T03:18:35.906441
+ALTER TABLE `supplier` DROP COLUMN `field2`;
+success!
+timestamp: 2025-03-08T03:18:35.919099
+ALTER TABLE `supplier` DROP COLUMN `note`;
+success!
+timestamp: 2025-03-08T03:18:35.926437
+ALTER TABLE `supplier` DROP COLUMN `created_by`;
+success!
+timestamp: 2025-03-08T03:18:35.926437
+ALTER TABLE `supplier` DROP COLUMN `created_on`;
+success!
+timestamp: 2025-03-08T03:18:35.937716
+ALTER TABLE `supplier` DROP COLUMN `updated_by`;
+success!
+timestamp: 2025-03-08T03:18:35.946800
+ALTER TABLE `supplier` DROP COLUMN `updated_on`;
+success!
+timestamp: 2025-03-08T03:19:12.186446
+ALTER TABLE `supplier` ADD `field1` VARCHAR(100);
+success!
+timestamp: 2025-03-08T03:19:12.186446
+ALTER TABLE `supplier` ADD `field2` INTEGER;
+success!
+timestamp: 2025-03-08T03:19:12.202751
+ALTER TABLE `supplier` ADD `note` VARCHAR(100);
+success!
+timestamp: 2025-03-08T03:19:12.207621
+ALTER TABLE `supplier` ADD `created_by` VARCHAR(100);
+success!
+timestamp: 2025-03-08T03:19:12.219192
+ALTER TABLE `supplier` ADD `created_on` DATETIME;
+success!
+timestamp: 2025-03-08T03:19:12.226715
+ALTER TABLE `supplier` ADD `updated_by` VARCHAR(100);
+success!
+timestamp: 2025-03-08T03:19:12.228039
+ALTER TABLE `supplier` ADD `updated_on` DATETIME;
+success!
+timestamp: 2025-03-08T03:42:31.216577
+ALTER TABLE `inventory_items` ADD `supplier_code__tmp` VARCHAR(20);
+success!
+UPDATE `inventory_items` SET `supplier_code__tmp`=`supplier_code`;
+success!
+ALTER TABLE `inventory_items` DROP COLUMN `supplier_code`;
+success!
+ALTER TABLE `inventory_items` ADD `supplier_code` VARCHAR(20);
+success!
+UPDATE `inventory_items` SET `supplier_code`=`supplier_code__tmp`;
+success!
+ALTER TABLE `inventory_items` DROP COLUMN `supplier_code__tmp`;
+success!
+timestamp: 2025-03-08T03:42:31.279696
+ALTER TABLE `inventory_items` ADD `brand_code__tmp` VARCHAR(20);
+success!
+UPDATE `inventory_items` SET `brand_code__tmp`=`brand_code`;
+success!
+ALTER TABLE `inventory_items` DROP COLUMN `brand_code`;
+success!
+ALTER TABLE `inventory_items` ADD `brand_code` VARCHAR(20);
+success!
+UPDATE `inventory_items` SET `brand_code`=`brand_code__tmp`;
+success!
+ALTER TABLE `inventory_items` DROP COLUMN `brand_code__tmp`;
+success!
+timestamp: 2025-03-08T03:42:31.311089
+ALTER TABLE `inventory_items` ADD `brand_name__tmp` VARCHAR(100);
+success!
+UPDATE `inventory_items` SET `brand_name__tmp`=`brand_name`;
+success!
+ALTER TABLE `inventory_items` DROP COLUMN `brand_name`;
+success!
+ALTER TABLE `inventory_items` ADD `brand_name` VARCHAR(100);
+success!
+UPDATE `inventory_items` SET `brand_name`=`brand_name__tmp`;
+success!
+ALTER TABLE `inventory_items` DROP COLUMN `brand_name__tmp`;
+success!
+success!
+timestamp: 2025-03-15T02:57:46.792684
+ALTER TABLE `brand` ADD `brand_name__tmp` VARCHAR(100);
+success!
+UPDATE `brand` SET `brand_name__tmp`=`brand_name`;
+success!
+ALTER TABLE `brand` DROP COLUMN `brand_name`;
+success!
+ALTER TABLE `brand` ADD `brand_name` VARCHAR(100);
+success!
+UPDATE `brand` SET `brand_name`=`brand_name__tmp`;
+success!
+ALTER TABLE `brand` DROP COLUMN `brand_name__tmp`;
+success!
+timestamp: 2025-03-15T02:57:46.902292
+ALTER TABLE `brand` ADD `supplier_code` VARCHAR(20);
+success!
+timestamp: 2025-03-15T02:57:46.917256
+ALTER TABLE `brand` ADD `supplier_name` VARCHAR(100);
+success!
+success!
+timestamp: 2025-03-18T00:51:52.875797
+ALTER TABLE `product_receive_head` ADD `desc` VARCHAR(100);
+success!
+success!
+timestamp: 2025-03-18T23:51:40.259070
+ALTER TABLE `product_receive_head` ADD `branch_code` INTEGER;
+success!
+success!
+timestamp: 2025-03-18T23:54:03.644941
+ALTER TABLE `product_receive_head` ADD `receive_date__tmp` DATE;
+success!
+UPDATE `product_receive_head` SET `receive_date__tmp`=`receive_date`;
+success!
+ALTER TABLE `product_receive_head` DROP COLUMN `receive_date`;
+success!
+ALTER TABLE `product_receive_head` ADD `receive_date` DATE;
+success!
+UPDATE `product_receive_head` SET `receive_date`=`receive_date__tmp`;
+success!
+ALTER TABLE `product_receive_head` DROP COLUMN `receive_date__tmp`;
+success!
+success!
+timestamp: 2025-03-23T00:36:08.874250
+ALTER TABLE `product_receive_details` ADD `status` VARCHAR(10);
+success!
+success!
+timestamp: 2025-03-23T00:40:38.003733
+ALTER TABLE `product_receive_head` ADD `branch_name` VARCHAR(100);
+success!
+success!
+timestamp: 2025-03-27T02:56:03.600405
+ALTER TABLE `inventory_items` ADD `trade_price` DOUBLE;
+success!
+timestamp: 2025-03-27T02:56:03.648309
+ALTER TABLE `inventory_items` ADD `retail_price` DOUBLE;
+success!
+success!
+timestamp: 2025-03-27T03:04:41.143431
+ALTER TABLE `product_receive_details` DROP COLUMN `supplier_code`;
+success!
+timestamp: 2025-03-27T03:04:41.177034
+ALTER TABLE `product_receive_details` DROP COLUMN `supplier_name`;
+success!
+timestamp: 2025-03-28T20:55:35.032509
+ALTER TABLE `product_stock` DROP COLUMN `trade_price`;
+success!
+timestamp: 2025-03-28T20:55:35.098875
+ALTER TABLE `product_stock` DROP COLUMN `total`;
+success!
+timestamp: 2025-03-28T21:43:20.695655
+ALTER TABLE `product_stock` ADD `branch_code` INTEGER;
+success!
+success!

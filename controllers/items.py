@@ -24,12 +24,13 @@ def new_item():
 
     if search_term:
         if search_by == 'item_name':
-            query = "SELECT * FROM inventory_items WHERE cid = 'TDCLPC' AND LOWER(item_name) LIKE '%{}%'".format(search_term)
+            query = "SELECT * FROM inventory_items WHERE  LOWER(item_name) LIKE '%{}%'".format(search_term)
         elif search_by == 'item_code':
-            query = "SELECT * FROM inventory_items WHERE cid = 'TDCLPC' AND item_code LIKE '%{}%'".format(search_term)
+            query = "SELECT * FROM inventory_items WHERE item_code LIKE '%{}%'".format(search_term)
     else:
-        query = "SELECT * FROM inventory_items WHERE cid = 'TDCLPC'"
+        query = "SELECT * FROM inventory_items  "
 
+    # print(query)
     rows = db.executesql(query, as_dict=True)
 
     # db.inventory_items.created_by.default = user
@@ -44,10 +45,27 @@ def new_item():
             form.custom.widgets['item_code']['_class'] = 'form-control form-control-sm'
     if 'item_name' in form.custom.widgets:
             form.custom.widgets['item_name']['_class'] = 'form-control form-control-sm'
-    if 'category' in form.custom.widgets:
-            form.custom.widgets['category']['_class'] = 'form-control form-control-sm'
+    if 'category_code' in form.custom.widgets:
+            form.custom.widgets['category_code']['_class'] = 'form-control form-control-sm'
+    if 'category_name' in form.custom.widgets:
+            form.custom.widgets['category_name']['_class'] = 'form-control form-control-sm'
     if 'unit' in form.custom.widgets:
+            form.custom.widgets['brand_name']['_class'] = 'form-control form-control-sm'
+    if 'brand_name' in form.custom.widgets:
             form.custom.widgets['unit']['_class'] = 'form-control form-control-sm'
+    if 'brand_code' in form.custom.widgets:
+            form.custom.widgets['brand_code']['_class'] = 'form-control form-control-sm'
+    if 'supplier_name' in form.custom.widgets:
+            form.custom.widgets['supplier_name']['_class'] = 'form-control form-control-sm'
+    if 'supplier_code' in form.custom.widgets:
+            form.custom.widgets['supplier_code']['_class'] = 'form-control form-control-sm'
+    if 'trade_price' in form.custom.widgets:
+            form.custom.widgets['trade_price']['_class'] = 'form-control form-control-sm'
+    if 'retail_price' in form.custom.widgets:
+            form.custom.widgets['retail_price']['_class'] = 'form-control form-control-sm'
+
+    
+
     if form.accepted:
         flash.set('Item added successfully', 'success')
         redirect(URL('items/new_item'))
@@ -113,4 +131,37 @@ def delete_item(item_id=None):
         redirect(URL('items/new_item'))
 
     return dict(role=role, user=user, branch_name=branch_name)
+
+# End-point to fetch branch code
+@action('items/get_brand_code',method=["GET"])
+@action.uses(db)
+def get_brand_code():   
+    brand_name = request.query.get("q")        
+    brand_row = db(db.brand.brand_name == brand_name).select().first()  
+    brand_code=brand_row.brand_code    
+    supplier_code=brand_row.supplier_code    
+    supplier_name=brand_row.supplier_name    
+    
+    return dict(brand_code=brand_code,supplier_code=supplier_code,supplier_name=supplier_name)
+
+# End-point to fetch category code
+@action('items/get_cat_code',method=["GET"])
+@action.uses(db)
+def get_cat_code():   
+    category_name = request.query.get("q")        
+    cat_row = db(db.category.category_name == category_name).select().first()  
+    category_code=cat_row.category_code   
+    # print(cat_row.category_code)
+    # print("Hello"+category_code)
+    
+    return dict(category_code=category_code)
+# End-point to fetch branch code
+# @action('items/test',method=["GET"])
+# @action.uses(db)
+# def test():   
+#     # brand_name = request.query.get("q")        
+#     # brand_row = db(db.brand.brand_name == brand_name).select().first()  
+#     # brand_code=brand_row.brand_code    
+    
+#     return "Hello"
 
