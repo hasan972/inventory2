@@ -387,29 +387,6 @@ db.define_table('product_receive_head',
                 Field('receive_code','integer'),
                 Field('receive_date', 'date'),                
                 
-<<<<<<< HEAD
-                # Supplier Information
-                Field('supplier_code', 'reference supplier', requires=IS_IN_DB(db, 'supplier.id', 'supplier.supplier_name')),
-                Field('supplier_name', 'string', length=100, compute=lambda r: db.supplier[r['supplier_code']].supplier_name if r['supplier_code'] else None),
-                
-                # Product Information
-                Field('item_code', 'reference inventory_items', requires=IS_IN_DB(db, 'inventory_items.id', 'inventory_items.item_name')),
-                Field('item_name', 'string', length=100, compute=lambda r: db.inventory_items[r['item_code']].item_name if r['item_code'] else None),
-                
-                # Unit Information
-                Field('unit_code', 'string', length=20, requires=[IS_NOT_EMPTY(), IS_NOT_IN_DB(db, 'unit.unit_code', 'Unit code already exists')]),
-                Field('unit_name', 'string', length=50, unique=True, requires=IS_NOT_EMPTY('Enter Unit Name')),
-                
-                # Quantity and Pricing
-                Field('quantity_received', 'integer', requires=IS_INT_IN_RANGE(1, None, error_message='Quantity must be at least 1')),
-                Field('unit_price', 'double', requires=IS_FLOAT_IN_RANGE(0.01, None, error_message='Enter a valid price')),
-                Field('total_price', 'double', compute=lambda r: r['quantity_received'] * r['unit_price']),
-                
-                # Other Info
-                Field('received_by', 'string', length=100, requires=IS_NOT_EMPTY()),
-                Field('remarks', 'text', default=None),
-                
-=======
                 Field('supplier_code', 'string',length=50),
                 Field('supplier_name', 'string', length=100),  
 
@@ -424,7 +401,6 @@ db.define_table('product_receive_head',
                 Field('branch_code', 'integer' ),       
                 Field('branch_name', 'string',length=100 ),       
                 signature,         
->>>>>>> ridwan
                 migrate=False
             )
 
