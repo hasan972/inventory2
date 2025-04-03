@@ -26,23 +26,19 @@ def new_unit():
         
         if search_term:
             if search_by == 'unit_name':
-                query = "SELECT * FROM unit WHERE LOWER(unit_name) LIKE '%{}%'".format(search_term)
-            elif search_by == 'unit_code':
-                query = "SELECT * FROM unit WHERE unit_code LIKE '%{}%'".format(search_term)
+                query = "SELECT * FROM unit WHERE LOWER(unit_name) LIKE '%{}%'".format(search_term)            
         else:
             query = "SELECT * FROM unit"
         
         rows = db.executesql(query, as_dict=True)
 
         # db.unit.created_by.default = user
-        form = Form(db.unit)
-        if 'unit_code' in form.custom.widgets:
-            form.custom.widgets['unit_code']['_class'] = 'form-control form-control-sm'
+        form = Form(db.unit)        
         if 'unit_name' in form.custom.widgets:
             form.custom.widgets['unit_name']['_class'] = 'form-control form-control-sm'
         
         if form.accepted:
-            flash.set('unit added successfully', 'success')
+            flash.set('Unit added successfully', 'success')
             redirect(URL('unit/new_unit'))
 
     return dict(form=form, rows=rows, search_term=search_term, search_by=search_by, role=role, user=user, branch_name=branch_name)

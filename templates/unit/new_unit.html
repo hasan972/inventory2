@@ -18,16 +18,7 @@
     
         [[= form.custom.begin ]]
         <div id="custom_input">        
-            <div class="row">
-                <div class="col-2">
-                    <div class="mb-3">
-                        <label for="unit_code" class="form-label">Unit Code</label>
-                        [[= form.custom.widgets['unit_code'] ]]
-                        [[ if 'unit_code' in form.errors: ]]
-                        <div class="text-danger">[[=form.errors['unit_code']]]</div>                           
-                        [[pass]]
-                    </div>
-                </div>
+            <div class="row">                
                 <div class="col-4">
                     <div class="mb-3">
                         <label for="unit_name" class="form-label">Unit Name</label>
@@ -54,8 +45,7 @@
         <form action="[[=URL('unit','new_unit')]]" method="GET">
             <label for="search_by">Search By:</label>
             <select name="search_by" id="search_by">
-                <option value="unit_name" [[= 'selected' if search_by == 'unit_name' else '' ]]>Unit Name</option>
-                <option value="unit_code" [[= 'selected' if search_by == 'unit_code' else '' ]]>Unit Code</option>
+                <option value="unit_name" [[= 'selected' if search_by == 'unit_name' else '' ]]>Unit Name</option>                
             </select> 
             <label for="search_term">Search Term:</label>
             <input type="text" name="search_term" id="search_term" value="[[=search_term]]">
@@ -69,7 +59,7 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th scope="col">Unit Code</th>
+                        <th scope="col">Id</th>
                         <th scope="col">Unit Name</th>                   
                         [[if role == 'ADMIN' :]]                    
                         <th scope="col">Action</th>    
@@ -79,7 +69,8 @@
                 <tbody>
                     [[for row in rows:]]
                     <tr>
-                        <td>[[=row['unit_code']]]</td>
+                        
+                        <td>[[=row['id']]]</td>  
                         <td>[[=row['unit_name']]]</td>  
                         
                         [[if role == 'ADMIN':]]

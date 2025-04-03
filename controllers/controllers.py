@@ -56,11 +56,7 @@ def login():
     if request.method == "POST":
         cid = str(request.forms.get('cid')).strip().upper()      
         username = str(request.forms.get('username')).strip().upper()      
-        password = str(request.forms.get('password')).strip()     
-        
-        print('cid: '+cid)
-        print('Username: '+username)
-        print('Password: '+password)
+        password = str(request.forms.get('password')).strip()        
 
         
 

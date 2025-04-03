@@ -37,6 +37,24 @@
                         [[pass]]
                     </div>
                 </div>
+                <div class="col-3">
+                    <div class="mb-3">
+                        <label for="brand_name" class="form-label">Supplier Name</label>
+                        [[= form.custom.widgets['supplier_name'] ]]
+                        [[ if 'supplier_name' in form.errors: ]]
+                        <div class="text-danger">[[=form.errors['supplier_name']]]</div>                           
+                        [[pass]]
+                    </div>
+                </div>
+                <div class="col-1">
+                    <div class="mb-3">
+                        <label for="brand_name" class="form-label">Supplier Code</label>
+                        [[= form.custom.widgets['supplier_code'] ]]
+                        [[ if 'supplier_code' in form.errors: ]]
+                        <div class="text-danger">[[=form.errors['supplier_code']]]</div>                           
+                        [[pass]]
+                    </div>
+                </div>
                 <div class="col-md-2 col-sm-6 col-12 d-flex align-items-end">
                     <button type="submit" class="btn btn-sm btn-primary mb-3" data-toggle="tooltip" data-placement="bottom" title="Add Brand">
                         <i class="fa-solid fa-floppy-disk"></i> <span class="ms-2">Save</span>                        
@@ -71,6 +89,8 @@
                     <tr>
                         <th scope="col">Brand Code</th>
                         <th scope="col">Brand Name</th>                   
+                        <th scope="col">Supplier Code</th>                   
+                        <th scope="col">Supplier Name</th>                   
                         [[if role == 'ADMIN' :]]                    
                         <th scope="col">Action</th>    
                         [[pass]]                    
@@ -81,6 +101,8 @@
                     <tr>
                         <td>[[=row['brand_code']]]</td>
                         <td>[[=row['brand_name']]]</td>  
+                        <td>[[=row['supplier_code']]]</td>  
+                        <td>[[=row['supplier_name']]]</td>  
                         
                         [[if role == 'ADMIN':]]
                         <td>
@@ -98,4 +120,27 @@
         </div>
     </div>
 </div>
+[[end]]
+
+[[block scripts]]
+<script>
+    $(document).ready(function() {
+        $("#brand_supplier_name").change(function() {  
+                // console.log('Hello')  ;
+                var selectedValue = $(this).val();  
+                $.ajax({
+                    url: '[[=URL("brand","get_sup_code")]]', // Replace with your endpoint
+                    method: 'GET',
+                    data: { q: selectedValue },
+                    dataType: 'json',
+                    success: function(data) {
+                    // console.log(data['branh_code'])            
+                    $("#brand_supplier_code").val(data['supplier_code']);            
+                }
+            });  
+
+        });
+    });
+</script>
+
 [[end]]
