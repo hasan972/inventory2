@@ -393,6 +393,8 @@ db.define_table('product_receive_head',
                 Field('desc', 'string', length=100),                  
              
                 Field('total_amount', 'double',),                
+                Field('vat', 'double',),                
+                Field('grand_total', 'double',),                
  
                 Field('remarks', 'string', ),
                 Field('status', 'string', ),       
@@ -400,6 +402,7 @@ db.define_table('product_receive_head',
                 Field('post_on', 'datetime' ),       
                 Field('branch_code', 'integer' ),       
                 Field('branch_name', 'string',length=100 ),       
+                Field('trans_type', 'string',length=100 ),       
                 signature,         
                 migrate=False
             )
@@ -423,6 +426,8 @@ db.define_table('product_receive_details',
                 Field('trade_price', 'double',),
                 Field('total', 'double', ),        
                 Field('status', 'string',length=10 ),        
+                Field('trans_type', 'string',length=100 ),        
+                Field('branch_code', 'integer' ),        
                 signature,                  
                 migrate=False
             )
@@ -435,6 +440,21 @@ db.define_table('product_stock',
  
                 Field('item_code', 'string', length=50),
                 Field('item_name', 'string', legth=100),               
+                
+                Field('quantity', 'double'),
+                Field('branch_code', 'integer'),
+                
+                signature,                  
+                migrate=False
+            )
+
+db.define_table('stock',
+                Field('id', 'integer'),        
+                Field('item_code', 'string', length=50),
+                Field('item_name', 'string', legth=100),       
+
+                Field('brand_code', 'string', length=50),
+                Field('supplier_code', 'string', length=50),
                 
                 Field('quantity', 'double'),
                 Field('branch_code', 'integer'),

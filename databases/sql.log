@@ -1557,3 +1557,41 @@ timestamp: 2025-03-28T21:43:20.695655
 ALTER TABLE `product_stock` ADD `branch_code` INTEGER;
 success!
 success!
+timestamp: 2025-04-19T16:44:55.626780
+ALTER TABLE `product_receive_head` ADD `trans_type` VARCHAR(100);
+success!
+success!
+timestamp: 2025-04-19T20:15:39.541441
+CREATE TABLE `stock`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `item_code` VARCHAR(50),
+    `item_name` VARCHAR(512),
+    `brand_code` VARCHAR(50),
+    `supplier_code` VARCHAR(50),
+    `quantity` DOUBLE,
+    `branch_code` INTEGER,
+    `field1` VARCHAR(100),
+    `field2` INTEGER,
+    `note` VARCHAR(100),
+    `created_by` VARCHAR(100),
+    `created_on` DATETIME,
+    `updated_by` VARCHAR(100),
+    `updated_on` DATETIME,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;
+success!
+timestamp: 2025-04-22T01:21:42.613809
+ALTER TABLE `product_receive_details` ADD `trans_type` VARCHAR(100);
+success!
+success!
+timestamp: 2025-04-22T01:29:25.602453
+ALTER TABLE `product_receive_details` ADD `branch_code` INTEGER;
+success!
+success!
+timestamp: 2025-04-24T01:45:12.471733
+ALTER TABLE `product_receive_head` ADD `vat` DOUBLE;
+success!
+timestamp: 2025-04-24T01:45:12.534676
+ALTER TABLE `product_receive_head` ADD `grand_total` DOUBLE;
+success!
+success!

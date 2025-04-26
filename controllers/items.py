@@ -31,6 +31,7 @@ def new_item():
         query = "SELECT * FROM inventory_items  "
 
     # print(query)
+    branches = db.executesql("SELECT branch_code FROM ac_branch")
     rows = db.executesql(query, as_dict=True)
 
     # db.inventory_items.created_by.default = user
@@ -68,6 +69,24 @@ def new_item():
 
     if form.accepted:
         flash.set('Item added successfully', 'success')
+        new_item_code = form.vars['item_code']
+        new_item_name = form.vars['item_name']
+        new_sup_code = form.vars['supplier_code']
+        new_brand_code = form.vars['brand_code']
+
+        for branch in branches:        
+            db.stock.insert(
+                    item_code=new_item_code,
+                    item_name=new_item_name,
+                    status="DRAFT",
+                    brand_code=new_brand_code,
+                    supplier_code=new_sup_code,
+                    quantity=0,                    
+                    branch_code = branch[0],                   
+                     created_by = user,
+                    created_on=datetime.datetime.now,
+                )        
+
         redirect(URL('items/new_item'))
 
     return dict(form=form, rows=rows, search_term=search_term, search_by=search_by, role=role, user=user, branch_name=branch_name)
