@@ -9,11 +9,10 @@ from py4web import action, request, abort, redirect, URL
 from yatl.helpers import A
 from ..common import db, session, T, cache, auth, logger, authenticated, unauthenticated, flash
 
-
 # voucher list/create 
-@action("receive/receive", method=["GET", "POST"])
-@action.uses("receive/receive.html", auth, T, db, session)
-def receive():
+@action("sales/sales", method=["GET", "POST"])
+@action.uses("sales/sales.html", auth, T, db, session)
+def sales():
     if not session.get('user_id'):
         redirect(URL('login'))
     else:
@@ -36,7 +35,7 @@ def receive():
         # print(selected_branch)
 
         # Base query
-        v_query = "SELECT * FROM product_receive_head where trans_type='Receive' "
+        v_query = "SELECT * FROM product_receive_head where trans_type='Sales' "
 
         # Apply branch filter
         # if user_branch_code != 99:
@@ -88,7 +87,6 @@ def receive():
         branch_disabled = str(user_branch_code) + '-' + user_branch_name
         branch_names = db.executesql("SELECT concat(branch_code,'-',branch_name) FROM ac_branch order by branch_code asc")
 
-        suppliers = db.executesql("SELECT concat(supplier_code,'|',supplier_name) FROM supplier ")
 
         # print(suppliers)
 
@@ -96,19 +94,16 @@ def receive():
             desc = str(request.forms.get('description')).strip()
             rcv_date = str(request.forms.get('rcv_date'))
             branch = str(request.forms.get('branch_name')).strip()
-            supplier = str(request.forms.get('supplier')).strip()
 
-            supplier_code = supplier.split('|')[0]
-            supplier_name = supplier.split('|')[1]
+            print(branch)
+
 
             # print(supplier_code)
             # print(supplier_name)
 
             new_sl_value = '0'
 
-            if desc == '':
-                flash.set('Please enter description', 'error')
-                redirect(URL('vouchers','voucher'))
+            
             if branch == '':
                 flash.set('Please select branch', 'error')
                 redirect(URL('vouchers','voucher'))            
@@ -116,11 +111,12 @@ def receive():
                 flash.set('Please select date', 'error')
                 redirect(URL('vouchers','vouchers','voucher'))                
 
-            branch = branch.split('-')
-            voucher_branch_code = branch[0]
-            voucher_branch_name = branch[1]
+            branch_info = branch.split('-')
+            voucher_branch_code = branch_info[0]
+            voucher_branch_name = branch_info[1]
 
-            result = db.executesql(f"SELECT MAX(receive_code)+1 FROM product_receive_head WHERE branch_code = "+voucher_branch_code)
+            # result = db.executesql(f"SELECT MAX(receive_code)+1 FROM product_receive_head WHERE branch_code = "+voucher_branch_code)
+            result = db.executesql(f"SELECT MAX(receive_code)+1 FROM product_receive_head")
             new_sl_value = result[0][0] if result[0][0] is not None else 1
             # if max_sl_value:
             #     new_sl_value = str(int(max_sl_value) + 1)
@@ -135,18 +131,18 @@ def receive():
                 receive_date=rcv_date,
                 status="DRAFT",
                 desc=desc,
-                supplier_code=supplier_code,
-                supplier_name=supplier_name,                
+                supplier_code="",
+                supplier_name="",                
                 total_amount=0,
                 vat=0,
                 grand_total=0,
                 branch_code=voucher_branch_code,
                 branch_name=voucher_branch_name,
                 created_by=username,
-                trans_type='Receive'
+                trans_type="Sales",
                 # created_on=datetime.datetime.now()
             )
-            redirect(URL('receive','edit_receive', new_sl_value))
+            redirect(URL('sales','edit_sales', new_sl_value))
             # redirect(URL('receive','receive'))
 
 
@@ -154,13 +150,71 @@ def receive():
                 branch_name=user_branch_name, branch_disabled=branch_disabled, today=today,
                 #   page=page, total_pages=total_pages, 
                 # start_voucher=start_voucher, end_voucher=end_voucher, total_records=total_records,
-                selected_branch=selected_branch, selected_status=selected_status,suppliers=suppliers
+                selected_branch=selected_branch, selected_status=selected_status,
                 )
+# new sales
+@action("sales/new_sales/<b_code:int>/<b_name>", method=["GET", "POST"])
+@action.uses(auth, T, db, session)
+def new_sales(b_code=None, b_name=None):
+    if not session.get('user_id'):
+        redirect(URL('login'))
+    else:
+        username = session.get('user_id')
+        user_branch_code = session.get('branch_code') 
+        user_branch_name = session.get('branch_name')
+        role = session['role']
+        today = datetime.datetime.now().strftime('%Y-%m-%d')
+        today2 = datetime.datetime.now().strftime('%Y%m%d')
 
-# edit receive 
-@action('receive/edit_receive/<sl:int>',method=["GET","POST"])
-@action.uses(db,'receive/edit_receive.html',session,flash)
-def edit_receive(sl=None):
+        assert b_code and b_name is not None 
+
+        sales_branch_code = b_code
+        sales_branch_name = b_name
+
+        sales_date = today
+
+        # print(sales_branch_code)
+        # print(sales_branch_name)
+        # print(sales_date)
+        new_sl_value = '0'
+
+
+        # result = db.executesql(f"SELECT MAX(receive_code)+1 FROM product_receive_head WHERE branch_code = "+voucher_branch_code)
+        result = db.executesql(f"SELECT MAX(receive_code)+1 FROM product_receive_head")
+        new_sl_value = result[0][0] if result[0][0] is not None else 1
+            # if max_sl_value:
+            #     new_sl_value = str(int(max_sl_value) + 1)
+            # else:
+            #     new_sl_value = f"{voucher_branch_code}00001"             
+
+                        
+
+        db.product_receive_head.insert(
+            cid="TDCLPC",
+            receive_code=new_sl_value,
+            receive_date=sales_date,
+            status="DRAFT",
+            desc="",
+            supplier_code="",
+            supplier_name="",                
+            total_amount=0,
+            vat=0,
+            grand_total=0,
+            branch_code=sales_branch_code,
+            branch_name=sales_branch_name,
+            created_by=username,
+            trans_type="Sales",
+            # created_on=datetime.datetime.now()
+    )
+    redirect(URL('sales','edit_sales', new_sl_value))
+            # redirect(URL('receive','receive'))
+
+
+
+
+@action('sales/edit_sales/<sl:int>',method=["GET","POST"])
+@action.uses(db,'sales/edit_sales.html',session,flash)
+def edit_sales(sl=None):
     
     if not session.get('user_id'):
         redirect(URL('login'))   
@@ -190,8 +244,8 @@ def edit_receive(sl=None):
 
         
 
-        branch = db(db.ac_branch.branch_code ==receive_branch_code ).select().first()
-        voucher_branch_name = branch.branch_name
+        # branch = db(db.ac_branch.branch_code ==receive_branch_code ).select().first()
+        # voucher_branch_name = branch.branch_name
 
         editable = not (status in ['POSTED', 'CANCEL'])
 
@@ -199,9 +253,12 @@ def edit_receive(sl=None):
 
         # rows =  db(db.ac_voucher_details.sl == sl).select()   
 
-        rows_query = """select * from product_receive_details where receive_code = {rcv_code} """.format(rcv_code=sl)
+        rows_query = """select item_code, item_name, ((-1)*quantity) as quantity, trade_price, total from product_receive_details where receive_code = {rcv_code} """.format(rcv_code=sl)
         
-        rows = db.executesql(rows_query,as_dict=True)     
+        rows = db.executesql(rows_query,as_dict=True)
+
+
+     
         
     # return dict(sl=sl,status="status",v_date="v_date",v_type="v_type",narration="narration",role=role,user=user,branch_name=branch_name,editable=True,voucher_branch_name="voucher_branch_name",voucher_branch_code="voucher_branch_code")
     return dict(sl=sl,status=status,description=desctiption,rows=rows,role=role,user=user,
@@ -209,34 +266,14 @@ def edit_receive(sl=None):
                 ref_types=ref_types,supplier_name = supplier_name,
                 receive_date=receive_date, receive_code = sl, receive_branch_code = receive_branch_code,trans_type=trans_type)
 
-# auto suggest item 
-@action('receive/fetch_item_code_name', method=['GET'])
-@action.uses(db,session)
-def fetch_item_code_name():
-    term = request.params.get('term')  
-    if term:
-        if session.get('user_id'):
-            username=session['user_id']
-            branch_code= str(session['branch_code'])            
-            
-            query = """
-                SELECT item_code, item_name from inventory_items where  (item_code like '%{term}%' or item_name like '%{term}%') limit 10
-                """.format(term=term)
-            # print(query)
-            rows = db.executesql(query)
-            suggestions = [f"{row[0]}|{row[1]}" for row in rows]
-            return json.dumps(suggestions)
-    return json.dumps([])
-
-
-@action('receive/add_item', method=['GET', 'POST'])
+@action('sales/add_item', method=['GET', 'POST'])
 @action.uses(db,session)
 def add_item():
     sl = request.json.get('sl')
     item_code = request.json.get('item_code').strip()
     item_name = request.json.get('item_name').strip()
     receive_date = request.json.get('receive_date').strip()
-    qty = request.json.get('qty')
+    qty = float(request.json.get('qty'))
     r_branch_code = request.json.get('v_branch_code')
     r_branch_name = request.json.get('v_branch_name')
      
@@ -255,56 +292,37 @@ def add_item():
                     receive_code=sl,
                     item_code=item_code,
                     item_name=item_name,
-                    quantity=qty,
+                    quantity=-qty,
                     receive_date=receive_date,  
                     trade_price=  trade_price,                
                     status='DRAFT',
                     total=total,
-                    trans_type="Receive",
+                    trans_type="Sales",
                     branch_code = r_branch_code,
                     created_by = user,
 
                 )     
         return json.dumps({'status': 'valid','total':total,'trade_price':trade_price})
-    # else:
-    #     return json.dumps({'status': 'invalid'})
     
-
-# delete item head from receive details 
-@action('receive/delete_receive_detail', method=['POST'])
-@action.uses(db)
-def delete_receive_detail():
-    data = request.json
-    item_code = data.get('item_code')
-    sl = data.get('sl')
-    # ref_code = data.get('ref_code')
-
-    # print(ref_code)
-    
-    if item_code and sl:        
-        delete_query = """delete from product_receive_details WHERE receive_code = {rcv_code} AND item_code = '{itm_code}'""".format(rcv_code=sl,itm_code=item_code)
-        db.executesql(delete_query)
-        return dict(status='success')
-    else:
-        return dict(status='error', message='No receive code provided')
-    
-
-    # endpoint to post receive 
-@action('receive/post_receive', method=['POST'])
+@action('sales/post_sales', method=['POST'])
 @action.uses(db,session)
-def post_receive():
+def post_sales():
     data = request.json
     sl = data.get('sl')    
     branch_code = data.get('branch_code')    
     receive_date = data.get('receive_date')    
     description = data.get('description')    
-    total = str(data.get('total'))
+    sub_total = data.get('sub_total')
+    vat = data.get('vat')
+    grand_total= data.get('grand_total')
     user = session['user_id']
     # print(branch_code)
     
     date = datetime.datetime.now()
     # print(date)
     post_time = str(date)
+
+    # print(grand_total)
 
 
     try:
@@ -343,7 +361,7 @@ def post_receive():
         
 
                 if new_balance < 0:
-                    return dict(success=False, error='Insufficient balance for item: {} Current Balance: {}'.format(item_code,current_balance))                    
+                    return dict(success=False, error='Insufficient balance for item: {} - {} Current Balance: {}'.format(item_code,item_name,current_balance))                    
                 
         for item in items:
                 item_code = item[0]
@@ -356,17 +374,18 @@ def post_receive():
                 # print("--Update start--")
                 # print(item_name+' '+str(current_balance)+" "+str(new_balance))
 
-
                 db((db.stock.item_code == item_code) & (db.stock.branch_code == branch_code)).update(
                 quantity = new_balance
             )
         # print(db._lastsql)
 
 
-        # update head table status                      
+        # update had table status                      
         db(db.product_receive_head.receive_code == sl).update(
                 desc=description,
-                total_amount=total,
+                total_amount=sub_total,
+                vat=vat,
+                grand_total=grand_total,
                 status='POSTED',
                 post_by=user,                   
                 updated_by=user,
@@ -386,187 +405,3 @@ def post_receive():
     except Exception as e:
         db.rollback()
         return dict(success=False, error=str(e))
-    
-# endpoint to cancel receive
-@action('receive/cancel_receive', method='POST')
-@action.uses(db,session)
-def cancel_receive():    
-    user = session['user_id']
-    data = request.json
-    sl = data.get('sl')    
-
-    # print(sl)
-    
-    if not sl:
-        return json.dumps({'status': 'error', 'message': 'Sl missing'})
-    try:        
-        # db.executesql("UPDATE product_receive_head SET status='CANCEL' WHERE and receive_code = %s", (sl,))    
-        # db.executesql("UPDATE product_receive_details SET status='CANCEL' WHERE receive_code = %s", (sl,))
-        db(db.product_receive_head.receive_code == sl).update(
-                status='CANCEL',
-                updated_by=user,
-                updated_on=datetime.datetime.now(),
-            )       
-        db(db.product_receive_details.receive_code == sl).update(
-                status='CANCEL',
-                updated_by=user,
-                updated_on=datetime.datetime.now(),
-            )       
-        
-        db.commit()
-        return json.dumps({'status': 'success'})
-    except Exception as e:
-        db.rollback()
-        return json.dumps({'status': 'error', 'message': str(e)})   
-
-# print receive
-@action("receive/print_receive/<sl:int>", method=["GET", "POST"])
-@action.uses("receive/print_receive.html", auth, T, db, session)
-def print_receive(sl=None):
-    if not session.get('user_id'):
-        redirect(URL('login'))
-    else:        
-        user=session['user_id']
-        role=session['role']
-        branch_name=session['branch_name']
-        assert sl is not None  
-           
-        time = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-        query = """select receive_code,receive_date ,total_amount,status,branch_code,`desc`, created_by,branch_name, post_by  from product_receive_head where receive_code = {sl} """.format(sl=sl)        
-        # return query
-        head= db.executesql(query, as_dict=True)
-        
-        v_date = head[0]['receive_date']
-        # v_type = head[0]['v_type']
-        total = head[0]['total_amount']
-        status = head[0]['status']
-        branch_code = head[0]['branch_code']
-        narration = head[0]['desc']
-        created_by = head[0]['created_by']
-        post_by = head[0]['post_by']
-        branch_name = head[0]['branch_name']
-
-        # v_date = datetime.datetime.strptime(v_date_db, "%Y-%m-%d").strftime('%d-%b-%Y')   
-
-        amt_words = num2word(total)
-        # print(amt_words) 
-
-        # fetching branch address
-        # branch_query = """select branch_name,address from ac_branch where cid = 'TDCLPC' and branch_code = {branch_code}""".format(branch_code=branch_code)        
-        # branch_row = db.executesql(branch_query,as_dict=True)
-        # v_branch_name = branch_row[0]['branch_name']
-        # v_branch_address = branch_row[0]['address']
-        
-        # transactio details 
-        details_query = """select item_code, item_name,quantity, trade_price, total
-                            from product_receive_details where receive_code= {sl};""".format(sl=sl)
-        results = db.executesql(details_query,as_dict=True)
-
-       
-
-    return dict(v_date = v_date, total=total,time=time,status=status,branch_code=branch_code,branch_name=branch_name,results=results,sl=sl,
-                 amt_words=amt_words,narration=narration,created_by=created_by, post_by=post_by)
-
-
-# amount in words functions 
-#================================= Number To word conversion
-def handel_upto_99(number):
-    predef = {0: "zero", 1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six", 7: "seven", 8: "eight",
-              9: "nine", 10: "ten", 11: "eleven", 12: "twelve", 13: "thirteen", 14: "fourteen", 15: "fifteen",
-              16: "sixteen", 17: "seventeen", 18: "eighteen", 19: "nineteen", 20: "twenty", 30: "thirty", 40: "forty",
-              50: "fifty", 60: "sixty", 70: "seventy", 80: "eighty", 90: "ninety", 100: "hundred", 100000: "lakh",
-              10000000: "crore"}
-    if number in predef.keys():
-        return predef[int(number)]
-    else:
-        res=''
-        if int((int(int(number) / 10)) * 10)>0:
-            res += predef[int((int(int(number) / 10)) * 10)]
-
-        if int(int(number) % 10)>0:
-            res += ' ' + predef[int(int(number) % 10) ]
-
-        return res
-
-
-def return_bigdigit(number, devideby):
-    predef = {0: "zero", 1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six", 7: "seven", 8: "eight",
-              9: "nine", 10: "ten", 11: "eleven", 12: "twelve", 13: "thirteen", 14: "fourteen", 15: "fifteen",
-              16: "sixteen", 17: "seventeen", 18: "eighteen", 19: "nineteen", 20: "twenty", 30: "thirty", 40: "forty",
-              50: "fifty", 60: "sixty", 70: "seventy", 80: "eighty", 90: "ninety", 100: "hundred", 1000: "thousand",
-              100000: "lakh", 10000000: "crore"}
-    if devideby in predef.keys():
-        return predef[int(int(number) / devideby)] + " " + predef[int(devideby)]
-    else:
-        devideby = int(devideby / 10)
-        return handel_upto_99(int(int(number) / devideby)) + " " + predef[int(devideby)]
-
-
-def mainfunction(number):
-    dev = {100: "hundred", 1000: "thousand", 100000: "lakh", 10000000: "crore"}
-    if int(number) == 0:
-        return "Zero"
-    if int(number) < 100:
-        result = handel_upto_99(number)
-
-    else:
-        result = ""
-        while int(number) >= 100:
-            devideby = 1
-            length = len(str(number))
-
-            for i in range(length - 1):
-                devideby *= 10
-
-            #            if number%devideby==0:
-            #                if devideby in dev:
-            #                    return handel_upto_99(number/devideby)+" "+ dev[devideby]
-            #                else:
-            #                    return handel_upto_99(number/(devideby/10))+" "+ dev[devideby/10]
-
-            res = return_bigdigit(number, devideby)
-            result = result + ' ' + res
-
-            if devideby not in dev:
-                number = int(number) - (int(devideby / 10) * int((int(number) / int((devideby / 10)))))
-
-            number = int(number) - devideby * int((int(number) / devideby))
-
-
-        if 0 < int(number) < 100:
-            result = result + ' ' + handel_upto_99(number)
-
-    return result
-
-
-def num2word(num_amount):
-    temp_amount = str('{:.2f}'.format(float(num_amount)))
-
-    if '.' in temp_amount:
-        amount = temp_amount.split('.')
-        taka = amount[0]
-        paisa = str(amount[1])[:2]
-    else:
-        taka = temp_amount
-        paisa = '0'
-
-    amtWord = mainfunction(taka)
-    paisaWord = mainfunction(paisa)
-
-    if paisaWord == 'Zero':
-        total = 'Taka ' + str(amtWord) + ' only'
-    else:
-        total = 'Taka ' + str(amtWord) + ' and paisa ' + str(paisaWord) + ' only'
-
-    return total
-
-#=================== two digit after decimal point
-def easy_format(amount,temp):
-    return '{0:.2f}'.format(amount)
-
-def easy_format(num):    
-    return '{0:20,.2f}'.format(num)
-
-
-
-

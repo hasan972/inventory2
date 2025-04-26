@@ -44,7 +44,7 @@
 </style>
 
 [[icon='fa fa-chart-line']]
-[[breadcamp = 'Voucher']]
+[[breadcamp = 'Sales']]
 [[end]]
 
 
@@ -56,7 +56,7 @@
         
         <div class="p-1">
             <button type="button" class="btn btn-sm btn-secondary" onclick="openForm()">
-                <i class="fa-solid fa-plus"></i> <span class="ms-2">New Receive</span>
+                <i class="fa-solid fa-plus"></i> <span class="ms-2">New Sales</span>
             </button>
         </div>
         
@@ -84,21 +84,7 @@
                             <span class="text-danger" id="description_error"></span>
                            
                         </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="mb-3">
-                            <label for="narration" class="form-label">Supplier</label>
-                            <!-- <input class="form-control form-control-sm select-custom" id="supplier" name="supplier" type="text" value=""/> -->
-                            <select name="supplier" id="supplier" class="form-control form-control-sm">
-                                <option value="">Select Supplier</option>
-                                [[ for sup in suppliers: ]]
-                                <option value="[[=sup[0]]]">[[=sup[0]]]</option>
-                                [[ pass ]]
-                            </select>
-                            <span class="text-danger" id="supplier_error"></span>
-                           
-                        </div>
-                    </div>
+                    </div>                    
                     
                     <div class="col-md-2">
                         <div class="mb-3">
@@ -201,7 +187,7 @@
                             [[pass]]
                         </td>
                         <td>
-                            <a class="button" href="[[=URL('receive','edit_receive',row['receive_code'])]]" ><i class="fa-regular fa-pen-to-square"></i></a> </t>     
+                            <a class="button" href="[[=URL('sales','edit_sales',row['receive_code'])]]" ><i class="fa-regular fa-pen-to-square"></i></a> </t>     
                                                         
                         </td>
                         
@@ -241,23 +227,7 @@
         openForm();
     });
 
-//     $("#branch_name").change(function() {    
-//     var selectedText = $(this).val();  
-//     var parts = selectedText.split('-');
-//     var branch_code= parts[0]
-//     $('#ac_voucher_head_branch_code').val(branch_code);
-//     $.ajax({
-//         url: '[[=URL("get_sl")]]', // Replace with your endpoint
-//         method: 'GET',
-//         data: { q: branch_code },
-//         dataType: 'json',
-//         success: function(data) {
-//             console.log(data['newsl'])            
-//             $("#ac_voucher_head_sl").val(data['newsl']);
-            
-//           }
-//     }); 
-// }) ;
+
 
 $(document).ready(function() {
     $("#voucherForm").on("submit", function(event) {
@@ -275,16 +245,16 @@ $(document).ready(function() {
         }
 
         // Validate Narration
-        const narration = $("#description").val().trim();
-        if (!narration) {
-            $("#description_error").text("Please enter description.");
-            isValid = false;
-        }       
-        const supplier = $("#supplier").val().trim();
-        if (!supplier) {
-            $("#supplier_error").text("Please enter supplier.");
-            isValid = false;
-        }       
+        // const narration = $("#description").val().trim();
+        // if (!narration) {
+        //     $("#description_error").text("Please enter description.");
+        //     isValid = false;
+        // }       
+        // const supplier = $("#supplier").val().trim();
+        // if (!supplier) {
+        //     $("#supplier_error").text("Please enter supplier.");
+        //     isValid = false;
+        // }       
 
         // Validate Branch Name
         const branch_name = $("#branch_name").val();

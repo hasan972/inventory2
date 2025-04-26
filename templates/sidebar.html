@@ -216,6 +216,16 @@ pass
                             <span class="menu-title">Receive Product</span>
                             </a>
                         </li>
+                        [[if  _controller_name=='sales':]]
+                        <li class="menu-item active_link">
+                        [[else:]]
+                        <li class="menu-item">
+                        [[pass]]
+                            <a href="[[=URL('sales','sales')]]">
+                            <span class="menu-icon"><i class="fa-solid fa-coins"></i></span>
+                            <span class="menu-title">Sales</span>
+                            </a>
+                        </li>
                     </ul>
                     </div>
                 </li>

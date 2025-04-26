@@ -995,6 +995,7 @@ def num2word(num_amount):
         taka = temp_amount
         paisa = '0'
 
+
     amtWord = mainfunction(taka)
     paisaWord = mainfunction(paisa)
 
