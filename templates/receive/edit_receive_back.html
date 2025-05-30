@@ -138,12 +138,7 @@
                     <div class="row g-3">
                         <!-- Item Code -->
                         <div class="col-md-2">
-                            <label for="item_code" class="form-label">Barcode<span class="text-danger"></span></label>
-                            <input type="text" class="form-control form-control-sm" id="barcode" name="barcode" autocomplete="off">
-                            
-                        </div>
-                        <div class="col-md-2">
-                            <label for="item_code" class="form-label">Item Code</label>
+                            <label for="item_code" class="form-label">Item Code<span class="text-danger">*</span></label>
                             <input type="text" class="form-control form-control-sm" id="item_code" name="item_code" autocomplete="off">
                             <div class="suggestions-cd mt-2">
                                 <ul class="suggestion-list-cd list-group" id="dropdata-cd">
@@ -154,7 +149,7 @@
     
                         <!-- Item Name -->
                         <div class="col-md-3">
-                            <label for="item_name" class="form-label">Item Name</label>
+                            <label for="item_name" class="form-label">Item Name<span class="text-danger">*</span></label>
                             <input type="text" class="form-control form-control-sm" id="item_name" name="item_name" autocomplete="off" readonly="true">
                             <div class="suggestions-nm mt-2">
                                 <ul class="suggestion-list-nm list-group" id="dropdata-nm">
@@ -173,7 +168,7 @@
                         <!-- Add Row Button -->
                         <div class="col-md-2 d-flex align-items-end">
                             <button type="submit" class="btn btn-primary btn-sm w-100" data-bs-toggle="tooltip" data-placement="bottom" title="Add item" id="add-row">
-                                <i class="fas fa-plus"></i> Add Product
+                                <i class="fas fa-plus"></i> Add Item
                             </button>
                         </div>                       
                                           
@@ -268,10 +263,6 @@
 [[block scripts]]
 <script>
     $(document).ready(function () {
-
-        $("form").on("submit", function(e) {
-            e.preventDefault();
-        });
         
         function formatNumberWithCommas(number) {
             return number.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -343,7 +334,6 @@
            $("#add-row").click(function () {            
             var item_code = $("#item_code").val();
             var item_name = $("#item_name").val();
-            var barcode = $("#barcode").val() || "";
 
             var qty = $("#qty").val();
             var receive_date = $("#receive_date").text();   
@@ -372,7 +362,8 @@
                     icon: "error"
                     });
                     return;
-            }            
+            } 
+            
 
             
             var itemExists = false;            
@@ -385,78 +376,74 @@
                 sl:sl, 
                 qty:qty,
                 v_branch_code:receive_branch_code,
-                v_branch_name:receive_branch_name,
-                barcode: barcode
+                v_branch_name:receive_branch_name
             }
     
             // Check if item code already exists in the table
-            // $("#tbody tr").each(function() {
-            //     var existingItemCode = $(this).find("td:eq(0)").text();
-            //     if (existingItemCode === item_code) {
-            //         itemExists = true;
-            //         return false; 
-            //     }
-            // });
-
-    
-            // if (itemExists) {
-            //     Swal.fire({
-            //         title: "Duplicate Entry",
-            //         text: "Item already exists !",
-            //         icon: "error"
-            //         });                
-            // }
-
-            $.ajax({
-                url: "[[=URL('receive','add_item')]]",
-                type: "POST",
-                contentType: "application/json",
-                data: JSON.stringify(obj),
-                success: function (response) {
-                    var result = JSON.parse(response);
-                    // console.log(result.status)
-                    if (result.status === 'valid') {
-                        total_amt= result.total;
-                        trade_price=result.trade_price;
-                        itm_code=result.itm_code;
-                        itm_name=result.itm_name;
-
-                        console.log("Item name --> "+result.itm_name)
-                        var newRow = "<tr><td>" + itm_code + "</td><td>" + itm_name + "</td><td>" + qty + "</td><td>" + trade_price + "</td> <td>"+total_amt+"</td> <td> <button type='button' class='btn btn-outline-danger remove-row'><i class='fa-solid fa-x'></i>  </button></td></tr>";
-                        // console.log(newRow)
-                        $("#tbody").append(newRow);                           
-
-                        $('#item_code').val("");
-                        $('#item_name').val("");
-                        $('#qty').val("1");
-                        $("#item_code").focus();
-                        updateTotals();
-                    } else if (result.status === 'invalid') {
-                        // alert("Account not valid for "+v_type+" voucher");
-                        Swal.fire({
-                            title: "Invalid Item",
-                            text: "Item not valid for "+v_type+" voucher",
-                            icon: "error"
-                            });
-                        
-                    } else if (result.status === 'not_found') {
-                        // alert("Account not found for the user");
-                        Swal.fire({
-                            title: "Invalid Account",
-                            text: "Account not found for the user",
-                            icon: "error"
-                            });
-                    }else {
-                            // alert("error");
-                            Swal.fire({
-                                title: "Error",
-                                text: "Error adding account",
-                                icon: "error"
-                                });
-                        }
+            $("#tbody tr").each(function() {
+                var existingItemCode = $(this).find("td:eq(0)").text();
+                if (existingItemCode === item_code) {
+                    itemExists = true;
+                    return false; 
                 }
             });
-             
+
+    
+            if (itemExists) {
+                Swal.fire({
+                    title: "Duplicate Entry",
+                    text: "Item already exists !",
+                    icon: "error"
+                    });
+                
+            } else  {
+                $.ajax({
+                    url: "[[=URL('receive','add_item')]]",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(obj),
+                    success: function (response) {
+                        var result = JSON.parse(response);
+                        // console.log(result.status)
+                        if (result.status === 'valid') {
+                            total_amt= result.total;
+                            trade_price=result.trade_price;
+                            // console.log(result.ref_mandatory)
+                            var newRow = "<tr><td>" + item_code + "</td><td>" + item_name + "</td><td>" + qty + "</td><td>" + trade_price + "</td> <td>"+total_amt+"</td> <td> <button type='button' class='btn btn-outline-danger remove-row'><i class='fa-solid fa-x'></i>  </button></td></tr>";
+                            // console.log(newRow)
+                            $("#tbody").append(newRow);                           
+
+                            $('#item_code').val("");
+                            $('#item_name').val("");
+                            $('#qty').val("");
+                            $("#item_code").focus();
+                            updateTotals();
+                        } else if (result.status === 'invalid') {
+                            // alert("Account not valid for "+v_type+" voucher");
+                            Swal.fire({
+                                title: "Invalid Item",
+                                text: "Item not valid for "+v_type+" voucher",
+                                icon: "error"
+                                });
+                            
+                        } else if (result.status === 'not_found') {
+                            // alert("Account not found for the user");
+                            Swal.fire({
+                                title: "Invalid Account",
+                                text: "Account not found for the user",
+                                icon: "error"
+                                });
+                        }else {
+                                // alert("error");
+                                Swal.fire({
+                                    title: "Error",
+                                    text: "Error adding account",
+                                    icon: "error"
+                                    });
+                            }
+                    }
+                });
+            } 
 
         }
     );

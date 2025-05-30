@@ -44,6 +44,8 @@ def new_item():
     #         form.custom.widgets[field]['_class'] = 'form-control form-control-sm'
     if 'item_code' in form.custom.widgets:
             form.custom.widgets['item_code']['_class'] = 'form-control form-control-sm'
+    if 'barcode' in form.custom.widgets:
+            form.custom.widgets['barcode']['_class'] = 'form-control form-control-sm'
     if 'item_name' in form.custom.widgets:
             form.custom.widgets['item_name']['_class'] = 'form-control form-control-sm'
     if 'category_code' in form.custom.widgets:

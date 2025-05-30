@@ -334,6 +334,7 @@ db.define_table('inventory_items',
                 Field('unit', 'string', length=20, requires=IS_IN_DB(db, 'unit.unit_name', '%(unit_name)s',error_message='Select Valid Unit')),
                 Field('trade_price', 'double', requires=IS_NOT_EMPTY('Enter Trade Price')),
                 Field('retail_price', 'double',  requires=IS_NOT_EMPTY('Enter Retail Price')),
+                Field('barcode',  requires=[IS_NOT_EMPTY('Enter Barcode'),IS_NOT_IN_DB(db, 'inventory_items.barcode', 'Barcode already exists')]),
                 signature,
                 migrate=False
             )

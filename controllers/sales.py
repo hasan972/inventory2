@@ -3,6 +3,7 @@ from py4web import action, Field, redirect, URL, response
 from py4web.utils.form import Form
 from pydal.validators import IS_NOT_EMPTY, IS_IN_SET
 import datetime
+import socket
 
 
 from py4web import action, request, abort, redirect, URL
@@ -405,3 +406,149 @@ def post_sales():
     except Exception as e:
         db.rollback()
         return dict(success=False, error=str(e))
+    
+@action('sales/print_receiptttt', method=['POST'])
+@action.uses(db,session)
+def print_receiptttt():
+        try:
+            # Start timing
+            # start_time = time.time()
+            order_number = '1111'
+            printer = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            printer.settimeout(3)  # Set shorter timeout
+            printer.connect(("10.168.122.179", 9100))
+            
+            # print("Connected to printer in", time.time() - start_time, "seconds")
+
+            # ESC/POS Commands
+            center_text = b'\x1B\x61\x01'
+            right_text = b'\x1B\x61\x02'
+            left_text = b'\x1B\x61\x00'
+            bold_on = b'\x1B\x45\x01'
+            bold_off = b'\x1B\x45\x00'
+            double_on = b'\x1D\x21\x11'
+            double_off = b'\x1D\x21\x00'
+            small_font = b'\x1B\x4D\x01'
+            normal_font = b'\x1B\x4D\x00'
+            cut_paper = b'\x1D\x56\x41\x03'
+            double_height_on = b'\x1b\x21\x10'
+            double_width_on = b'\x1b\x21\x20'
+            normal_text = b'\x1b\x21\x00'
+            # double_height = b'\x1b\x21\x10'
+            
+
+            # Construct the receipt text
+            receipt_text = (
+                center_text + bold_on + double_on +normal_text+ b"KFC\n" + double_off + bold_off +
+                center_text + bold_on  +double_on +double_height_on+double_width_on+ b"Order Number: " +  bold_on  + double_on + str(order_number).encode()+ double_off +bold_off  + b"\n\n" + double_off +bold_off +
+                center_text + normal_font + normal_text+ b"Thank you!\nPlease check your order status\non the display screen.\n\n" + normal_font +
+                right_text + small_font + b"Powered by: Transcom Technology\n" + normal_font +
+                left_text + b"\n" +  # Form feed
+                cut_paper
+            )
+
+            printer.sendall(receipt_text)
+            printer.sendall(b'\x0C')  # Form feed to force immediate printing
+            # printer.shutdown(socket.SHUT_WR)  # Ensure complete transmission
+            print('Print successful')
+        except Exception as e:
+            print("Error:", e)
+        finally:
+            printer.close()  # Close immediately
+            # print("Socket closed in", time.time() - start_time, "seconds")
+        return "Hello"  
+    
+# # # print_receipt(1111)
+# @action("sales/print_receipt", method=["GET", "POST"])
+# @action.uses(auth, T, db, session)
+# def print_receipt():
+#     if not session.get('user_id'):
+#         redirect(URL('login'))
+#     else:
+#         try:
+#             printer = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+#             printer.settimeout(3)  
+#             printer.connect(("10.168.122.179", 9100))
+#             printer.sendall(b"Helloooo")
+#             printer.sendall(b'\x0C')            
+#         except Exception as e:
+#             print("Error:", e)
+#         finally:
+#             printer.close() 
+@action("sales/print_receipt", method=["GET", "POST"])
+@action.uses(auth, T, db, session)
+def print_receipt():
+    if not session.get('user_id'):
+        redirect(URL('login'))
+    else:
+        try:
+            printer = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            printer.settimeout(3)
+            printer.connect(("10.168.122.179", 9100))
+
+            # ESC/POS Commands
+            center_text = b'\x1B\x61\x01'
+            right_text = b'\x1B\x61\x02'
+            left_text = b'\x1B\x61\x00'
+            bold_on = b'\x1B\x45\x01'
+            bold_off = b'\x1B\x45\x00'
+            double_on = b'\x1D\x21\x11'
+            double_off = b'\x1D\x21\x00'
+            small_font = b'\x1B\x4D\x01'
+            normal_font = b'\x1B\x4D\x00'
+            cut_paper = b'\x1D\x56\x41\x03'
+            double_height_on = b'\x1b\x21\x10'
+            double_width_on = b'\x1b\x21\x20'
+            normal_text = b'\x1b\x21\x00'
+
+            product_details_query = """SELECT * FROM product_receive_details WHERE receive_code = {trx_code}""".format(trx_code=6)
+            product_details = db.executesql(product_details_query,as_dict=True)
+
+            order_number = 1111  # You can change this dynamically
+
+            # Construct receipt
+            # receipt_text = (
+            #     center_text + bold_on + double_on + normal_text + b"KFC\n" + double_off + bold_off +
+            #     center_text +   b"Order Number: " +  str(order_number).encode() +  b"\n\n" + 
+            #     left_text + small_font+   b"Crispy Fired Chicken " +  str(1).encode() +   str(12.50).encode() +  b"\n" + 
+            #     left_text + small_font+  b"Large Coleslaw  " +  str(1).encode() +   str(6.00).encode() +  b"\n" + 
+            #     left_text +  small_font+ b"Pepsi Large Fountain  " +  str(1).encode() +   str(5.00).encode() +  b"\n" +                 
+            #     center_text + normal_font +  b"Thank you!\nPlease check your order status\non the display screen.\n\n" + normal_font +
+            #     right_text + small_font + b"Powered by: Transcom Technology\n" + normal_font +
+            #     left_text + b"\n" +
+            #     cut_paper
+            # )
+            receipt_text = (
+                center_text + bold_on + double_on + normal_text + b"KFC\n" + double_off + bold_off +
+                center_text +   b"Order Number: " +  str(order_number).encode() +  b"\n\n" ) 
+            #     left_text + small_font+   b"Crispy Fired Chicken " +  str(1).encode() +   str(12.50).encode() +  b"\n" + 
+            #     left_text + small_font+  b"Large Coleslaw  " +  str(1).encode() +   str(6.00).encode() +  b"\n" + 
+            #     left_text +  small_font+ b"Pepsi Large Fountain  " +  str(1).encode() +   str(5.00).encode() +  b"\n" +                 
+            #     center_text + normal_font +  b"Thank you!\nPlease check your order status\non the display screen.\n\n" + normal_font +
+            #     right_text + small_font + b"Powered by: Transcom Technology\n" + normal_font +
+            #     left_text + b"\n" +
+            #     cut_paper
+            # )
+
+            for product in product_details:
+                item_name = str(product['item_name']).encode()
+                qty = str(product['quantity']).encode()
+                total = str(product['total']).encode()                
+
+                receipt_text+= left_text + small_font+   item_name + b"  "+ qty +  b"  "+total  +  b"\n"
+            
+            receipt_text  += cut_paper
+
+
+
+            # Send to printer
+            printer.sendall(receipt_text)
+            printer.sendall(b'\x0C')  # Form feed
+
+            # return receipt_text
+
+            print('Print successful')
+        except Exception as e:
+            print("Error:", e)
+        finally:
+            printer.close()

@@ -37,6 +37,7 @@ def receive():
 
         # Base query
         v_query = "SELECT * FROM product_receive_head where trans_type='Receive' "
+        print("v_query- "+v_query)
 
         # Apply branch filter
         # if user_branch_code != 99:
@@ -120,7 +121,9 @@ def receive():
             voucher_branch_code = branch[0]
             voucher_branch_name = branch[1]
 
-            result = db.executesql(f"SELECT MAX(receive_code)+1 FROM product_receive_head WHERE branch_code = "+voucher_branch_code)
+            result = db.executesql(f"SELECT MAX(receive_code)+1 FROM product_receive_head")
+            print("mx_sl")
+            print(db._lastsql)
             new_sl_value = result[0][0] if result[0][0] is not None else 1
             # if max_sl_value:
             #     new_sl_value = str(int(max_sl_value) + 1)
@@ -239,16 +242,33 @@ def add_item():
     qty = request.json.get('qty')
     r_branch_code = request.json.get('v_branch_code')
     r_branch_name = request.json.get('v_branch_name')
+    barcode = request.json.get('barcode')  
+
+    print(barcode)
+
+    searched_item='' 
      
     branch_code= session.get('branch_code')
     user= session.get('user_id')
+
+    if barcode and barcode.strip():
+        searched_item = barcode.strip()
+    else:
+        searched_item = item_code.strip()
     
     # checking account branchwise
-    item_exists = db.executesql("SELECT item_code,trade_price FROM inventory_items WHERE item_code = %s ",placeholders=[item_code])    
+    if barcode and barcode.strip():
+        item_exists = db.executesql("SELECT item_code,item_name, trade_price FROM inventory_items WHERE barcode = %s LIMIT 1", placeholders=[barcode.strip()])
+    else:
+        item_exists = db.executesql("SELECT item_code,item_name, trade_price FROM inventory_items WHERE item_code = %s LIMIT 1", placeholders=[item_code.strip()])
+    
     if not item_exists:        
         return json.dumps({'status': 'not_found'}) 
     else:
-        trade_price = item_exists[0][1]
+        itm_code = item_exists[0][0]
+        itm_name = item_exists[0][1]
+        print(itm_name)
+        trade_price = item_exists[0][2]
         total = trade_price* float(qty) 
         db.product_receive_details.insert(
                     cid='TDCLPC',
@@ -265,7 +285,7 @@ def add_item():
                     created_by = user,
 
                 )     
-        return json.dumps({'status': 'valid','total':total,'trade_price':trade_price})
+        return json.dumps({'status': 'valid','total':total,'trade_price':trade_price,'itm_code':itm_code,'itm_name':itm_name})
     # else:
     #     return json.dumps({'status': 'invalid'})
     
