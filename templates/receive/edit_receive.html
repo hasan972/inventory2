@@ -54,6 +54,13 @@
   margin: 0 auto; /* Center the container */
 }
 
+.numb {
+    text-align: right;
+    padding-right: 40px;
+}
+
+
+
 </style>
 
 [[icon='fa fa-chart-line']]
@@ -200,12 +207,12 @@
                             <tr>
                                 <th scope="col">Item Code</th>
                                 <th scope="col">Item Name</th>
-                                <th scope="col">Qty</th>                                 
-                                <th scope="col">Trade Price</th>                                 
-                                <th scope="col">Total</th>                                 
+                                <th class="numb" scope="col">Qty</th>                                 
+                                <th class="numb" scope="col">Trade Price</th>                                 
+                                <th class="numb" scope="col">Total</th>                                 
                                 
                                 [[if editable: ]]
-                                <th scope="col">Remove</th>
+                                <th style="padding-left: 30px;" scope="col">Remove</th>
                                 [[pass]]
                             </tr>
                         </thead>                        
@@ -214,12 +221,12 @@
                             <tr>
                                 <td>[[=row['item_code']]]</td>
                                 <td>[[=row['item_name']]]</td>
-                                <td>[[=row['quantity']]]</td>  
-                                <td>[[=row['trade_price']]]</td>  
-                                <td>[[=row['total']]]</td>  
+                                <td class="numb">[[=row['quantity']]]</td>  
+                                <td class="numb">[[=f"{row['trade_price']:,.2f}"]]</td>  
+                                <td class="numb">[[=f"{row['total']:,.2f}"]]</td>  
                                
                                 [[if editable: ]]
-                                <td><button type='button' class='btn btn-outline-danger remove-row'><i class='fa-solid fa-x'></i></button></td>
+                                <td><button type='button' style="padding-left: 30px;" class='btn btn-outline-danger remove-row'><i class='fa-solid fa-x'></i></button></td>
                                 [[pass]]
                             </tr>
                             [[pass]]
@@ -229,8 +236,8 @@
                                 <td id="emp"  style="font-weight: bold;"></td>
                                 <td id="emp"  style="font-weight: bold;"></td>
                                 <td id="emp"  style="font-weight: bold;"></td>
-                                <td id="tot" style="font-weight: bold;">Total</td>
-                                <td id="total-amt" style="font-weight: bold;">0</td>
+                                <td id="tot" class="numb" style="font-weight: bold;">Total</td>
+                                <td id="total-amt" class="numb" style="font-weight: bold;">0</td>
                             </tr>
                         </tfoot>
                     </table>
@@ -242,14 +249,14 @@
         <div class="row mt-3">
             <div class="col-11">
                 [[if editable: ]]
-                    <button type="button" class="btn btn-success me-2" data-toggle="tooltip" data-placement="bottom" title="Save Voucher" id="save-data">Save</button>
+                    <!-- <button type="button" class="btn btn-success me-2" data-toggle="tooltip" data-placement="bottom" title="Save Voucher" id="save-data">Save</button> -->
                     <button type="button" class="btn btn-primary me-2" data-toggle="tooltip" data-placement="bottom" title="Post Voucher" id="post-data">Post</button>
                     <input type="checkbox" id="post-checkbox" name="post-checkbox" data-toggle="tooltip" data-placement="bottom" title="Post">
                     <label for="post-checkbox" class="ms-1">Confirm Post</label>
                 [[pass]]
             </div>
             <div class="col-1 d-flex justify-content-end">
-                <button type="button" class="btn btn-secondary me-2" data-toggle="tooltip" data-placement="bottom" title="Preview" id="preview-data"><i class="fa-regular fa-eye"></i></button>
+                <!-- <button type="button" class="btn btn-secondary me-2" data-toggle="tooltip" data-placement="bottom" title="Preview" id="preview-data"><i class="fa-regular fa-eye"></i></button> -->
                 <button type="button" class="btn btn-secondary me-2" data-toggle="tooltip" data-placement="bottom" title="Print Voucher" id="print-data"><i class="fa-solid fa-print"></i></button>                
                 [[if editable: ]]
                     <button type="button" class="btn btn-danger me-2" data-toggle="tooltip" data-placement="bottom" title="Cancel Voucher" id="cancel-data">Cancel</button>
@@ -259,10 +266,6 @@
     </div>
 </div>
 [[end]] 
-
-
-
-
 
 
 [[block scripts]]
@@ -289,7 +292,6 @@
             // console.log(formatNumberWithCommas(totalCredit.toFixed(2)))
 
             $("#total-amt").text(formatNumberWithCommas(total));
-
 
         }
 
@@ -401,7 +403,7 @@
     
             // if (itemExists) {
             //     Swal.fire({
-            //         title: "Duplicate Entry",
+            //         title: "Duplicate Item",
             //         text: "Item already exists !",
             //         icon: "error"
             //         });                
@@ -421,15 +423,16 @@
                         itm_code=result.itm_code;
                         itm_name=result.itm_name;
 
-                        console.log("Item name --> "+result.itm_name)
-                        var newRow = "<tr><td>" + itm_code + "</td><td>" + itm_name + "</td><td>" + qty + "</td><td>" + trade_price + "</td> <td>"+total_amt+"</td> <td> <button type='button' class='btn btn-outline-danger remove-row'><i class='fa-solid fa-x'></i>  </button></td></tr>";
+                        // console.log("Item name --> "+result.itm_name)
+                        var newRow = '<tr><td>' + itm_code + "</td><td>" + itm_name + '</td><td class="numb">' + qty + '</td><td class="numb">' + formatNumberWithCommas(trade_price) + '</td> <td class="numb">'+ formatNumberWithCommas(total_amt)+"</td> <td> <button type='button' style='padding-left: 30px;' class='btn btn-outline-danger remove-row'><i class='fa-solid fa-x'></i>  </button></td></tr>";
                         // console.log(newRow)
                         $("#tbody").append(newRow);                           
 
+                        $('#barcode').val("");
                         $('#item_code').val("");
                         $('#item_name').val("");
-                        $('#qty').val("1");
-                        $("#item_code").focus();
+                        $('#qty').val("1.0");
+                        $("#barcode").focus();
                         updateTotals();
                     } else if (result.status === 'invalid') {
                         // alert("Account not valid for "+v_type+" voucher");
@@ -442,15 +445,31 @@
                     } else if (result.status === 'not_found') {
                         // alert("Account not found for the user");
                         Swal.fire({
-                            title: "Invalid Account",
-                            text: "Account not found for the user",
+                            title: "Invalid Item",
+                            text: "Item not found",
                             icon: "error"
                             });
-                    }else {
+                    }else if (result.status === 'duplicate') {
+                        Swal.fire({
+                            title: "Duplicate Item",
+                            text: "Please add different item",
+                            icon: "error"
+                            });
+                    }
+                    else if (result.status === 'exception') {
+                            // alert("Account not found for the user");
+                            // console.log(result.message)
+                            Swal.fire({
+                                title: "Error",
+                                text: result.message,
+                                icon: "error"
+                                });
+                        }
+                    else {
                             // alert("error");
                             Swal.fire({
                                 title: "Error",
-                                text: "Error adding account",
+                                text: "Error adding item",
                                 icon: "error"
                                 });
                         }
@@ -477,23 +496,33 @@
                                         sl:sl
                             }),
                 success: function (response) {
-                    if (response.status === 'success') {                        
-                        row.remove();
-                        updateTotals()
-                    } else {
-                        Swal.fire({
-                                title: "Error",
-                                text: "Error: " + response.message,
-                                icon: "error"
-                                });
-                    }
+                        if (response.status === 'success') {                        
+                            row.remove();
+                            updateTotals()
+                        } 
+                        else if(response.status === 'exception') {
+                            Swal.fire({
+                                    title: "Error",
+                                    text: response.message,
+                                    icon: "error"
+                                    });
+                        }
+                        else {
+                            Swal.fire({
+                                    title: "Error",
+                                    text: "Error: " + response.message,
+                                    icon: "error"
+                                    });
+                        }
+                        
+                        
                 },
                 error: function () {
                     Swal.fire({
                                 title: "Error",
                                 text: "An error occurred while trying to remove the row.",
                                 icon: "error"
-                                });
+                            });
                 }
             });      
            
@@ -607,7 +636,7 @@
                         });
 
                 } else {
-                    if (data.error == "Receive already posted") {
+                    if (data.error == "Receive already posted or cancelled") {
                         Swal.fire({
                             title: "Error",
                             text: data.error,
@@ -696,28 +725,28 @@
             var status = $("#status").text();
             // console.log(sl);
             // console.log(status);
-            if(status !="POSTED") {
-                // alert("Please post voucher to print");
-                Swal.fire({
-                            title: "Not Allowed",
-                            text: "Please post voucher to print",
-                            icon: "warning"
-                        });
-            }
-            else {
+            // if(status !="POSTED") {
+            //     // alert("Please post voucher to print");
+            //     Swal.fire({
+            //                 title: "Not Allowed",
+            //                 text: "Please post voucher to print",
+            //                 icon: "warning"
+            //             });
+            // }
+            // else {
                 window.open('[[=URL("receive","print_receive",sl)]]')
-            }     
+            // }     
         });
         
         // previeww button 
-        $("#preview-data").click(function() {
-            var sl = $("#sl").text();
-            var status = $("#status").text();
-            console.log(sl);
-            console.log(status);            
-            window.open('[[=URL("vouchers","preview_voucher",sl)]]');
+        // $("#preview-data").click(function() {
+        //     var sl = $("#sl").text();
+        //     var status = $("#status").text();
+        //     console.log(sl);
+        //     console.log(status);            
+        //     window.open('[[=URL("vouchers","preview_voucher",sl)]]');
                 
-        });
+        // });
 
         // double click on table row- remove the line and fill form
     //     $(document).on('dblclick', '#tbody tr', function() {

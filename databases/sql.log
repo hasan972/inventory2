@@ -1595,3 +1595,28 @@ timestamp: 2025-04-24T01:45:12.534676
 ALTER TABLE `product_receive_head` ADD `grand_total` DOUBLE;
 success!
 success!
+timestamp: 2025-06-01T01:53:18.853811
+CREATE TABLE `product_receive_details`(
+    `id` INT AUTO_INCREMENT NOT NULL,
+    `receive_code` INTEGER,
+    `receive_date` DATE,
+    `item_code` VARCHAR(50),
+    `item_name` VARCHAR(100),
+    `unit_code` VARCHAR(20),
+    `unit_name` VARCHAR(50),
+    `quantity` DOUBLE,
+    `retail_price` DOUBLE,
+    `trade_price` DOUBLE,
+    `total` DOUBLE,
+    `status` VARCHAR(10),
+    `trans_type` VARCHAR(100),
+    `branch_code` INTEGER,
+    `field1` VARCHAR(100),
+    `field2` INTEGER,
+    `note` VARCHAR(100),
+    `created_by` VARCHAR(100),
+    `created_on` DATETIME,
+    `updated_by` VARCHAR(100),
+    `updated_on` DATETIME,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB CHARACTER SET utf8;

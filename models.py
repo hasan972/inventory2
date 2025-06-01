@@ -7,7 +7,6 @@ from py4web import action
 from pydal.validators import *
 import datetime
 from py4web.utils.auth import Auth
-from .common_cid import date_fixed
 
 ### Define your table below
 #
@@ -25,14 +24,16 @@ from .common_cid import date_fixed
 # def get_current_user():
 #     return session['user_id'] 
 
+
+
 signature=db.Table(db,'signature',
                 Field('field1','string',length=100,default='',writable=False,readable=False), 
                 Field('field2','integer',default=0,writable=False,readable=False),
                 Field('note','string',length=100,writable=True,readable=False,default='_'),  
                 Field('created_by','string',length=100,writable=False,readable=False),                
-                Field('created_on','datetime',default=date_fixed,writable=False,readable=False),
+                Field('created_on','datetime',default=datetime.datetime.now(),writable=False,readable=False),
                 Field('updated_by','string',length=100,writable=False,readable=False),
-                Field('updated_on','datetime',writable=True),
+                Field('updated_on','datetime',default=datetime.datetime.now(),writable=True),
                 )
 
 db.define_table('ac_accounts_class',
@@ -411,7 +412,7 @@ db.define_table('product_receive_head',
 db.define_table('product_receive_details',
                 Field('id', 'integer'),                
                 Field('receive_code','integer',),
-                Field('receive_date', 'datetime'),              
+                Field('receive_date', 'date'),              
 
                 
                 # Product Information
@@ -424,7 +425,8 @@ db.define_table('product_receive_details',
                 
                 # Quantity and Pricing
                 Field('quantity', 'double'),
-                Field('trade_price', 'double',),
+                Field('retail_price', 'double',),
+                Field('trade_price', 'double',),                
                 Field('total', 'double', ),        
                 Field('status', 'string',length=10 ),        
                 Field('trans_type', 'string',length=100 ),        
