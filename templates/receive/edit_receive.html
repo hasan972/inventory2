@@ -143,12 +143,14 @@
                 <div class="card-body">
                 <div id="custom_input">
                     <div class="row g-3">
-                        <!-- Item Code -->
+                        
+                        <!-- barcode  -->
                         <div class="col-md-2">
                             <label for="item_code" class="form-label">Barcode<span class="text-danger"></span></label>
                             <input type="text" class="form-control form-control-sm" id="barcode" name="barcode" autocomplete="off">
                             
                         </div>
+                        <!-- Item Code -->
                         <div class="col-md-2">
                             <label for="item_code" class="form-label">Item Code</label>
                             <input type="text" class="form-control form-control-sm" id="item_code" name="item_code" autocomplete="off">
@@ -173,14 +175,14 @@
     
                         <!-- Quantity -->
                         <div class="col-md-1">
-                            <label for="amount" class="form-label">Quantity<span class="text-danger">*</span></label>
+                            <label for="qty" class="form-label">Quantity<span class="text-danger">*</span></label>
                             <input type="number" class="form-control form-control-sm" id="qty" value="1.0" name="qty" min="0" max="10000000">
                         </div>
     
                         <!-- Add Row Button -->
                         <div class="col-md-2 d-flex align-items-end">
                             <button type="submit" class="btn btn-primary btn-sm w-100" data-bs-toggle="tooltip" data-placement="bottom" title="Add item" id="add-row">
-                                <i class="fas fa-plus"></i> Add Product
+                                <i class="fas fa-plus"></i> Add Item
                             </button>
                         </div>                       
                                           
@@ -341,7 +343,6 @@
     
             
         //////////////////////////new add row/////////////////////////////////////////////////
-           //add row to table and update total debit and credit
            $("#add-row").click(function () {            
             var item_code = $("#item_code").val();
             var item_name = $("#item_name").val();
@@ -355,9 +356,7 @@
 
 
             
-            if (qty <= 0) {
-                // alert("Amount must be greater than zero.");
-                // return; 
+            if (qty <= 0) { 
                 Swal.fire({
                     title: "Invalid Quantity",
                     text: "Quantity must be greater than zero",
@@ -365,7 +364,7 @@
                     });
                     return;
             } 
-            if (qty >10000000) {
+            if (qty >10000) {
                 // alert("Amount must be greater than zero.");
                 // return; 
                 Swal.fire({
@@ -424,7 +423,7 @@
                         itm_name=result.itm_name;
 
                         // console.log("Item name --> "+result.itm_name)
-                        var newRow = '<tr><td>' + itm_code + "</td><td>" + itm_name + '</td><td class="numb">' + qty + '</td><td class="numb">' + formatNumberWithCommas(trade_price) + '</td> <td class="numb">'+ formatNumberWithCommas(total_amt)+"</td> <td> <button type='button' style='padding-left: 30px;' class='btn btn-outline-danger remove-row'><i class='fa-solid fa-x'></i>  </button></td></tr>";
+                        var newRow = '<tr><td>' + itm_code + "</td><td>" + itm_name + '</td><td class="numb">' + formatNumberWithCommas(qty)  + '</td><td class="numb">' + formatNumberWithCommas(trade_price) + '</td> <td class="numb">'+ formatNumberWithCommas(total_amt)+"</td> <td> <button type='button' style='padding-left: 30px;' class='btn btn-outline-danger remove-row'><i class='fa-solid fa-x'></i>  </button></td></tr>";
                         // console.log(newRow)
                         $("#tbody").append(newRow);                           
 
@@ -434,14 +433,6 @@
                         $('#qty').val("1.0");
                         $("#barcode").focus();
                         updateTotals();
-                    } else if (result.status === 'invalid') {
-                        // alert("Account not valid for "+v_type+" voucher");
-                        Swal.fire({
-                            title: "Invalid Item",
-                            text: "Item not valid for "+v_type+" voucher",
-                            icon: "error"
-                            });
-                        
                     } else if (result.status === 'not_found') {
                         // alert("Account not found for the user");
                         Swal.fire({
@@ -449,16 +440,14 @@
                             text: "Item not found",
                             icon: "error"
                             });
-                    }else if (result.status === 'duplicate') {
+                    } else if (result.status === 'duplicate') {
                         Swal.fire({
                             title: "Duplicate Item",
-                            text: "Please add different item",
+                            text: "Please add a different item",
                             icon: "error"
                             });
                     }
                     else if (result.status === 'exception') {
-                            // alert("Account not found for the user");
-                            // console.log(result.message)
                             Swal.fire({
                                 title: "Error",
                                 text: result.message,
@@ -513,9 +502,7 @@
                                     text: "Error: " + response.message,
                                     icon: "error"
                                     });
-                        }
-                        
-                        
+                        }                        
                 },
                 error: function () {
                     Swal.fire({

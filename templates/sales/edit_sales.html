@@ -53,6 +53,10 @@
   max-width: 80%; /* Adjust the value as needed */
   margin: 0 auto; /* Center the container */
 }
+.numb {
+    text-align: right;
+    padding-right: 40px;
+}
 
 </style>
 
@@ -136,9 +140,17 @@
     [[if editable: ]]
     <div class="container py-2">
         <div class="card shadow-sm">
-            <div class="card-body">
+            <form action="">
+                <div class="card-body">
                 <div id="custom_input">
                     <div class="row g-3">
+
+                        <!-- barcode  -->
+                        <div class="col-md-2">
+                            <label for="item_code" class="form-label">Barcode<span class="text-danger"></span></label>
+                            <input type="text" class="form-control form-control-sm" id="barcode" name="barcode" autocomplete="off">
+                            
+                        </div>
                         <!-- Item Code -->
                         <div class="col-md-2">
                             <label for="item_code" class="form-label">Item Code<span class="text-danger">*</span></label>
@@ -162,15 +174,15 @@
                         </div>
     
     
-                        <!-- Amount -->
+                        <!-- Quantity -->
                         <div class="col-md-1">
-                            <label for="amount" class="form-label">Quantity<span class="text-danger">*</span></label>
-                            <input type="number" class="form-control form-control-sm" id="qty" name="qty" min="0" max="10000000">
+                            <label for="qty" class="form-label">Quantity<span class="text-danger">*</span></label>
+                            <input type="number" class="form-control form-control-sm" id="qty" name="qty" value="1.0" min="0" max="10000000">
                         </div>
     
                         <!-- Add Row Button -->
                         <div class="col-md-2 d-flex align-items-end">
-                            <button type="button" class="btn btn-primary btn-sm w-100" data-bs-toggle="tooltip" data-placement="bottom" title="Add item" id="add-row">
+                            <button type="submit" class="btn btn-primary btn-sm w-100" data-bs-toggle="tooltip" data-placement="bottom" title="Add item" id="add-row">
                                 <i class="fas fa-plus"></i> Add Item
                             </button>
                         </div>                       
@@ -180,6 +192,8 @@
                     
                 </div>
             </div>
+            </form>
+            
         </div>
     </div>
     [[pass]]
@@ -197,9 +211,9 @@
                             <tr>
                                 <th scope="col">Item Code</th>
                                 <th scope="col">Item Name</th>
-                                <th scope="col">Qty</th>                                 
-                                <th scope="col">Price</th>                                 
-                                <th scope="col">Total</th>                                 
+                                <th class="numb" scope="col">Qty</th>                                 
+                                <th class="numb" scope="col">Price</th>                                 
+                                <th class="numb" scope="col">Total</th>                                 
                                 
                                 [[if editable: ]]
                                 <th scope="col">Remove</th>
@@ -211,9 +225,9 @@
                             <tr>
                                 <td>[[=row['item_code']]]</td>
                                 <td>[[=row['item_name']]]</td>
-                                <td>[[=row['quantity']]]</td>  
-                                <td>[[=row['trade_price']]]</td>  
-                                <td>[[=row['total']]]</td>  
+                                <td class="numb">[[=row['quantity']]]</td>  
+                                <td class="numb">[[=row['trade_price']]]</td>  
+                                <td class="numb">[[=row['total']]]</td>  
                                
                                 [[if editable: ]]
                                 <td><button type='button' class='btn btn-outline-danger remove-row'><i class='fa-solid fa-x'></i></button></td>
@@ -226,22 +240,22 @@
                                 <td id="emp"  style="font-weight: bold;"></td>
                                 <td id="emp"  style="font-weight: bold;"></td>
                                 <td id="emp"  style="font-weight: bold;"></td>
-                                <td id="tot" style="font-weight: bold;">Sub Total</td>
-                                <td id="total-amt" style="font-weight: bold;">0</td>
+                                <td class="numb" id="tot" style="font-weight: bold;">Sub Total</td>
+                                <td class="numb" id="total-amt" style="font-weight: bold;">0</td>
                             </tr>
                             <tr class="tft">
                                 <td id="emp"  style="font-weight: bold;"></td>
                                 <td id="emp"  style="font-weight: bold;"></td>
                                 <td id="emp"  style="font-weight: bold;"></td>
-                                <td id="tot" style="font-weight: bold;">Vat</td>
-                                <td id="vat-amt" style="font-weight: bold;">0</td>
+                                <td class="numb" id="tot" style="font-weight: bold;">Vat</td>
+                                <td class="numb" id="vat-amt" style="font-weight: bold;">0</td>
                             </tr>
                             <tr class="tft">
                                 <td id="emp"  style="font-weight: bold;"></td>
                                 <td id="emp"  style="font-weight: bold;"></td>
                                 <td id="emp"  style="font-weight: bold;"></td>
-                                <td id="tot" style="font-weight: bold;">Total</td>
-                                <td id="grand-total" style="font-weight: bold;">0</td>
+                                <td class="numb" id="tot" style="font-weight: bold;">Total</td>
+                                <td class="numb" id="grand-total" style="font-weight: bold;">0</td>
                             </tr>
                         </tfoot>
                     </table>
@@ -253,17 +267,17 @@
         <div class="row mt-3">
             <div class="col-11">
                 [[if editable: ]]
-                    <button type="button" class="btn btn-success me-2" data-toggle="tooltip" data-placement="bottom" title="Save Voucher" id="save-data">Save</button>
+                    <!-- <button type="button" class="btn btn-success me-2" data-toggle="tooltip" data-placement="bottom" title="Save Voucher" id="save-data">Save</button> -->
                     <button type="button" class="btn btn-primary me-2" data-toggle="tooltip" data-placement="bottom" title="Post Voucher" id="post-data">Post</button>
                     <input type="checkbox" id="post-checkbox" name="post-checkbox" data-toggle="tooltip" data-placement="bottom" title="Post">
                     <label for="post-checkbox" class="ms-1">Confirm Post</label>
                 [[pass]]
             </div>
             <div class="col-1 d-flex justify-content-end">
-                <button type="button" class="btn btn-secondary me-2" data-toggle="tooltip" data-placement="bottom" title="Preview" id="preview-data"><i class="fa-regular fa-eye"></i></button>
+                <!-- <button type="button" class="btn btn-secondary me-2" data-toggle="tooltip" data-placement="bottom" title="Preview" id="preview-data"><i class="fa-regular fa-eye"></i></button> -->
                 <button type="button" class="btn btn-secondary me-2" data-toggle="tooltip" data-placement="bottom" title="Print Voucher" id="print-data"><i class="fa-solid fa-print"></i></button>                
                 [[if editable: ]]
-                    <button type="button" class="btn btn-danger me-2" data-toggle="tooltip" data-placement="bottom" title="Cancel Voucher" id="cancel-data">Cancel</button>
+                    <button type="button" style='padding-left: 30px;' class="btn btn-danger me-2" data-toggle="tooltip" data-placement="bottom" title="Cancel Voucher" id="cancel-data">Cancel</button>
                 [[pass]]
             </div>
         </div>
@@ -279,6 +293,10 @@
 [[block scripts]]
 <script>
     $(document).ready(function () {
+
+        $("form").on("submit", function(e) {
+            e.preventDefault();
+        });
         
         function formatNumberWithCommas(number) {
             return number.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -297,7 +315,7 @@
             // console.log(formatNumberWithCommas(totalDebit.toFixed(2)))
             // console.log(formatNumberWithCommas(totalCredit.toFixed(2)))
 
-            vat = 0.15* total;
+            vat = Math.round(0.15* total);
             grand_total = total+vat;
 
 
@@ -354,10 +372,10 @@
     
             
         //////////////////////////new add row/////////////////////////////////////////////////
-           //add row to table and update total debit and credit
            $("#add-row").click(function () {            
             var item_code = $("#item_code").val();
             var item_name = $("#item_name").val();
+            var barcode = $("#barcode").val() || "";
 
             var qty = $("#qty").val();
             var receive_date = $("#receive_date").text();   
@@ -367,9 +385,7 @@
 
 
             
-            if (qty <= 0) {
-                // alert("Amount must be greater than zero.");
-                // return; 
+            if (qty <= 0) { 
                 Swal.fire({
                     title: "Invalid Quantity",
                     text: "Quantity must be greater than zero",
@@ -377,12 +393,12 @@
                     });
                     return;
             } 
-            if (qty >10000000) {
+            if (qty >10000) {
                 // alert("Amount must be greater than zero.");
                 // return; 
                 Swal.fire({
                     title: "Invalid Quantity",
-                    text: "Maximum quantity 10,000,000",
+                    text: "Maximum quantity 10,000",
                     icon: "error"
                     });
                     return;
@@ -400,27 +416,21 @@
                 sl:sl, 
                 qty:qty,
                 v_branch_code:receive_branch_code,
-                v_branch_name:receive_branch_name
-            }
-    
-            // Check if item code already exists in the table
-            $("#tbody tr").each(function() {
-                var existingItemCode = $(this).find("td:eq(0)").text();
-                if (existingItemCode === item_code) {
-                    itemExists = true;
-                    return false; 
-                }
-            });
+                v_branch_name:receive_branch_name,
+                barcode: barcode
+            }  
+            
 
     
-            if (itemExists) {
-                Swal.fire({
-                    title: "Duplicate Entry",
-                    text: "Item already exists !",
-                    icon: "error"
-                    });
+            // if (itemExists) {
+            //     Swal.fire({
+            //         title: "Duplicate Entry",
+            //         text: "Item already exists !",
+            //         icon: "error"
+            //         });
                 
-            } else if (item_code && item_name) {
+            // } else if (item_code && item_name) {
+
                 $.ajax({
                     url: "[[=URL('sales','add_item')]]",
                     type: "POST",
@@ -432,24 +442,45 @@
                         if (result.status === 'valid') {
                             total_amt= result.total;
                             trade_price=result.trade_price;
-                            // console.log(result.ref_mandatory)
-                            var newRow = "<tr><td>" + item_code + "</td><td>" + item_name + "</td><td>" + qty + "</td><td>" + trade_price + "</td> <td>"+total_amt+"</td> <td> <button type='button' class='btn btn-outline-danger remove-row'><i class='fa-solid fa-x'></i>  </button></td></tr>";
+                            retail_price=result.retail_price;                            
+                            itm_code=result.itm_code;
+                            itm_name=result.itm_name;
+
+                            // console.log("code-> "+itm_code)
+                            // console.log("name-> "+itm_name)
+                            var newRow = "<tr><td>" + itm_code + "</td><td>" + itm_name + "</td><td class='numb'>" + formatNumberWithCommas(qty)  + "</td><td class='numb'>" + formatNumberWithCommas(retail_price)  + "</td> <td class='numb'>"+formatNumberWithCommas(total_amt) +"</td> <td> <button type='button' style='padding-left: 30px;' class='btn btn-outline-danger remove-row' ><i class='fa-solid fa-x'></i>  </button></td></tr>";
                             // console.log(newRow)
                             $("#tbody").append(newRow);                           
 
+                            $('#barcode').val("");
                             $('#item_code').val("");
                             $('#item_name').val("");
-                            $('#qty').val("");
-                            $("#item_code").focus();
+                            $('#qty').val("1.0");
+                            $("#barcode").focus();
                             updateTotals();
-                        } else if (result.status === 'not_found') {
+                        }else if (result.status === 'not_found') {
                             // alert("Account not found for the user");
                             Swal.fire({
-                                title: "Invalid Account",
-                                text: "Account not found for the user",
+                                title: "Invalid Item",
+                                text: "Item not found",
                                 icon: "error"
                                 });
-                        }else {
+                        }
+                        else if (result.status === 'duplicate') {
+                        Swal.fire({
+                            title: "Duplicate Item",
+                            text: "Please add a different item",
+                            icon: "error"
+                            });
+                        }
+                        else if (result.status === 'exception') {
+                            Swal.fire({
+                                title: "Error",
+                                text: result.message,
+                                icon: "error"
+                                });
+                        }
+                        else {
                                 // alert("error");
                                 Swal.fire({
                                     title: "Error",
@@ -459,14 +490,6 @@
                             }
                     }
                 });
-            } else {
-                    // alert("Please fill in all required fields.");
-                    Swal.fire({
-                                title: "Empty Fields",
-                                text: "Please fill in all required fields.",
-                                icon: "error"
-                                });
-                }
         }
     );
    
@@ -489,7 +512,15 @@
                     if (response.status === 'success') {                        
                         row.remove();
                         updateTotals()
-                    } else {
+                    }
+                    else if(response.status === 'exception') {
+                            Swal.fire({
+                                    title: "Error",
+                                    text: response.message,
+                                    icon: "error"
+                                    });
+                        } 
+                    else {
                         Swal.fire({
                                 title: "Error",
                                 text: "Error: " + response.message,
@@ -615,14 +646,14 @@
                 if (data.success) {                            
                         Swal.fire({
                         title: "POSTED",
-                        text: "Receive posted successfully",
+                        text: "Sales posted successfully",
                         icon: "success"
                             }).then(() => {
                             location.reload();
                         });
 
                 } else {
-                    if (data.error == "Receive already posted") {
+                    if (data.error == "Sales already posted or cancelled") {
                         Swal.fire({
                             title: "Error",
                             text: data.error,

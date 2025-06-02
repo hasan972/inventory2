@@ -123,8 +123,6 @@ def receive():
                 voucher_branch_name = branch[1]
 
                 result = db.executesql(f"SELECT MAX(receive_code)+1 FROM product_receive_head")
-                print("mx_sl")
-                print(db._lastsql)
                 new_sl_value = result[0][0] if result[0][0] is not None else 1
                 # if max_sl_value:
                 #     new_sl_value = str(int(max_sl_value) + 1)
@@ -196,25 +194,15 @@ def edit_receive(sl=None):
             flash.set('Access Denied','error')
             redirect(URL('receive','receive'))
 
-        
-
-        branch = db(db.ac_branch.branch_code ==receive_branch_code ).select().first()
-        voucher_branch_name = branch.branch_name
-
         editable = not (status in ['POSTED', 'CANCEL'])
-
-        ref_types = db(db.ac_ref_type).select(db.ac_ref_type.ref_type)
-
-        # rows =  db(db.ac_voucher_details.sl == sl).select()   
 
         rows_query = """select * from product_receive_details where receive_code = {rcv_code} """.format(rcv_code=sl)
         
         rows = db.executesql(rows_query,as_dict=True)     
         
-    # return dict(sl=sl,status="status",v_date="v_date",v_type="v_type",narration="narration",role=role,user=user,branch_name=branch_name,editable=True,voucher_branch_name="voucher_branch_name",voucher_branch_code="voucher_branch_code")
     return dict(sl=sl,status=status,description=desctiption,rows=rows,role=role,user=user,
                 branch_name=branch_name,editable=editable,receive_branch_name=receive_branch_name,
-                ref_types=ref_types,supplier_name = supplier_name,
+                supplier_name = supplier_name,
                 receive_date=receive_date, receive_code = sl, receive_branch_code = receive_branch_code,trans_type=trans_type)
 
 # auto suggest item 
@@ -249,8 +237,6 @@ def add_item():
         r_branch_code = request.json.get('v_branch_code')
         r_branch_name = request.json.get('v_branch_name')
         barcode = request.json.get('barcode')  
-
-        # print(barcode)
 
         searched_item='' 
         
@@ -324,7 +310,7 @@ def delete_receive_detail():
         
         if item_code and sl:        
             delete_query = """delete from product_receive_details WHERE receive_code = {rcv_code} AND item_code = '{itm_code}'""".format(rcv_code=sl,itm_code=item_code)
-            # print(delete_query)
+            print(delete_query)
             db.executesql(delete_query)
             return dict(status='success')
         else:
@@ -357,7 +343,7 @@ def post_receive():
     try:
         v_status = db.executesql("select status from product_receive_head where receive_code ="+sl)
 
-        if v_status[0][0]=="POSTED":
+        if (v_status[0][0]=="POSTED" or v_status[0][0]=="CANCEL"):
             return dict(success=False, error=str('Receive already posted'))    
      
 
@@ -396,16 +382,16 @@ def post_receive():
                 item_code = item[0]
                 qty = item[1]
                 current_balance = item[2]
-                new_balance=0
+                new_balance2=0
 
 
-                new_balance = current_balance + qty  
+                new_balance2 = current_balance + qty  
                 # print("--Update start--")
                 # print(item_name+' '+str(current_balance)+" "+str(new_balance))
 
 
                 db((db.stock.item_code == item_code) & (db.stock.branch_code == branch_code)).update(
-                quantity = new_balance
+                quantity = new_balance2
             )
         # print(db._lastsql)
 
@@ -451,7 +437,7 @@ def cancel_receive():
         # print(check_status_query)
         check_status=db.executesql(check_status_query)
         rcv_status=check_status[0][0]
-        print(rcv_status)
+        # print(rcv_status)
 
         if(rcv_status == 'POSTED' or rcv_status=='CANCEL'):
             return json.dumps({'status': 'error', 'message': 'Already posted or cancelled'})
