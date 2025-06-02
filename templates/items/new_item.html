@@ -28,9 +28,10 @@
                     [[ if 'item_code' in form.errors: ]]
                     <div class="text-danger">[[=form.errors['item_code']]]</div>                           
                     [[pass]]
-                </div>
+                </div>                
             </div>
-            <div class="col-3">
+            
+            <div class="col-2">
                 <div class="mb-3">
                     <label for="item_name" class="form-label">Item Name</label>
                     [[= form.custom.widgets['item_name'] ]]
@@ -38,8 +39,7 @@
                     <div class="text-danger">[[=form.errors['item_name']]]</div>                           
                     [[pass]]
                 </div>
-            </div>
-            
+            </div>            
             <div class="col-1">
                 <div class="mb-3">
                     <label for="category" class="form-label">Category</label>
@@ -83,7 +83,16 @@
                     <div class="text-danger">[[=form.errors['retail_price']]]</div>                           
                     [[pass]]
                 </div>
-            </div>            
+            </div>           
+            <div class="col-2">
+                <div class="mb-3">
+                    <label for="barcode" class="form-label">Barcode</label>
+                    [[= form.custom.widgets['barcode'] ]]
+                    [[ if 'barcode' in form.errors: ]]
+                    <div class="text-danger">[[=form.errors['barcode']]]</div>                           
+                    [[pass]]
+                </div>                
+            </div> 
                       
             <div class="col-md-2 col-sm-6 col-12 d-flex align-items-end">
                 <button type="submit" class="btn btn-sm btn-primary mb-3" data-toggle="tooltip" data-placement="bottom" title="Save Item">
@@ -145,7 +154,7 @@
     </div>   
 
     <div class="row">
-        <div class="col-9">
+        <div class="col-11">
             <table class="table">
                 <thead>
                     <tr>

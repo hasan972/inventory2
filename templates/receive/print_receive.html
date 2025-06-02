@@ -136,6 +136,7 @@
                       <th>Sl.</th>
                       <th>Item Code</th>
                       <th>Item Name</th>
+                      <th>Quantity</th>
                       <th class="text-end">Amount</th>                     
                     </tr>
                   </thead>
@@ -145,6 +146,8 @@
                         <td>[[=idx]]</td>
                         <td>[[=row['item_code']]]</td>
                         <td>[[=row['item_name']]]</td>
+                        <td>[[=row['trade_price']]]</td>
+                        <td>[[=row['quantity']]]</td>
                         <td class="text-end">[[=f"{row['total']:,.2f}"]]</td>
                     </tr>
                     [[pass]]

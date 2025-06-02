@@ -54,6 +54,13 @@
   margin: 0 auto; /* Center the container */
 }
 
+.numb {
+    text-align: right;
+    padding-right: 40px;
+}
+
+
+
 </style>
 
 [[icon='fa fa-chart-line']]
@@ -132,12 +139,20 @@
     [[if editable: ]]
     <div class="container py-2">
         <div class="card shadow-sm">
-            <div class="card-body">
+            <form action="">
+                <div class="card-body">
                 <div id="custom_input">
                     <div class="row g-3">
+                        
+                        <!-- barcode  -->
+                        <div class="col-md-2">
+                            <label for="item_code" class="form-label">Barcode<span class="text-danger"></span></label>
+                            <input type="text" class="form-control form-control-sm" id="barcode" name="barcode" autocomplete="off">
+                            
+                        </div>
                         <!-- Item Code -->
                         <div class="col-md-2">
-                            <label for="item_code" class="form-label">Item Code<span class="text-danger">*</span></label>
+                            <label for="item_code" class="form-label">Item Code</label>
                             <input type="text" class="form-control form-control-sm" id="item_code" name="item_code" autocomplete="off">
                             <div class="suggestions-cd mt-2">
                                 <ul class="suggestion-list-cd list-group" id="dropdata-cd">
@@ -148,7 +163,7 @@
     
                         <!-- Item Name -->
                         <div class="col-md-3">
-                            <label for="item_name" class="form-label">Item Name<span class="text-danger">*</span></label>
+                            <label for="item_name" class="form-label">Item Name</label>
                             <input type="text" class="form-control form-control-sm" id="item_name" name="item_name" autocomplete="off" readonly="true">
                             <div class="suggestions-nm mt-2">
                                 <ul class="suggestion-list-nm list-group" id="dropdata-nm">
@@ -158,15 +173,15 @@
                         </div>
     
     
-                        <!-- Amount -->
+                        <!-- Quantity -->
                         <div class="col-md-1">
-                            <label for="amount" class="form-label">Quantity<span class="text-danger">*</span></label>
-                            <input type="number" class="form-control form-control-sm" id="qty" name="qty" min="0" max="10000000">
+                            <label for="qty" class="form-label">Quantity<span class="text-danger">*</span></label>
+                            <input type="number" class="form-control form-control-sm" id="qty" value="1.0" name="qty" min="0" max="10000000">
                         </div>
     
                         <!-- Add Row Button -->
                         <div class="col-md-2 d-flex align-items-end">
-                            <button type="button" class="btn btn-primary btn-sm w-100" data-bs-toggle="tooltip" data-placement="bottom" title="Add item" id="add-row">
+                            <button type="submit" class="btn btn-primary btn-sm w-100" data-bs-toggle="tooltip" data-placement="bottom" title="Add item" id="add-row">
                                 <i class="fas fa-plus"></i> Add Item
                             </button>
                         </div>                       
@@ -176,6 +191,7 @@
                     
                 </div>
             </div>
+            </form>
         </div>
     </div>
     [[pass]]
@@ -193,12 +209,12 @@
                             <tr>
                                 <th scope="col">Item Code</th>
                                 <th scope="col">Item Name</th>
-                                <th scope="col">Qty</th>                                 
-                                <th scope="col">Trade Price</th>                                 
-                                <th scope="col">Total</th>                                 
+                                <th class="numb" scope="col">Qty</th>                                 
+                                <th class="numb" scope="col">Trade Price</th>                                 
+                                <th class="numb" scope="col">Total</th>                                 
                                 
                                 [[if editable: ]]
-                                <th scope="col">Remove</th>
+                                <th style="padding-left: 30px;" scope="col">Remove</th>
                                 [[pass]]
                             </tr>
                         </thead>                        
@@ -207,12 +223,12 @@
                             <tr>
                                 <td>[[=row['item_code']]]</td>
                                 <td>[[=row['item_name']]]</td>
-                                <td>[[=row['quantity']]]</td>  
-                                <td>[[=row['trade_price']]]</td>  
-                                <td>[[=row['total']]]</td>  
+                                <td class="numb">[[=row['quantity']]]</td>  
+                                <td class="numb">[[=f"{row['trade_price']:,.2f}"]]</td>  
+                                <td class="numb">[[=f"{row['total']:,.2f}"]]</td>  
                                
                                 [[if editable: ]]
-                                <td><button type='button' class='btn btn-outline-danger remove-row'><i class='fa-solid fa-x'></i></button></td>
+                                <td><button type='button' style="padding-left: 30px;" class='btn btn-outline-danger remove-row'><i class='fa-solid fa-x'></i></button></td>
                                 [[pass]]
                             </tr>
                             [[pass]]
@@ -222,8 +238,8 @@
                                 <td id="emp"  style="font-weight: bold;"></td>
                                 <td id="emp"  style="font-weight: bold;"></td>
                                 <td id="emp"  style="font-weight: bold;"></td>
-                                <td id="tot" style="font-weight: bold;">Total</td>
-                                <td id="total-amt" style="font-weight: bold;">0</td>
+                                <td id="tot" class="numb" style="font-weight: bold;">Total</td>
+                                <td id="total-amt" class="numb" style="font-weight: bold;">0</td>
                             </tr>
                         </tfoot>
                     </table>
@@ -235,14 +251,14 @@
         <div class="row mt-3">
             <div class="col-11">
                 [[if editable: ]]
-                    <button type="button" class="btn btn-success me-2" data-toggle="tooltip" data-placement="bottom" title="Save Voucher" id="save-data">Save</button>
+                    <!-- <button type="button" class="btn btn-success me-2" data-toggle="tooltip" data-placement="bottom" title="Save Voucher" id="save-data">Save</button> -->
                     <button type="button" class="btn btn-primary me-2" data-toggle="tooltip" data-placement="bottom" title="Post Voucher" id="post-data">Post</button>
                     <input type="checkbox" id="post-checkbox" name="post-checkbox" data-toggle="tooltip" data-placement="bottom" title="Post">
                     <label for="post-checkbox" class="ms-1">Confirm Post</label>
                 [[pass]]
             </div>
             <div class="col-1 d-flex justify-content-end">
-                <button type="button" class="btn btn-secondary me-2" data-toggle="tooltip" data-placement="bottom" title="Preview" id="preview-data"><i class="fa-regular fa-eye"></i></button>
+                <!-- <button type="button" class="btn btn-secondary me-2" data-toggle="tooltip" data-placement="bottom" title="Preview" id="preview-data"><i class="fa-regular fa-eye"></i></button> -->
                 <button type="button" class="btn btn-secondary me-2" data-toggle="tooltip" data-placement="bottom" title="Print Voucher" id="print-data"><i class="fa-solid fa-print"></i></button>                
                 [[if editable: ]]
                     <button type="button" class="btn btn-danger me-2" data-toggle="tooltip" data-placement="bottom" title="Cancel Voucher" id="cancel-data">Cancel</button>
@@ -254,13 +270,13 @@
 [[end]] 
 
 
-
-
-
-
 [[block scripts]]
 <script>
     $(document).ready(function () {
+
+        $("form").on("submit", function(e) {
+            e.preventDefault();
+        });
         
         function formatNumberWithCommas(number) {
             return number.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -278,7 +294,6 @@
             // console.log(formatNumberWithCommas(totalCredit.toFixed(2)))
 
             $("#total-amt").text(formatNumberWithCommas(total));
-
 
         }
 
@@ -328,10 +343,10 @@
     
             
         //////////////////////////new add row/////////////////////////////////////////////////
-           //add row to table and update total debit and credit
            $("#add-row").click(function () {            
             var item_code = $("#item_code").val();
             var item_name = $("#item_name").val();
+            var barcode = $("#barcode").val() || "";
 
             var qty = $("#qty").val();
             var receive_date = $("#receive_date").text();   
@@ -341,9 +356,7 @@
 
 
             
-            if (qty <= 0) {
-                // alert("Amount must be greater than zero.");
-                // return; 
+            if (qty <= 0) { 
                 Swal.fire({
                     title: "Invalid Quantity",
                     text: "Quantity must be greater than zero",
@@ -351,7 +364,7 @@
                     });
                     return;
             } 
-            if (qty >10000000) {
+            if (qty >10000) {
                 // alert("Amount must be greater than zero.");
                 // return; 
                 Swal.fire({
@@ -360,8 +373,7 @@
                     icon: "error"
                     });
                     return;
-            } 
-            
+            }            
 
             
             var itemExists = false;            
@@ -374,81 +386,86 @@
                 sl:sl, 
                 qty:qty,
                 v_branch_code:receive_branch_code,
-                v_branch_name:receive_branch_name
+                v_branch_name:receive_branch_name,
+                barcode: barcode
             }
     
             // Check if item code already exists in the table
-            $("#tbody tr").each(function() {
-                var existingItemCode = $(this).find("td:eq(0)").text();
-                if (existingItemCode === item_code) {
-                    itemExists = true;
-                    return false; 
-                }
-            });
+            // $("#tbody tr").each(function() {
+            //     var existingItemCode = $(this).find("td:eq(0)").text();
+            //     if (existingItemCode === item_code) {
+            //         itemExists = true;
+            //         return false; 
+            //     }
+            // });
 
     
-            if (itemExists) {
-                Swal.fire({
-                    title: "Duplicate Entry",
-                    text: "Item already exists !",
-                    icon: "error"
-                    });
-                
-            } else if (item_code && item_name) {
-                $.ajax({
-                    url: "[[=URL('receive','add_item')]]",
-                    type: "POST",
-                    contentType: "application/json",
-                    data: JSON.stringify(obj),
-                    success: function (response) {
-                        var result = JSON.parse(response);
-                        // console.log(result.status)
-                        if (result.status === 'valid') {
-                            total_amt= result.total;
-                            trade_price=result.trade_price;
-                            // console.log(result.ref_mandatory)
-                            var newRow = "<tr><td>" + item_code + "</td><td>" + item_name + "</td><td>" + qty + "</td><td>" + trade_price + "</td> <td>"+total_amt+"</td> <td> <button type='button' class='btn btn-outline-danger remove-row'><i class='fa-solid fa-x'></i>  </button></td></tr>";
-                            // console.log(newRow)
-                            $("#tbody").append(newRow);                           
+            // if (itemExists) {
+            //     Swal.fire({
+            //         title: "Duplicate Item",
+            //         text: "Item already exists !",
+            //         icon: "error"
+            //         });                
+            // }
 
-                            $('#item_code').val("");
-                            $('#item_name').val("");
-                            $('#qty').val("");
-                            $("#item_code").focus();
-                            updateTotals();
-                        } else if (result.status === 'invalid') {
-                            // alert("Account not valid for "+v_type+" voucher");
-                            Swal.fire({
-                                title: "Invalid Item",
-                                text: "Item not valid for "+v_type+" voucher",
-                                icon: "error"
-                                });
-                            
-                        } else if (result.status === 'not_found') {
-                            // alert("Account not found for the user");
-                            Swal.fire({
-                                title: "Invalid Account",
-                                text: "Account not found for the user",
-                                icon: "error"
-                                });
-                        }else {
-                                // alert("error");
-                                Swal.fire({
-                                    title: "Error",
-                                    text: "Error adding account",
-                                    icon: "error"
-                                    });
-                            }
+            $.ajax({
+                url: "[[=URL('receive','add_item')]]",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(obj),
+                success: function (response) {
+                    var result = JSON.parse(response);
+                    // console.log(result.status)
+                    if (result.status === 'valid') {
+                        total_amt= result.total;
+                        trade_price=result.trade_price;
+                        itm_code=result.itm_code;
+                        itm_name=result.itm_name;
+
+                        // console.log("Item name --> "+result.itm_name)
+                        var newRow = '<tr><td>' + itm_code + "</td><td>" + itm_name + '</td><td class="numb">' + formatNumberWithCommas(qty)  + '</td><td class="numb">' + formatNumberWithCommas(trade_price) + '</td> <td class="numb">'+ formatNumberWithCommas(total_amt)+"</td> <td> <button type='button' style='padding-left: 30px;' class='btn btn-outline-danger remove-row'><i class='fa-solid fa-x'></i>  </button></td></tr>";
+                        // console.log(newRow)
+                        $("#tbody").append(newRow);                           
+
+                        $('#barcode').val("");
+                        $('#item_code').val("");
+                        $('#item_name').val("");
+                        $('#qty').val("1.0");
+                        $("#barcode").focus();
+                        updateTotals();
+                    } else if (result.status === 'not_found') {
+                        // alert("Account not found for the user");
+                        Swal.fire({
+                            title: "Invalid Item",
+                            text: "Item not found",
+                            icon: "error"
+                            });
+                    } else if (result.status === 'duplicate') {
+                        Swal.fire({
+                            title: "Duplicate Item",
+                            text: "Please add a different item",
+                            icon: "error"
+                            });
                     }
-                });
-            } else {
-                    // alert("Please fill in all required fields.");
-                    Swal.fire({
-                                title: "Empty Fields",
-                                text: "Please fill in all required fields.",
+                    else if (result.status === 'exception') {
+                            Swal.fire({
+                                title: "Error",
+                                text: result.message,
                                 icon: "error"
                                 });
+                        }
+                    else {
+                            // alert("error");
+                            Swal.fire({
+                                title: "Error",
+                                text: "Error adding item",
+                                icon: "error"
+                                });
+                        }
                 }
+            });
+             
+
         }
     );
    
@@ -468,23 +485,31 @@
                                         sl:sl
                             }),
                 success: function (response) {
-                    if (response.status === 'success') {                        
-                        row.remove();
-                        updateTotals()
-                    } else {
-                        Swal.fire({
-                                title: "Error",
-                                text: "Error: " + response.message,
-                                icon: "error"
-                                });
-                    }
+                        if (response.status === 'success') {                        
+                            row.remove();
+                            updateTotals()
+                        } 
+                        else if(response.status === 'exception') {
+                            Swal.fire({
+                                    title: "Error",
+                                    text: response.message,
+                                    icon: "error"
+                                    });
+                        }
+                        else {
+                            Swal.fire({
+                                    title: "Error",
+                                    text: "Error: " + response.message,
+                                    icon: "error"
+                                    });
+                        }                        
                 },
                 error: function () {
                     Swal.fire({
                                 title: "Error",
                                 text: "An error occurred while trying to remove the row.",
                                 icon: "error"
-                                });
+                            });
                 }
             });      
            
@@ -598,7 +623,7 @@
                         });
 
                 } else {
-                    if (data.error == "Receive already posted") {
+                    if (data.error == "Receive already posted or cancelled") {
                         Swal.fire({
                             title: "Error",
                             text: data.error,
@@ -687,28 +712,28 @@
             var status = $("#status").text();
             // console.log(sl);
             // console.log(status);
-            if(status !="POSTED") {
-                // alert("Please post voucher to print");
-                Swal.fire({
-                            title: "Not Allowed",
-                            text: "Please post voucher to print",
-                            icon: "warning"
-                        });
-            }
-            else {
+            // if(status !="POSTED") {
+            //     // alert("Please post voucher to print");
+            //     Swal.fire({
+            //                 title: "Not Allowed",
+            //                 text: "Please post voucher to print",
+            //                 icon: "warning"
+            //             });
+            // }
+            // else {
                 window.open('[[=URL("receive","print_receive",sl)]]')
-            }     
+            // }     
         });
         
         // previeww button 
-        $("#preview-data").click(function() {
-            var sl = $("#sl").text();
-            var status = $("#status").text();
-            console.log(sl);
-            console.log(status);            
-            window.open('[[=URL("vouchers","preview_voucher",sl)]]');
+        // $("#preview-data").click(function() {
+        //     var sl = $("#sl").text();
+        //     var status = $("#status").text();
+        //     console.log(sl);
+        //     console.log(status);            
+        //     window.open('[[=URL("vouchers","preview_voucher",sl)]]');
                 
-        });
+        // });
 
         // double click on table row- remove the line and fill form
     //     $(document).on('dblclick', '#tbody tr', function() {

@@ -18,13 +18,18 @@ def new_item():
     user = session['user_id']
     role = session['role']
     branch_name = session['branch_name']
+
+    last_item = db.executesql("SELECT item_code FROM inventory_items ORDER BY item_code DESC LIMIT 1")
+    new_item_code = 10001 if not last_item else int(last_item[0][0]) + 1
+
+    print(new_item_code)
     
     search_term = request.query.get('search_term', '')
     search_by = request.query.get('search_by', 'item_name')
 
     if search_term:
         if search_by == 'item_name':
-            query = "SELECT * FROM inventory_items WHERE  LOWER(item_name) LIKE '%{}%'".format(search_term)
+            query = "SELECT * FROM inventory_items WHERE  item_name LIKE '%{}%'".format(search_term)
         elif search_by == 'item_code':
             query = "SELECT * FROM inventory_items WHERE item_code LIKE '%{}%'".format(search_term)
     else:
@@ -34,8 +39,7 @@ def new_item():
     branches = db.executesql("SELECT branch_code FROM ac_branch")
     rows = db.executesql(query, as_dict=True)
 
-    # db.inventory_items.created_by.default = user
-    
+    # db.inventory_items.created_by.default = user    
 
     form = Form(db.inventory_items)
 
@@ -44,6 +48,12 @@ def new_item():
     #         form.custom.widgets[field]['_class'] = 'form-control form-control-sm'
     if 'item_code' in form.custom.widgets:
             form.custom.widgets['item_code']['_class'] = 'form-control form-control-sm'
+    if 'item_code' in form.custom.widgets:
+            form.custom.widgets['item_code']['_value'] = str(new_item_code)
+    if 'item_code' in form.custom.widgets:
+            form.custom.widgets['item_code']['_readonly'] = 'true'
+    if 'barcode' in form.custom.widgets:
+            form.custom.widgets['barcode']['_class'] = 'form-control form-control-sm'
     if 'item_name' in form.custom.widgets:
             form.custom.widgets['item_name']['_class'] = 'form-control form-control-sm'
     if 'category_code' in form.custom.widgets:
@@ -84,7 +94,7 @@ def new_item():
                     quantity=0,                    
                     branch_code = branch[0],                   
                      created_by = user,
-                    created_on=datetime.datetime.now,
+                    created_on=datetime.datetime.now(),
                 )        
 
         redirect(URL('items/new_item'))
