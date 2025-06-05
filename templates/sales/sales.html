@@ -159,8 +159,7 @@
                     <tr>
                         <th scope="col">Receive Code</th>
                         <th scope="col">Description</th>                            
-                        <th scope="col">Receive Date</th>                            
-                        <th scope="col">Supplier</th>
+                        <th scope="col">Sales Date</th>                            
                         <th scope="col">Total Amount</th>
                         <th scope="col">Status</th>
                         <th scope="col">Action</th>
@@ -173,7 +172,6 @@
                         <td>[[=row['receive_code']]]</td>
                         <td>[[=row['desc']]]</td>                            
                         <td>[[=row['receive_date']]]</td>                            
-                        <td>[[=row['supplier_name']]]</td>
                         <td>[[=row['total_amount']]]</td>
                         <td> 
                             [[if row['status'] == 'POSTED':]]

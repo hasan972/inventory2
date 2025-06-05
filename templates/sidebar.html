@@ -95,15 +95,15 @@ pass
                   </ul>
                 </div>
               </li>                
-              <li class="menu-item sub-menu">
+              <!-- <li class="menu-item sub-menu">
                   <a href="#">
                     <span class="menu-icon">
                         <i class="fa-solid fa-gear"></i>
                     </span>
                     <span class="menu-title">Account Setup</span>
                   </a>
-                  <div class="sub-menu-list">
-                      <ul>
+                  <div class="sub-menu-list"> -->
+                      <!-- <ul>
                             [[if  _controller_name=='cash_bank':]]
                             <li class="menu-item active_link">
                             [[else:]]
@@ -174,9 +174,9 @@ pass
                                 <span class="menu-title">Bank Notes</span>
                                 </a>
                             </li>                   
-                        </ul>
-                  </div>
-                </li>
+                        </ul> -->
+                  <!-- </div>
+                </li> -->
                 <li class="menu-item sub-menu">
                     <a href="#">
                     <span class="menu-icon">
@@ -186,7 +186,7 @@ pass
                     </a>
                     <div class="sub-menu-list">
                     <ul>
-                        [[if  _controller_name=='voucher':]]
+                        <!-- [[if  _controller_name=='voucher':]]
                         <li class="menu-item active_link">
                         [[else:]]
                         <li class="menu-item">
@@ -195,8 +195,8 @@ pass
                             <span class="menu-icon"><i class="fa-solid fa-receipt"></i></span>
                             <span class="menu-title">Vouchers</span>
                             </a>
-                        </li>
-                        [[if  _controller_name=='cash_denomination_list':]]
+                        </li> -->
+                        <!-- [[if  _controller_name=='cash_denomination_list':]]
                         <li class="menu-item active_link">
                         [[else:]]
                         <li class="menu-item">
@@ -205,15 +205,15 @@ pass
                             <span class="menu-icon"><i class="fa-solid fa-bangladeshi-taka-sign"></i></span>
                             <span class="menu-title">Cash Denomination</span>
                             </a>
-                        </li>
-                        [[if  _controller_name=='new_receive':]]
+                        </li> -->
+                        [[if  _controller_name=='receive':]]
                         <li class="menu-item active_link">
                         [[else:]]
                         <li class="menu-item">
                         [[pass]]
                             <a href="[[=URL('receive','receive')]]">
                             <span class="menu-icon"><i class="fa-solid fa-bangladeshi-taka-sign"></i></span>
-                            <span class="menu-title">Receive Product</span>
+                            <span class="menu-title">Receive</span>
                             </a>
                         </li>
                         [[if  _controller_name=='sales':]]
