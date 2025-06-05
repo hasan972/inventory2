@@ -113,7 +113,7 @@
                 
             </div>
             <div class="report-info">
-                <p class="card-text"><strong>Voucher Type:</strong> </p>
+                <p class="card-text"><strong>Transaction Type:</strong> Receive</p>
                 <p class="card-text"><strong>Branch:</strong> [[=branch_name]]</p>
             </div>
             <div class="date-info">
@@ -136,7 +136,8 @@
                       <th>Sl.</th>
                       <th>Item Code</th>
                       <th>Item Name</th>
-                      <th>Quantity</th>
+                      <th class="text-end">Price</th>
+                      <th class="text-center">Quantity</th>
                       <th class="text-end">Amount</th>                     
                     </tr>
                   </thead>
@@ -146,8 +147,8 @@
                         <td>[[=idx]]</td>
                         <td>[[=row['item_code']]]</td>
                         <td>[[=row['item_name']]]</td>
-                        <td>[[=row['trade_price']]]</td>
-                        <td>[[=row['quantity']]]</td>
+                        <td class="text-end">[[=row['trade_price']]]</td>
+                        <td class="text-center">[[=row['quantity']]]</td>
                         <td class="text-end">[[=f"{row['total']:,.2f}"]]</td>
                     </tr>
                     [[pass]]
@@ -155,6 +156,8 @@
                         <td style="border-left: none;border-right: none;border-bottom: none;"></td>
                         <td style="border-left: none;border-right: none;border-bottom: none;"></td>
                         <td style="border-left: none;border-right: none;border-bottom: none;"></td>
+                        <td style="border-left: none;border-right: none;border-bottom: none;"></td>
+                        <td class="text-end" style="border-left: none;border-right: none;border-bottom: none;">Total</td>
                         <td style="font-weight: bold;text-align: right; border-left: none;border-right: none;border-bottom: none;text-decoration: underline double;text-underline-offset: 3px" >[[=f"{total:,.2f}"]]</td>
                     </tr>
                 </tbody>
