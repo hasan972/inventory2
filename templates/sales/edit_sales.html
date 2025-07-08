@@ -91,7 +91,7 @@
                     </div>
                     <div class="mb-2">
                         <strong>Sales Date:</strong>
-                        <span id="receive_date" class="ms-2">[[ = receive_date]]</span>
+                        <span id="receive_date" class="ms-2">[[ = trans_date]]</span>
                     </div>
                     <div class="mb-2">
                         <strong>Description:</strong>
@@ -106,8 +106,8 @@
                 <!-- Right Column -->
                 <div class="col-md-6">
                     <div class="mb-2">
-                        <strong>Receive No:</strong>
-                        <span id="sl" class="ms-2">[[ = receive_code]]</span>
+                        <strong>Sales No:</strong>
+                        <span id="sl" class="ms-2">[[ = trans_code]]</span>
                     </div>
                     <div class="mb-2">
                         <strong>Status:</strong>
@@ -145,6 +145,12 @@
                 <div id="custom_input">
                     <div class="row g-3">
 
+                        <!-- Quantity -->
+                        <div class="col-md-1">
+                            <label for="qty" class="form-label">Quantity<span class="text-danger">*</span></label>
+                            <input type="number" class="form-control form-control-sm" id="qty" name="qty" value="1.0" min="0" max="10000000">
+                        </div>
+
                         <!-- barcode  -->
                         <div class="col-md-2">
                             <label for="item_code" class="form-label">Barcode<span class="text-danger"></span></label>
@@ -171,14 +177,7 @@
                                     <!-- suggestions will be displayed here -->
                                 </ul>
                             </div>
-                        </div>
-    
-    
-                        <!-- Quantity -->
-                        <div class="col-md-1">
-                            <label for="qty" class="form-label">Quantity<span class="text-danger">*</span></label>
-                            <input type="number" class="form-control form-control-sm" id="qty" name="qty" value="1.0" min="0" max="10000000">
-                        </div>
+                        </div>                       
     
                         <!-- Add Row Button -->
                         <div class="col-md-2 d-flex align-items-end">
@@ -732,27 +731,30 @@
             console.log("Voucher cancellation aborted by user.");
         }
     });
-});
+});        
+        
 
-        
-        
+
         // print button 
         $("#print-data").click(function() {
-            var sl = $("#sl").text();
-            var status = $("#status").text();
-            // console.log(sl);
-            // console.log(status);
-            if(status !="POSTED") {
-                // alert("Please post voucher to print");
-                Swal.fire({
-                            title: "Not Allowed",
-                            text: "Please post voucher to print",
-                            icon: "warning"
-                        });
+            var salesNo = $("#sl").text().trim();  // Get sales number from label
+            
+            if (salesNo) {
+                $.ajax({
+                    url: "[[=URL('sales','print_receipt')]]",
+                    type: "POST",
+                    data: { trx_code: salesNo },
+                    success: function(response) {
+                        alert("Receipt sent to printer!");
+                    },
+                    error: function(xhr, status, error) {
+                        alert("Failed to print receipt.");
+                        console.error(error);
+                    }
+                });
+            } else {
+                alert("Sales number not found.");
             }
-            else {
-                window.open('[[=URL("receive","print_receive",sl)]]')
-            }     
         });
         
         // previeww button 

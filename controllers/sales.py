@@ -37,7 +37,7 @@ def sales():
             # print(selected_branch)
 
             # Base query
-            v_query = "SELECT * FROM product_receive_head where trans_type='Sales' "
+            v_query = "SELECT * FROM transaction_head where trans_type='Sales' "
 
             # Apply branch filter
             # if user_branch_code != 99:
@@ -66,7 +66,7 @@ def sales():
             
 
             # Get total number of records for pagination
-            total_records_query = "SELECT COUNT(*) FROM product_receive_head WHERE "
+            total_records_query = "SELECT COUNT(*) FROM transaction_head WHERE "
             # if user_branch_code != 99:
             #     total_records_query += f" AND branch_code={user_branch_code}"
             # elif selected_branch:
@@ -116,8 +116,8 @@ def sales():
                 voucher_branch_code = branch_info[0]
                 voucher_branch_name = branch_info[1]
 
-                # result = db.executesql(f"SELECT MAX(receive_code)+1 FROM product_receive_head WHERE branch_code = "+voucher_branch_code)
-                result = db.executesql(f"SELECT MAX(receive_code)+1 FROM product_receive_head")
+                # result = db.executesql(f"SELECT MAX(trans_code)+1 FROM transaction_head WHERE branch_code = "+voucher_branch_code)
+                result = db.executesql(f"SELECT MAX(trans_code)+1 FROM transaction_head")
                 new_sl_value = result[0][0] if result[0][0] is not None else 1
                 # if max_sl_value:
                 #     new_sl_value = str(int(max_sl_value) + 1)
@@ -126,10 +126,10 @@ def sales():
 
                             
 
-                db.product_receive_head.insert(
+                db.transaction_head.insert(
                     cid="TDCLPC",
-                    receive_code=new_sl_value,
-                    receive_date=rcv_date,
+                    trans_code=new_sl_value,
+                    trans_date=rcv_date,
                     status="DRAFT",
                     desc=desc,
                     supplier_code="",
@@ -184,8 +184,8 @@ def new_sales(b_code=None, b_name=None):
         new_sl_value = '0'
 
 
-        # result = db.executesql(f"SELECT MAX(receive_code)+1 FROM product_receive_head WHERE branch_code = "+voucher_branch_code)
-        result = db.executesql(f"SELECT MAX(receive_code)+1 FROM product_receive_head")
+        # result = db.executesql(f"SELECT MAX(trans_code)+1 FROM transaction_head WHERE branch_code = "+voucher_branch_code)
+        result = db.executesql(f"SELECT MAX(trans_code)+1 FROM transaction_head")
         new_sl_value = result[0][0] if result[0][0] is not None else 1
             # if max_sl_value:
             #     new_sl_value = str(int(max_sl_value) + 1)
@@ -194,10 +194,10 @@ def new_sales(b_code=None, b_name=None):
 
                         
 
-        db.product_receive_head.insert(
+        db.transaction_head.insert(
             cid="TDCLPC",
-            receive_code=new_sl_value,
-            receive_date=sales_date,
+            trans_code=new_sl_value,
+            trans_date=sales_date,
             status="DRAFT",
             desc="",
             supplier_code="",
@@ -232,15 +232,15 @@ def edit_sales(sl=None):
 
         # print(sl)
         
-        receive = db(db.product_receive_head.receive_code == sl).select().first()        
+        sale = db(db.transaction_head.trans_code == sl).select().first()        
 
-        status=receive.status
-        receive_date=receive.receive_date 
-        desctiption=receive.desc
-        supplier_name=receive.supplier_name
-        receive_branch_code=receive.branch_code
-        receive_branch_name=receive.branch_name
-        trans_type=receive.trans_type
+        status=sale.status
+        trans_date=sale.trans_date # sales date
+        desctiption=sale.desc
+        supplier_name=sale.supplier_name
+        receive_branch_code=sale.branch_code
+        receive_branch_name=sale.branch_name
+        trans_type=sale.trans_type
         
 
         if branch_code != 99 and branch_code != receive_branch_code:
@@ -250,7 +250,7 @@ def edit_sales(sl=None):
 
         editable = not (status in ['POSTED', 'CANCEL'])
 
-        rows_query = """select item_code, item_name, ((-1)*quantity) as quantity, trade_price, total from product_receive_details where receive_code = {rcv_code} """.format(rcv_code=sl)
+        rows_query = """select item_code, item_name, ((-1)*quantity) as quantity, trade_price, total from transaction_details where trans_code = {rcv_code} """.format(rcv_code=sl)
         
         rows = db.executesql(rows_query,as_dict=True)     
         
@@ -258,7 +258,7 @@ def edit_sales(sl=None):
     return dict(sl=sl,status=status,description=desctiption,rows=rows,role=role,user=user,
                 branch_name=branch_name,editable=editable,receive_branch_name=receive_branch_name,
                 supplier_name = supplier_name,
-                receive_date=receive_date, receive_code = sl, receive_branch_code = receive_branch_code,trans_type=trans_type)
+                trans_date=trans_date, trans_code = sl, receive_branch_code = receive_branch_code,trans_type=trans_type)
 
 @action('sales/add_item', method=['GET', 'POST'])
 @action.uses(db,session)
@@ -299,19 +299,19 @@ def add_item():
             retail_price = item_exists[0][3]
             total = round((retail_price* qty),2 )
 
-            duplicate_query= """SELECT item_code FROM product_receive_details  WHERE receive_code= '{sl}' and item_code = '{itm_code}' LIMIT 1 """.format(sl=sl,itm_code=itm_code)
+            duplicate_query= """SELECT item_code FROM transaction_details  WHERE trans_code= '{sl}' and item_code = '{itm_code}' LIMIT 1 """.format(sl=sl,itm_code=itm_code)
             duplicate= db.executesql(duplicate_query)
             # print(duplicate_query)
             if duplicate:
                 return json.dumps({'status': 'duplicate'}) 
             else:  
-                db.product_receive_details.insert(
+                db.transaction_details.insert(
                             cid='TDCLPC',
-                            receive_code=sl,
+                            trans_code=sl,
                             item_code=itm_code,
                             item_name=itm_name,
                             quantity=-qty,
-                            receive_date=receive_date,
+                            trans_date=receive_date,
                             retail_price=retail_price,  
                             trade_price=  trade_price,                
                             status='DRAFT',
@@ -352,17 +352,17 @@ def post_sales():
 
 
     try:
-        v_status = db.executesql("select status from product_receive_head where receive_code ="+sl)
+        v_status = db.executesql("select status from transaction_head where trans_code ="+sl)
 
         if (v_status[0][0]=="POSTED" or v_status[0][0]=="CANCEL"):
             return dict(success=False, error=str('Receive already posted'))    
      
 
         # checking empty post
-        # items = db.executesql("SELECT item_code, quantity FROM product_receive_details WHERE receive_code = %s", (sl,))
-        balance_query = """SELECT prd.item_code, prd.quantity, s.quantity AS balance,prd.item_name FROM product_receive_details AS prd
+        # items = db.executesql("SELECT item_code, quantity FROM transaction_details WHERE trans_code = %s", (sl,))
+        balance_query = """SELECT prd.item_code, prd.quantity, s.quantity AS balance,prd.item_name FROM transaction_details AS prd
                         LEFT JOIN stock AS s ON prd.item_code=s.item_code AND prd.branch_code=s.branch_code 
-                        WHERE prd.receive_code ='{receive_code}'""".format(receive_code=sl)
+                        WHERE prd.trans_code ='{receive_code}'""".format(receive_code=sl)
         
         # print(balance_query)
         
@@ -407,7 +407,7 @@ def post_sales():
 
 
         # update had table status                      
-        db(db.product_receive_head.receive_code == sl).update(
+        db(db.transaction_head.trans_code == sl).update(
                 desc=description,
                 total_amount=sub_total,
                 vat=vat,
@@ -419,7 +419,7 @@ def post_sales():
                 post_time= post_time
             )
         # update details table status 
-        db(db.product_receive_details.receive_code == sl).update(
+        db(db.transaction_details.trans_code == sl).update(
                 status='POSTED',
                 updated_by=user,
                 updated_on=date,
@@ -500,13 +500,90 @@ def print_receiptttt():
 #             print("Error:", e)
 #         finally:
 #             printer.close() 
+# ------------------
+# @action("sales/print_receipt", method=["GET", "POST"])
+# @action.uses(auth, T, db, session)
+# def print_receipt():
+#     if not session.get('user_id'):
+#         redirect(URL('login'))
+#     else:
+#         try:
+#             print("hello")
+#             printer = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+#             printer.settimeout(3)
+#             printer.connect(("10.168.122.179", 9100))
+
+#             # ESC/POS Commands
+#             center_text = b'\x1B\x61\x01'
+#             right_text = b'\x1B\x61\x02'
+#             left_text = b'\x1B\x61\x00'
+#             bold_on = b'\x1B\x45\x01'
+#             bold_off = b'\x1B\x45\x00'
+#             double_on = b'\x1D\x21\x11'
+#             double_off = b'\x1D\x21\x00'
+#             small_font = b'\x1B\x4D\x01'
+#             normal_font = b'\x1B\x4D\x00'
+#             cut_paper = b'\x1D\x56\x41\x03'
+#             double_height_on = b'\x1b\x21\x10'
+#             double_width_on = b'\x1b\x21\x20'
+#             normal_text = b'\x1b\x21\x00'
+
+#             product_details_query = """SELECT * FROM transaction_details WHERE trans_code = {trx_code}""".format(trx_code=9)
+#             product_details = db.executesql(product_details_query,as_dict=True)
+
+#             order_number = 1111  # You can change this dynamically
+
+
+#             receipt_text = (
+#                 center_text + bold_on + double_on + normal_text + b"KFC\n" + double_off + bold_off +
+#                 center_text +   b"Order Sl: " +  str(order_number).encode() +  b"\n\n"  +
+#             #     left_text + small_font+   b"Crispy Fired Chicken " +  str(1).encode() +   str(12.50).encode() +  b"\n" + 
+#             #     left_text + small_font+  b"Large Coleslaw  " +  str(1).encode() +   str(6.00).encode() +  b"\n" + 
+#             #     left_text +  small_font+ b"Pepsi Large Fountain  " +  str(1).encode() +   str(5.00).encode() +  b"\n" +                 
+#             #     center_text + normal_font +  b"Thank you!\nPlease check your order status\non the display screen.\n\n" + normal_font +
+#             #     right_text + small_font + b"Powered by: Transcom Technology\n" + normal_font +
+#             #     left_text + b"\n" +
+#             #     cut_paper
+#             # )
+#             left_text + small_font+   b"Product" +  b'             ' + b"Qty" +b'  '+b'Rate'+b'  '+b'Total'+b"\n\n"
+#             )
+
+#             for product in product_details:
+#                 item_name = str(product['item_name']).encode()
+#                 qty = str(product['quantity']).encode()
+#                 rate = str(product['retail_price']).encode()
+#                 total = str(product['total']).encode()                
+
+#                 receipt_text+= left_text + small_font+   item_name + b"\t"+ qty +  b"  "+rate+b"   "+total  +  b"\n"
+            
+#             receipt_text  += cut_paper
+
+
+
+#             # Send to printer
+#             printer.sendall(receipt_text)
+#             printer.sendall(b'\x0C')  # Form feed
+
+#             # return receipt_text
+
+#             print('Print successful')
+#         except Exception as e:
+#             print("Error:", e)
+#         finally:
+#             printer.close()
+
 @action("sales/print_receipt", method=["GET", "POST"])
 @action.uses(auth, T, db, session)
 def print_receipt():
     if not session.get('user_id'):
         redirect(URL('login'))
     else:
+        trx_code = request.POST.get("trx_code")        
+        if not trx_code:
+            return "Missing sales number"
         try:
+            # print(trx_code)
+            now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             printer = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             printer.settimeout(3)
             printer.connect(("10.168.122.179", 9100))
@@ -526,42 +603,51 @@ def print_receipt():
             double_width_on = b'\x1b\x21\x20'
             normal_text = b'\x1b\x21\x00'
 
-            product_details_query = """SELECT * FROM product_receive_details WHERE receive_code = {trx_code}""".format(trx_code=6)
+            product_details_query = """SELECT * FROM transaction_details WHERE trans_code = {trx_code}""".format(trx_code=trx_code)
             product_details = db.executesql(product_details_query,as_dict=True)
 
             order_number = 1111  # You can change this dynamically
 
-            # Construct receipt
-            # receipt_text = (
-            #     center_text + bold_on + double_on + normal_text + b"KFC\n" + double_off + bold_off +
-            #     center_text +   b"Order Number: " +  str(order_number).encode() +  b"\n\n" + 
-            #     left_text + small_font+   b"Crispy Fired Chicken " +  str(1).encode() +   str(12.50).encode() +  b"\n" + 
-            #     left_text + small_font+  b"Large Coleslaw  " +  str(1).encode() +   str(6.00).encode() +  b"\n" + 
-            #     left_text +  small_font+ b"Pepsi Large Fountain  " +  str(1).encode() +   str(5.00).encode() +  b"\n" +                 
-            #     center_text + normal_font +  b"Thank you!\nPlease check your order status\non the display screen.\n\n" + normal_font +
-            #     right_text + small_font + b"Powered by: Transcom Technology\n" + normal_font +
-            #     left_text + b"\n" +
-            #     cut_paper
-            # )
+
             receipt_text = (
                 center_text + bold_on + double_on + normal_text + b"KFC\n" + double_off + bold_off +
-                center_text +   b"Order Number: " +  str(order_number).encode() +  b"\n\n" ) 
-            #     left_text + small_font+   b"Crispy Fired Chicken " +  str(1).encode() +   str(12.50).encode() +  b"\n" + 
-            #     left_text + small_font+  b"Large Coleslaw  " +  str(1).encode() +   str(6.00).encode() +  b"\n" + 
-            #     left_text +  small_font+ b"Pepsi Large Fountain  " +  str(1).encode() +   str(5.00).encode() +  b"\n" +                 
-            #     center_text + normal_font +  b"Thank you!\nPlease check your order status\non the display screen.\n\n" + normal_font +
-            #     right_text + small_font + b"Powered by: Transcom Technology\n" + normal_font +
-            #     left_text + b"\n" +
-            #     cut_paper
-            # )
+                center_text +   b"Order Sl: " +  str(order_number).encode() +  b"\n\n") 
+            
+            receipt_text += left_text + small_font + b"Product           Qty  Rate  Total\n"
+            receipt_text += left_text + small_font + b"--------------------------------\n"
 
             for product in product_details:
-                item_name = str(product['item_name']).encode()
-                qty = str(product['quantity']).encode()
-                total = str(product['total']).encode()                
+                name = product['item_name'][:16]  # Trim to fit 16 chars
+                qty = product['quantity']
+                rate = product['retail_price']
+                total = product['total']
 
-                receipt_text+= left_text + small_font+   item_name + b"  "+ qty +  b"  "+total  +  b"\n"
+                # Format line using Python string formatting and then encode
+                line = "{:<16} {:>4} {:>6} {:>9}\n".format(name, qty, rate, total)
+                receipt_text += left_text + small_font + line.encode()
+            # Separator
+            receipt_text += left_text + small_font + b"--------------------------------------\n"
+
+            # Dummy totals (you can replace with real values later)
+            subtotal = 37000
+            vat = 5500
+            grand_total = 42550
+
+            # Format summary lines
+            summary_lines = [
+                ("Subtotal:", subtotal),
+                ("VAT (5%):", vat),
+                ("Grand Total:", grand_total)
+            ]
+
+            for label, amount in summary_lines:
+                line = "{:<30} {:>7}\n".format(label, amount)
+                receipt_text += left_text + small_font + line.encode()
             
+            receipt_text += center_text + small_font
+            receipt_text += b"\nThank you !\n"
+            receipt_text += f"{now}\n\n".encode()
+
             receipt_text  += cut_paper
 
 

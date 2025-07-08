@@ -169,9 +169,9 @@
                 [[for row in rows:]]
                 <tbody>
                     <tr>
-                        <td>[[=row['receive_code']]]</td>
+                        <td>[[=row['trans_code']]]</td>
                         <td>[[=row['desc']]]</td>                            
-                        <td>[[=row['receive_date']]]</td>                            
+                        <td>[[=row['trans_date']]]</td>                            
                         <td>[[=row['total_amount']]]</td>
                         <td> 
                             [[if row['status'] == 'POSTED':]]
@@ -185,7 +185,7 @@
                             [[pass]]
                         </td>
                         <td>
-                            <a class="button" href="[[=URL('sales','edit_sales',row['receive_code'])]]" ><i class="fa-regular fa-pen-to-square"></i></a> </t>     
+                            <a class="button" href="[[=URL('sales','edit_sales',row['trans_code'])]]" ><i class="fa-regular fa-pen-to-square"></i></a> </t>     
                                                         
                         </td>
                         
