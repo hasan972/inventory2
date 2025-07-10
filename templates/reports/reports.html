@@ -333,6 +333,42 @@
             
         });
 
+        // saled details
+        $("#report3-btn").click(function() {
+            var branch = $('#branch').val()
+            var item = $('#item').val()
+            if($("#from_date").val() == "") {
+                Swal.fire({
+                        title: "Invalid Date",
+                        text: "Please select from date",
+                        icon: "error"
+                    }); 
+            }            
+            else if ($("#to_date").val() == "") {
+                Swal.fire({
+                        title: "Invalid Date",
+                        text: "Please select to date",
+                        icon: "error"
+                    }); 
+            }
+            else if(!validateDateRange()) {
+                return;
+            }
+            else if(branch == 'Select Branch' || branch=='') {
+                // alert("Please select branch");
+                Swal.fire({
+                        title: "Invalid Branch",
+                        text: "Please select branch",
+                        icon: "error"
+                    }); 
+            }            
+            else {
+                $("#reports-form").attr("action", "[[=URL('reports','sales_details')]]");
+                $("#reports-form").submit();
+            }
+            
+        });
+
         // autofill suggestion for supplier
         $('#supplier').on('input', function() {       
             // console.log("Hello") 

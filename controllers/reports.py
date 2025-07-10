@@ -2222,10 +2222,10 @@ def item_history():
 
         if branch:
 
-            query = """SELECT trans_code,trans_date,item_code,item_name,quantity,trans_type FROM transaction_details WHERE branch_code = '{branch_code}' AND 
+            query = """SELECT trans_code,trans_date,item_code,item_name,abs(quantity) as quantity,trans_type FROM transaction_details WHERE branch_code = '{branch_code}' AND 
             item_code = '{item_code}' and 
             status = 'Posted' and trans_date between '{from_date}' and '{to_date}'""".format(branch_code=report_branch_code, item_code=item_code,from_date=from_date,to_date=to_date )
-
+            # return query
             results = db.executesql(query,as_dict=True)             
             
         else:
@@ -2234,3 +2234,84 @@ def item_history():
     return dict(user=username,address=address, branch_name=user_branch_name, role=role, results=results,
                 from_date=from_date,to_date=to_date,report_branch_code=report_branch_code, 
                 time=time,report_branch_name=report_branch_name,item_code = item_code,item_name=item_name)
+
+
+# item stock
+@action("reports/sales_details", method=["GET", "POST"])
+@action.uses("reports/sales_details.html", auth, T, db, session)
+def sales_details():
+    if not session.get('user_id'):
+        redirect(URL('login'))
+    else:
+        username = session.get('user_id')
+        user_branch_code = session.get('branch_code')        
+        user_branch_name = session.get('branch_name')        
+        role = session['role']
+
+        from_date = request.POST.get('from_date')
+        to_date = request.POST.get('to_date')
+        branch = request.POST.get('branch')
+
+        supplier = request.POST.get('supplier')
+        brand = request.POST.get('brand')
+        item = request.POST.get('item')   
+
+        # return item
+
+        report_branch_code =str(branch).split('-')[0]
+        report_branch_name =str(branch).split('-')[1]
+
+        searched_query = ""
+
+        item_code = ""
+        # supplier_code=""
+        # brand_code=""
+        # report_branch_name =str(branch).split('-')[1]
+        time = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+
+        address_query= """select address from ac_branch where branch_code = {branch_code}""".format(branch_code=report_branch_code)
+        address_row = db.executesql(address_query,as_dict=True)   
+        address = address_row[0]['address']  
+
+        if item and item.strip():
+            item_code = str(item).split('|')[0]
+            searched_query = """ and item_code = '{item_code}'""".format(item_code=item_code)
+        # elif brand and brand.strip():
+        #     brand_code = str(brand).split('|')[0]
+        #     searched_query = """ and s.brand_code = '{brand_code}'""".format(brand_code=brand_code)
+        # elif supplier and supplier.strip():
+        #     supplier_code = str(supplier).split('|')[0]
+        #     searched_query = """ and s.supplier_code = '{sup_code}'""".format(sup_code=supplier_code)
+        else:
+            searched_query = " "      
+        # return searched_item       
+
+
+        if branch:             
+            query = """
+                     SELECT trans_code,trans_date,item_code,item_name, ABS(quantity) AS quantity, 
+                     trade_price, retail_price,(retail_price-trade_price) AS margin ,
+                     ((trade_price*quantity)-(retail_price*quantity)) AS profit
+                    FROM transaction_details WHERE branch_code  ={branch_code} AND 
+                    STATUS= 'Posted' AND trans_type='Sales' AND trans_date 
+                    BETWEEN '{from_date}' AND '{to_date}'
+                    {searched_query}
+            """.format(branch_code=report_branch_code,from_date=from_date,to_date=to_date, searched_query=searched_query )
+            results = db.executesql(query,as_dict=True)
+
+            query2 = """
+                    SELECT SUM(profit) as total_profit FROM ( 
+                     SELECT ((trade_price*quantity)-(retail_price*quantity)) AS profit
+                    FROM transaction_details WHERE branch_code  ={branch_code} AND 
+                    STATUS= 'Posted' AND trans_type='Sales' AND trans_date 
+                    BETWEEN '{from_date}' AND '{to_date}'
+                    {searched_query}) as p
+            """.format(branch_code=report_branch_code,from_date=from_date,to_date=to_date, searched_query=searched_query )
+            results2 = db.executesql(query2,as_dict=True)   
+
+            total_profit = results2[0]['total_profit']
+            
+        else:
+            print("Form data is missing")
+
+    return dict(user=username,address=address, branch_name=user_branch_name, role=role, results=results,from_date=from_date,to_date=to_date,report_branch_code=report_branch_code, time=time,report_branch_name=report_branch_name, total_profit=total_profit)

@@ -66,7 +66,7 @@
     <div class="card mb-4">
         <div class="card-body">
             <div class="report-info">
-                <p class="card-text"><strong>Report Type:</strong> Item Stock</p>
+                <p class="card-text"><strong>Report Type:</strong> Sales Details</p>
                 <p class="card-text"><strong>As of Date:</strong> [[=to_date]]</p>                
             </div>
             <div class="date-info">
@@ -84,23 +84,44 @@
                 <table id="example" class="table table-sm table-bordered" style="width:100%"">
                     <thead>
                         <tr>
-                            <th scope="col">Supplier</th>
-                            <th scope="col">Brand</th>
-                            <th scope="col">Item</th>
-                            <th scope="col" style="text-align: right;">Quantity</th>                          
+                            <th scope="col">Sales No.</th>
+                            <th scope="col">Sales Date</th>
+                            <th scope="col">Item Code</th>
+                            <th scope="col">Item Name</th>
+                            <th style="text-align: right;" scope="col">TP</th>
+                            <th style="text-align: right;" scope="col">RP</th>
+                            <th style="text-align: right;" scope="col">Margin</th>
+                            <th style="text-align: right;" scope="col">Quantity</th>
+                            <th style="text-align: right;" scope="col">Profit</th>
                         </tr>
                     </thead>
                     <tbody>
                         [[for row in results:]]
                         <tr>
-                            <td>[[=row['supplier_name']]]</td>
-                            <td>[[=row['brand_name']]]</td>
+                            <td>[[=row['trans_code']]]</td>
+                            <td>[[=row['trans_date']]]</td>
+                            <td>[[=row['item_code']]]</td>
                             <td>[[=row['item_name']]]</td>
-                            <td  style="text-align: right;">[[=row['quantity']]]</td>                      
+                            <td style="text-align: right;">[[=f"{row['trade_price']:,.2f}"]]</td> 
+                            <td style="text-align: right;">[[=f"{row['retail_price']:,.2f}"]]</td> 
+                            <td style="text-align: right;">[[=f"{row['margin']:,.2f}"]]</td> 
+                            <td style="text-align: right;">[[=f"{row['quantity']:,.2f}"]]</td> 
+                            <td style="text-align: right;">[[=f"{row['profit']:,.2f}"]]</td> 
                         </tr>
-                        [[pass]]
- 
+                        [[pass]] 
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td style="text-align: right; font-weight: bold">Total</td>
+                            <td style="text-align: right; font-weight: bold">[[=f"{total_profit:,.2f}"]]</td>
+                        </tr>
                     </tbody>
+
                 </table>
                 
             </div>
