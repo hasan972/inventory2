@@ -21,8 +21,6 @@ def new_item():
 
     last_item = db.executesql("SELECT item_code FROM inventory_items ORDER BY item_code DESC LIMIT 1")
     new_item_code = 10001 if not last_item else int(last_item[0][0]) + 1
-
-    print(new_item_code)
     
     search_term = request.query.get('search_term', '')
     search_by = request.query.get('search_by', 'item_name')

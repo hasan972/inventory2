@@ -20,6 +20,11 @@ def new_supplier():
     else:
         user = session['user_id']
         role = session['role']
+
+        # new id generate 
+        last_sup = db.executesql("SELECT supplier_code FROM supplier ORDER BY supplier_code DESC LIMIT 1")
+        new_sup_code = 10001 if not last_sup else int(last_sup[0][0]) + 1
+
         branch_name = session['branch_name']
         search_term = request.query.get('search_term', '')
         search_by = request.query.get('search_by', 'supplier_name')
@@ -38,6 +43,10 @@ def new_supplier():
         form = Form(db.supplier)
         if 'supplier_code' in form.custom.widgets:
             form.custom.widgets['supplier_code']['_class'] = 'form-control form-control-sm'
+        if 'supplier_code' in form.custom.widgets:
+            form.custom.widgets['supplier_code']['_value'] = str(new_sup_code)
+        if 'supplier_code' in form.custom.widgets:
+            form.custom.widgets['supplier_code']['_readonly'] = 'true'
         if 'supplier_name' in form.custom.widgets:
             form.custom.widgets['supplier_name']['_class'] = 'form-control form-control-sm'
         
@@ -64,6 +73,16 @@ def edit_supplier(supplier_id=None):
         redirect(URL('index'))
     
     form = Form(db.supplier, record=p, deletable=False)
+
+    if 'supplier_code' in form.custom.widgets:
+        form.custom.widgets['supplier_code']['_class'] = 'form-control form-control-sm'
+    if 'supplier_code' in form.custom.widgets:
+        form.custom.widgets['supplier_code']['_readonly'] = 'true'
+    if 'supplier_name' in form.custom.widgets:
+        form.custom.widgets['supplier_name']['_class'] = 'form-control form-control-sm'
+    if 'supplier_name' in form.custom.widgets:
+        form.custom.widgets['note']['_class'] = 'form-control form-control-sm'
+
     if form.accepted:   
         flash.set('supplier updated successfully', 'success')               
         redirect(URL('supplier', 'new_supplier'))        

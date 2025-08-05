@@ -258,17 +258,17 @@ def add_item():
     
     # checking account branchwise
     if barcode and barcode.strip():
-        item_exists = db.executesql("SELECT item_code,item_name, trade_price FROM inventory_items WHERE barcode = %s LIMIT 1", placeholders=[barcode.strip()])
+        item_exists = db.executesql("SELECT item_code,item_name, trade_price,retail_price FROM inventory_items WHERE barcode = %s LIMIT 1", placeholders=[barcode.strip()])
     else:
-        item_exists = db.executesql("SELECT item_code,item_name, trade_price FROM inventory_items WHERE item_code = %s LIMIT 1", placeholders=[item_code.strip()])
+        item_exists = db.executesql("SELECT item_code,item_name, trade_price,retail_price FROM inventory_items WHERE item_code = %s LIMIT 1", placeholders=[item_code.strip()])
     
     if not item_exists:        
         return json.dumps({'status': 'not_found'}) 
     else:
         itm_code = item_exists[0][0]
         itm_name = item_exists[0][1]
-        print(itm_name)
         trade_price = item_exists[0][2]
+        retail_price = item_exists[0][3]
         total = trade_price* float(qty) 
         db.transaction_details.insert(
                     cid='TDCLPC',
@@ -278,6 +278,7 @@ def add_item():
                     quantity=qty,
                     trans_date=receive_date,  
                     trade_price=  trade_price,                
+                    retail_price= retail_price,                
                     status='DRAFT',
                     total=total,
                     trans_type="Receive",
@@ -452,7 +453,12 @@ def print_receive(sl=None):
         assert sl is not None  
            
         time = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-        query = """select trans_code,trans_date ,total_amount,status,branch_code,`desc`, created_by,branch_name, post_by  from transaction_head where trans_code = {sl} """.format(sl=sl)        
+        query = """SELECT tr.trans_code,tr.trans_date ,tr.total_amount,tr.status,tr.`desc`,
+                    tr.created_by,tr.branch_name, post_by,
+                    tr.branch_code,br.address  
+                    FROM transaction_head AS tr 
+                    LEFT JOIN ac_branch AS br ON tr.branch_code= br.branch_code 
+                    WHERE trans_code ={sl} """.format(sl=sl)        
         # return query
         head= db.executesql(query, as_dict=True)
         
@@ -465,6 +471,7 @@ def print_receive(sl=None):
         created_by = head[0]['created_by']
         post_by = head[0]['post_by']
         branch_name = head[0]['branch_name']
+        address = head[0]['address']
 
         # v_date = datetime.datetime.strptime(v_date_db, "%Y-%m-%d").strftime('%d-%b-%Y')   
 
@@ -485,7 +492,7 @@ def print_receive(sl=None):
        
 
     return dict(v_date = v_date, total=total,time=time,status=status,branch_code=branch_code,branch_name=branch_name,results=results,sl=sl,
-                 amt_words=amt_words,narration=narration,created_by=created_by, post_by=post_by)
+                 amt_words=amt_words,narration=narration,created_by=created_by, post_by=post_by,address=address)
 
 
 # amount in words functions 

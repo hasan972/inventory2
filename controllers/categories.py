@@ -21,6 +21,11 @@ def new_category():
         user = session['user_id']
         role = session['role']
         branch_name = session['branch_name']
+
+        # new id generate 
+        last_cat = db.executesql("SELECT category_code FROM category ORDER BY category_code DESC LIMIT 1")
+        new_cat_code = 101 if not last_cat else int(last_cat[0][0]) + 1
+
         search_term = request.query.get('search_term', '')
         search_by = request.query.get('search_by', 'category_name')
         
@@ -38,6 +43,10 @@ def new_category():
         form = Form(db.category)
         if 'category_code' in form.custom.widgets:
             form.custom.widgets['category_code']['_class'] = 'form-control form-control-sm'
+        if 'category_code' in form.custom.widgets:
+            form.custom.widgets['category_code']['_value'] = str(new_cat_code)
+        if 'category_code' in form.custom.widgets:
+            form.custom.widgets['category_code']['_readonly'] = "true"
         if 'category_name' in form.custom.widgets:
             form.custom.widgets['category_name']['_class'] = 'form-control form-control-sm'
         
@@ -64,6 +73,16 @@ def edit_category(category_id=None):
         redirect(URL('index'))
     
     form = Form(db.category, record=p, deletable=False)
+
+    if 'category_code' in form.custom.widgets:
+        form.custom.widgets['category_code']['_class'] = 'form-control form-control-sm'
+    if 'category_code' in form.custom.widgets:
+        form.custom.widgets['category_code']['_readonly'] = "true"
+    if 'category_name' in form.custom.widgets:
+        form.custom.widgets['category_name']['_class'] = 'form-control form-control-sm'
+    if 'note' in form.custom.widgets:
+        form.custom.widgets['category_name']['_class'] = 'form-control form-control-sm'
+
     if form.accepted:   
         flash.set('Category updated successfully', 'success')               
         redirect(URL('categories', 'new_category'))        

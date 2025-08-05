@@ -430,147 +430,8 @@ def post_sales():
         return dict(success=True)
     except Exception as e:
         db.rollback()
-        return dict(success=False, error=str(e))
-    
-@action('sales/print_receiptttt', method=['POST'])
-@action.uses(db,session)
-def print_receiptttt():
-        try:
-            # Start timing
-            # start_time = time.time()
-            order_number = '1111'
-            printer = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            printer.settimeout(3)  # Set shorter timeout
-            printer.connect(("10.168.122.179", 9100))
-            
-            # print("Connected to printer in", time.time() - start_time, "seconds")
+        return dict(success=False, error=str(e))    
 
-            # ESC/POS Commands
-            center_text = b'\x1B\x61\x01'
-            right_text = b'\x1B\x61\x02'
-            left_text = b'\x1B\x61\x00'
-            bold_on = b'\x1B\x45\x01'
-            bold_off = b'\x1B\x45\x00'
-            double_on = b'\x1D\x21\x11'
-            double_off = b'\x1D\x21\x00'
-            small_font = b'\x1B\x4D\x01'
-            normal_font = b'\x1B\x4D\x00'
-            cut_paper = b'\x1D\x56\x41\x03'
-            double_height_on = b'\x1b\x21\x10'
-            double_width_on = b'\x1b\x21\x20'
-            normal_text = b'\x1b\x21\x00'
-            # double_height = b'\x1b\x21\x10'
-            
-
-            # Construct the receipt text
-            receipt_text = (
-                center_text + bold_on + double_on +normal_text+ b"KFC\n" + double_off + bold_off +
-                center_text + bold_on  +double_on +double_height_on+double_width_on+ b"Order Number: " +  bold_on  + double_on + str(order_number).encode()+ double_off +bold_off  + b"\n\n" + double_off +bold_off +
-                center_text + normal_font + normal_text+ b"Thank you!\nPlease check your order status\non the display screen.\n\n" + normal_font +
-                right_text + small_font + b"Powered by: Transcom Technology\n" + normal_font +
-                left_text + b"\n" +  # Form feed
-                cut_paper
-            )
-
-            printer.sendall(receipt_text)
-            printer.sendall(b'\x0C')  # Form feed to force immediate printing
-            # printer.shutdown(socket.SHUT_WR)  # Ensure complete transmission
-            print('Print successful')
-        except Exception as e:
-            print("Error:", e)
-        finally:
-            printer.close()  # Close immediately
-            # print("Socket closed in", time.time() - start_time, "seconds")
-        return "Hello"  
-    
-# # # print_receipt(1111)
-# @action("sales/print_receipt", method=["GET", "POST"])
-# @action.uses(auth, T, db, session)
-# def print_receipt():
-#     if not session.get('user_id'):
-#         redirect(URL('login'))
-#     else:
-#         try:
-#             printer = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-#             printer.settimeout(3)  
-#             printer.connect(("10.168.122.179", 9100))
-#             printer.sendall(b"Helloooo")
-#             printer.sendall(b'\x0C')            
-#         except Exception as e:
-#             print("Error:", e)
-#         finally:
-#             printer.close() 
-# ------------------
-# @action("sales/print_receipt", method=["GET", "POST"])
-# @action.uses(auth, T, db, session)
-# def print_receipt():
-#     if not session.get('user_id'):
-#         redirect(URL('login'))
-#     else:
-#         try:
-#             print("hello")
-#             printer = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-#             printer.settimeout(3)
-#             printer.connect(("10.168.122.179", 9100))
-
-#             # ESC/POS Commands
-#             center_text = b'\x1B\x61\x01'
-#             right_text = b'\x1B\x61\x02'
-#             left_text = b'\x1B\x61\x00'
-#             bold_on = b'\x1B\x45\x01'
-#             bold_off = b'\x1B\x45\x00'
-#             double_on = b'\x1D\x21\x11'
-#             double_off = b'\x1D\x21\x00'
-#             small_font = b'\x1B\x4D\x01'
-#             normal_font = b'\x1B\x4D\x00'
-#             cut_paper = b'\x1D\x56\x41\x03'
-#             double_height_on = b'\x1b\x21\x10'
-#             double_width_on = b'\x1b\x21\x20'
-#             normal_text = b'\x1b\x21\x00'
-
-#             product_details_query = """SELECT * FROM transaction_details WHERE trans_code = {trx_code}""".format(trx_code=9)
-#             product_details = db.executesql(product_details_query,as_dict=True)
-
-#             order_number = 1111  # You can change this dynamically
-
-
-#             receipt_text = (
-#                 center_text + bold_on + double_on + normal_text + b"KFC\n" + double_off + bold_off +
-#                 center_text +   b"Order Sl: " +  str(order_number).encode() +  b"\n\n"  +
-#             #     left_text + small_font+   b"Crispy Fired Chicken " +  str(1).encode() +   str(12.50).encode() +  b"\n" + 
-#             #     left_text + small_font+  b"Large Coleslaw  " +  str(1).encode() +   str(6.00).encode() +  b"\n" + 
-#             #     left_text +  small_font+ b"Pepsi Large Fountain  " +  str(1).encode() +   str(5.00).encode() +  b"\n" +                 
-#             #     center_text + normal_font +  b"Thank you!\nPlease check your order status\non the display screen.\n\n" + normal_font +
-#             #     right_text + small_font + b"Powered by: Transcom Technology\n" + normal_font +
-#             #     left_text + b"\n" +
-#             #     cut_paper
-#             # )
-#             left_text + small_font+   b"Product" +  b'             ' + b"Qty" +b'  '+b'Rate'+b'  '+b'Total'+b"\n\n"
-#             )
-
-#             for product in product_details:
-#                 item_name = str(product['item_name']).encode()
-#                 qty = str(product['quantity']).encode()
-#                 rate = str(product['retail_price']).encode()
-#                 total = str(product['total']).encode()                
-
-#                 receipt_text+= left_text + small_font+   item_name + b"\t"+ qty +  b"  "+rate+b"   "+total  +  b"\n"
-            
-#             receipt_text  += cut_paper
-
-
-
-#             # Send to printer
-#             printer.sendall(receipt_text)
-#             printer.sendall(b'\x0C')  # Form feed
-
-#             # return receipt_text
-
-#             print('Print successful')
-#         except Exception as e:
-#             print("Error:", e)
-#         finally:
-#             printer.close()
 
 # @action("sales/print_receipt", method=["GET", "POST"])
 # @action.uses(auth, T, db, session)
@@ -586,7 +447,11 @@ def print_receiptttt():
 #             now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 #             printer = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 #             printer.settimeout(3)
-#             printer.connect(("10.168.122.179", 9100))
+#             printer.connect(("192.168.100.145", 9100))
+
+#             #time.sleep(0.5) 
+
+#             print("Hellooo")
 
 #             # ESC/POS Commands
 #             center_text = b'\x1B\x61\x01'
@@ -610,11 +475,13 @@ def print_receiptttt():
 
 
 #             receipt_text = (
-#                 center_text + bold_on + double_on + normal_text + b"KFC\n" + double_off + bold_off +
+#                 center_text + bold_on + double_on + normal_text + b"SM MINI SUPER MERKET\n" + double_off + bold_off +
+#                 center_text +   b"A Aqrabiyah, Al Khobar, Saudi Arabia\n"  + double_off + bold_off +
+#                 center_text +   b"C.R:2051262342\n\n " + double_off + bold_off +
 #                 center_text +   b"Order Sl: " +  str(order_number).encode() +  b"\n\n") 
             
-#             receipt_text += left_text + small_font + b"Product           Qty  Rate  Total\n"
-#             receipt_text += left_text + small_font + b"--------------------------------\n"
+#             receipt_text += center_text + small_font + b"Product           Qty  Rate     Total\n"
+#             receipt_text += center_text + small_font + b"--------------------------------------\n"
 
 #             for product in product_details:
 #                 name = product['item_name'][:16]  # Trim to fit 16 chars
@@ -624,9 +491,9 @@ def print_receiptttt():
 
 #                 # Format line using Python string formatting and then encode
 #                 line = "{:<16} {:>4} {:>6} {:>9}\n".format(name, qty, rate, total)
-#                 receipt_text += left_text + small_font + line.encode()
+#                 receipt_text += center_text + small_font + line.encode()
 #             # Separator
-#             receipt_text += left_text + small_font + b"--------------------------------------\n"
+#             receipt_text += center_text + small_font + b"--------------------------------------\n"
 
 #             # Dummy totals (you can replace with real values later)
 #             subtotal = 37000
@@ -642,11 +509,33 @@ def print_receiptttt():
 
 #             for label, amount in summary_lines:
 #                 line = "{:<30} {:>7}\n".format(label, amount)
-#                 receipt_text += left_text + small_font + line.encode()
+#                 receipt_text += center_text + small_font + line.encode()
+
+#             receipt_text+=b'\n\n'
+#                  #qr
+#             # Add QR Code (ESC/POS command for QR code printing)
+#             qr_data = f"https://example.com/receipt/{trx_code}"  # Customize the link or data
+#             store_len = len(qr_data) + 3
+#             pL = store_len % 256
+#             pH = store_len // 256
+
+#             # Model: 2, Size: 5
+#             receipt_text += b'\x1D\x28\x6B\x04\x00\x31\x41\x32\x00'  # Select model
+#             receipt_text += b'\x1D\x28\x6B\x03\x00\x31\x43\x05'      # Size of module
+#             receipt_text += b'\x1D\x28\x6B\x03\x00\x31\x45\x30'      # Error correction
+
+#             # Store data in symbol storage area
+#             receipt_text += b'\x1D\x28\x6B' + bytes([pL, pH]) + b'\x31\x50\x30' + qr_data.encode()
+
+#             # Print QR code
+#             receipt_text += b'\x1D\x28\x6B\x03\x00\x31\x51\x30'
+            
             
 #             receipt_text += center_text + small_font
 #             receipt_text += b"\nThank you !\n"
 #             receipt_text += f"{now}\n\n".encode()
+           
+
 
 #             receipt_text  += cut_paper
 
@@ -660,10 +549,151 @@ def print_receiptttt():
 
 #             print('Print successful')
 #         except Exception as e:
+#             import traceback
+#             print(str(traceback.format_exc()))
 #             print("Error:", e)
 #         finally:
 #             printer.close()
 
+
+#             import traceback
+#         return json.dumps({
+#             'status': 'exception',
+#             'message':str(traceback.format_exc()) ,
+#             'trace': traceback.format_exc()  # Optional: for detailed trace in dev
+#         })
+
+# ------------------- working print_receipt ------------------
+# @action("sales/print_receipt", method=["GET", "POST"])
+# @action.uses(auth, T, db, session)
+# def print_receipt():
+#     if not session.get('user_id'):
+#         redirect(URL('login'))
+#     else:
+#         trx_code = request.POST.get("trx_code")        
+#         if not trx_code:
+#             return "Missing sales number"
+#         try:
+#             # print(trx_code)
+#             now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+#             printer = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+#             printer.settimeout(3)
+#             printer.connect(("192.168.100.145", 9100))
+
+#             #time.sleep(0.5) 
+
+#             print("Hellooo")
+
+#             # ESC/POS Commands
+#             center_text = b'\x1B\x61\x01'
+#             right_text = b'\x1B\x61\x02'
+#             left_text = b'\x1B\x61\x00'
+#             bold_on = b'\x1B\x45\x01'
+#             bold_off = b'\x1B\x45\x00'
+#             double_on = b'\x1D\x21\x11'
+#             double_off = b'\x1D\x21\x00'
+#             small_font = b'\x1B\x4D\x01'
+#             normal_font = b'\x1B\x4D\x00'
+#             cut_paper = b'\x1D\x56\x41\x03'
+#             double_height_on = b'\x1b\x21\x10'
+#             double_width_on = b'\x1b\x21\x20'
+#             normal_text = b'\x1b\x21\x00'
+
+#             product_details_query = """SELECT * FROM transaction_details WHERE trans_code = {trx_code}""".format(trx_code=trx_code)
+#             product_details = db.executesql(product_details_query,as_dict=True)
+
+#             order_number = 1111  # You can change this dynamically
+
+
+#             receipt_text = (
+#                 center_text + bold_on + double_on + normal_text + b"SM MINI SUPER MERKET\n" + double_off + bold_off +
+#                 center_text +   b"A Aqrabiyah, Al Khobar, Saudi Arabia\n"  + double_off + bold_off +
+#                 center_text +   b"C.R:2051262342\n\n " + double_off + bold_off +
+#                 center_text +   b"Order Sl: " +  str(order_number).encode() +  b"\n\n") 
+            
+#             receipt_text += center_text + small_font + b"Product           Qty  Rate     Total\n"
+#             receipt_text += center_text + small_font + b"--------------------------------------\n"
+
+#             for product in product_details:
+#                 name = product['item_name'][:16]  # Trim to fit 16 chars
+#                 qty = product['quantity']
+#                 rate = product['retail_price']
+#                 total = product['total']
+
+#                 # Format line using Python string formatting and then encode
+#                 line = "{:<16} {:>4} {:>6} {:>9}\n".format(name, qty, rate, total)
+#                 receipt_text += center_text + small_font + line.encode()
+#             # Separator
+#             receipt_text += center_text + small_font + b"--------------------------------------\n"
+
+#             # Dummy totals (you can replace with real values later)
+#             subtotal = 37000
+#             vat = 5500
+#             grand_total = 42550
+
+#             # Format summary lines
+#             summary_lines = [
+#                 ("Subtotal:", subtotal),
+#                 ("VAT (5%):", vat),
+#                 ("Grand Total:", grand_total)
+#             ]
+
+#             for label, amount in summary_lines:
+#                 line = "{:<30} {:>7}\n".format(label, amount)
+#                 receipt_text += center_text + small_font + line.encode()
+
+#             receipt_text+=b'\n\n'
+#                  #qr
+#             # Add QR Code (ESC/POS command for QR code printing)
+#             qr_data = f"https://example.com/receipt/{trx_code}"  # Customize the link or data
+#             store_len = len(qr_data) + 3
+#             pL = store_len % 256
+#             pH = store_len // 256
+
+#             # Model: 2, Size: 5
+#             receipt_text += b'\x1D\x28\x6B\x04\x00\x31\x41\x32\x00'  # Select model
+#             receipt_text += b'\x1D\x28\x6B\x03\x00\x31\x43\x05'      # Size of module
+#             receipt_text += b'\x1D\x28\x6B\x03\x00\x31\x45\x30'      # Error correction
+
+#             # Store data in symbol storage area
+#             receipt_text += b'\x1D\x28\x6B' + bytes([pL, pH]) + b'\x31\x50\x30' + qr_data.encode()
+
+#             # Print QR code
+#             receipt_text += b'\x1D\x28\x6B\x03\x00\x31\x51\x30'
+            
+            
+#             receipt_text += center_text + small_font
+#             receipt_text += b"\nThank you !\n"
+#             receipt_text += f"{now}\n\n".encode()
+           
+
+
+#             receipt_text  += cut_paper
+
+#             # Send to printer
+#             printer.sendall(receipt_text)
+#             printer.sendall(b'\x0C')  # Form feed
+
+#             # return receipt_text
+
+#             print('Print successful')
+#         except Exception as e:
+#             import traceback
+#             print(str(traceback.format_exc()))
+#             print("Error:", e)
+#         finally:
+#             printer.close()
+
+
+#             import traceback
+#         return json.dumps({
+#             'status': 'exception',
+#             'message':str(traceback.format_exc()) ,
+#             'trace': traceback.format_exc()  # Optional: for detailed trace in dev
+#         })
+    
+
+# print receipt 
 @action("sales/print_receipt", method=["GET", "POST"])
 @action.uses(auth, T, db, session)
 def print_receipt():
@@ -699,22 +729,30 @@ def print_receipt():
             double_width_on = b'\x1b\x21\x20'
             normal_text = b'\x1b\x21\x00'
 
-            product_details_query = """SELECT * FROM transaction_details WHERE trans_code = {trx_code}""".format(trx_code=trx_code)
-            product_details = db.executesql(product_details_query,as_dict=True)
+            sales_head_query = """SELECT * FROM transaction_head WHERE trans_code = {trx_code}""".format(trx_code=trx_code)
+            sales_head = db.executesql(sales_head_query,as_dict=True)
 
-            order_number = 1111  # You can change this dynamically
+            sub_total = sales_head[0]['total_amount']
+            vat = sales_head[0]['vat']
+            final_total = sales_head[0]['grand_total']
+
+
+            sales_details_query = """SELECT item_name, (quantity*(-1)) AS quantity, retail_price, total FROM transaction_details WHERE trans_code = {trx_code}""".format(trx_code=trx_code)
+            sales_details = db.executesql(sales_details_query,as_dict=True)
+
+            order_number = trx_code  # You can change this dynamically
 
 
             receipt_text = (
                 center_text + bold_on + double_on + normal_text + b"SM MINI SUPER MERKET\n" + double_off + bold_off +
                 center_text +   b"A Aqrabiyah, Al Khobar, Saudi Arabia\n"  + double_off + bold_off +
                 center_text +   b"C.R:2051262342\n\n " + double_off + bold_off +
-                center_text +   b"Order Sl: " +  str(order_number).encode() +  b"\n\n") 
+                center_text +   b"Sales No: " +  str(order_number).encode() +  b"\n\n") 
             
             receipt_text += center_text + small_font + b"Product           Qty  Rate     Total\n"
             receipt_text += center_text + small_font + b"--------------------------------------\n"
 
-            for product in product_details:
+            for product in sales_details:
                 name = product['item_name'][:16]  # Trim to fit 16 chars
                 qty = product['quantity']
                 rate = product['retail_price']
@@ -727,15 +765,15 @@ def print_receipt():
             receipt_text += center_text + small_font + b"--------------------------------------\n"
 
             # Dummy totals (you can replace with real values later)
-            subtotal = 37000
-            vat = 5500
-            grand_total = 42550
+            # subtotal = 37000
+            # vat = 5500
+            # grand_total = 42550
 
             # Format summary lines
             summary_lines = [
-                ("Subtotal:", subtotal),
-                ("VAT (5%):", vat),
-                ("Grand Total:", grand_total)
+                ("Subtotal:", sub_total),
+                ("VAT (15%):", vat),
+                ("Grand Total:", final_total)
             ]
 
             for label, amount in summary_lines:
@@ -770,8 +808,6 @@ def print_receipt():
 
             receipt_text  += cut_paper
 
-
-
             # Send to printer
             printer.sendall(receipt_text)
             printer.sendall(b'\x0C')  # Form feed
@@ -779,6 +815,7 @@ def print_receipt():
             # return receipt_text
 
             print('Print successful')
+            return json.dumps({"status": "success"})  #need to test this line
         except Exception as e:
             import traceback
             print(str(traceback.format_exc()))
@@ -786,11 +823,130 @@ def print_receipt():
         finally:
             printer.close()
 
-
             import traceback
         return json.dumps({
             'status': 'exception',
             'message':str(traceback.format_exc()) ,
             'trace': traceback.format_exc()  # Optional: for detailed trace in dev
         })
+    
 
+
+# testing print 
+# @action("sales/print_receipt", method=["GET", "POST"])
+# @action.uses(auth, T, db, session)
+# def print_receipt():
+#     if not session.get('user_id'):
+#         redirect(URL('login'))
+#     else:
+#         trx_code = request.POST.get("trx_code")        
+#         if not trx_code:
+#             return "Missing sales number"
+#         # # print(trx_code)
+#         # now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+#         # printer = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+#         # printer.settimeout(3)
+#         # printer.connect(("192.168.100.145", 9100))
+
+#         #time.sleep(0.5) 
+
+#         print("Hellooo")
+
+#         # ESC/POS Commands
+#         center_text = b'\x1B\x61\x01'
+#         right_text = b'\x1B\x61\x02'
+#         left_text = b'\x1B\x61\x00'
+#         bold_on = b'\x1B\x45\x01'
+#         bold_off = b'\x1B\x45\x00'
+#         double_on = b'\x1D\x21\x11'
+#         double_off = b'\x1D\x21\x00'
+#         small_font = b'\x1B\x4D\x01'
+#         normal_font = b'\x1B\x4D\x00'
+#         cut_paper = b'\x1D\x56\x41\x03'
+#         double_height_on = b'\x1b\x21\x10'
+#         double_width_on = b'\x1b\x21\x20'
+#         normal_text = b'\x1b\x21\x00'
+
+#         sales_head_query = """SELECT * FROM transaction_head WHERE trans_code = {trx_code}""".format(trx_code=trx_code)
+#         sales_head = db.executesql(sales_head_query,as_dict=True)
+
+#         sub_total = sales_head[0]['total_amount']
+#         vat = sales_head[0]['vat']
+#         final_total = sales_head[0]['grand_total']
+
+
+#         sales_details_query = """SELECT item_name, (quantity*(-1)) AS quantity, retail_price, total FROM transaction_details WHERE trans_code = {trx_code}""".format(trx_code=trx_code)
+#         sales_details = db.executesql(sales_details_query,as_dict=True)
+
+#         order_number = trx_code  # You can change this dynamically
+
+
+#         receipt_text = (
+#             center_text + bold_on + double_on + normal_text + b"SM MINI SUPER MERKET\n" + double_off + bold_off +
+#             center_text +   b"A Aqrabiyah, Al Khobar, Saudi Arabia\n"  + double_off + bold_off +
+#             center_text +   b"C.R:2051262342\n\n " + double_off + bold_off +
+#             center_text +   b"Sales No: " +  str(order_number).encode() +  b"\n\n") 
+        
+#         receipt_text += center_text + small_font + b"Product           Qty  Rate     Total\n"
+#         receipt_text += center_text + small_font + b"--------------------------------------\n"
+
+#         for product in sales_details:
+#             name = product['item_name'][:16]  # Trim to fit 16 chars
+#             qty = product['quantity']
+#             rate = product['retail_price']
+#             total = product['total']
+
+#             # Format line using Python string formatting and then encode
+#             line = "{:<16} {:>4} {:>6} {:>9}\n".format(name, qty, rate, total)
+#             receipt_text += center_text + small_font + line.encode()
+#         # Separator
+#         receipt_text += center_text + small_font + b"--------------------------------------\n"
+
+#         # Dummy totals (you can replace with real values later)
+#         # subtotal = 37000
+#         # vat = 5500
+#         # grand_total = 42550
+
+#         # Format summary lines
+#         summary_lines = [
+#             ("Subtotal:", sub_total),
+#             ("VAT (15%):", vat),
+#             ("Grand Total:", final_total)
+#         ]
+
+#         for label, amount in summary_lines:
+#             line = "{:<30} {:>7}\n".format(label, amount)
+#             receipt_text += center_text + small_font + line.encode()
+
+#         receipt_text+=b'\n\n'
+#                 #qr
+#         # Add QR Code (ESC/POS command for QR code printing)
+#         qr_data = f"https://example.com/receipt/{trx_code}"  # Customize the link or data
+#         store_len = len(qr_data) + 3
+#         pL = store_len % 256
+#         pH = store_len // 256
+
+#         # Model: 2, Size: 5
+#         receipt_text += b'\x1D\x28\x6B\x04\x00\x31\x41\x32\x00'  # Select model
+#         receipt_text += b'\x1D\x28\x6B\x03\x00\x31\x43\x05'      # Size of module
+#         receipt_text += b'\x1D\x28\x6B\x03\x00\x31\x45\x30'      # Error correction
+
+#         # Store data in symbol storage area
+#         receipt_text += b'\x1D\x28\x6B' + bytes([pL, pH]) + b'\x31\x50\x30' + qr_data.encode()
+
+#         # Print QR code
+#         receipt_text += b'\x1D\x28\x6B\x03\x00\x31\x51\x30'
+        
+        
+#         receipt_text += center_text + small_font
+#         receipt_text += b"\nThank you !\n"
+#         # receipt_text += f"{now}\n\n".encode()
+        
+#         # print("Subtotal- "+str(sub_total)+" vat- "+str(vat)+" g_total- "+str(final_total))
+
+
+
+#         # return receipt_text
+
+#         print('Print successful')
+#         return json.dumps({"status": "success"})

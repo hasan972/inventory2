@@ -21,6 +21,11 @@ def new_brand():
         user = session['user_id']
         role = session['role']
         branch_name = session['branch_name']
+
+        # new id generate 
+        last_brand = db.executesql("SELECT brand_code FROM brand ORDER BY brand_code DESC LIMIT 1")
+        new_brand_code = 1001 if not last_brand else int(last_brand[0][0]) + 1
+
         search_term = request.query.get('search_term', '')
         search_by = request.query.get('search_by', 'brand_name')
         
@@ -38,6 +43,11 @@ def new_brand():
         form = Form(db.brand)
         if 'brand_code' in form.custom.widgets:
             form.custom.widgets['brand_code']['_class'] = 'form-control form-control-sm'
+        if 'brand_code' in form.custom.widgets:
+            form.custom.widgets['brand_code']['_readonly'] = 'true'
+        if 'brand_code' in form.custom.widgets:
+            form.custom.widgets['brand_code']['_value'] = str(new_brand_code)
+
         if 'brand_name' in form.custom.widgets:
             form.custom.widgets['brand_name']['_class'] = 'form-control form-control-sm'
         if 'supplier_name' in form.custom.widgets:
@@ -67,9 +77,25 @@ def edit_brand(brand_id=None):
     assert brand_id is not None
     p = db.brand[brand_id]
     if p is None:
-        redirect(URL('index'))
+        redirect(URL('index'))    
     
     form = Form(db.brand, record=p, deletable=False)
+
+    if 'brand_code' in form.custom.widgets:
+        form.custom.widgets['brand_code']['_class'] = 'form-control form-control-sm'
+    if 'brand_code' in form.custom.widgets:
+        form.custom.widgets['brand_code']['_readonly'] = 'true'
+    if 'brand_name' in form.custom.widgets:
+        form.custom.widgets['brand_name']['_class'] = 'form-control form-control-sm'
+    if 'supplier_name' in form.custom.widgets:
+        form.custom.widgets['supplier_name']['_class'] = 'form-control form-control-sm'
+    if 'supplier_code' in form.custom.widgets:
+        form.custom.widgets['supplier_code']['_class'] = 'form-control form-control-sm'
+    if 'supplier_code' in form.custom.widgets:
+        form.custom.widgets['supplier_code']['_readonly'] = 'true'
+    if 'note' in form.custom.widgets:
+        form.custom.widgets['note']['_class'] = 'form-control form-control-sm'
+
     if form.accepted:   
         flash.set('brand updated successfully', 'success')               
         redirect(URL('brand', 'new_brand'))        
