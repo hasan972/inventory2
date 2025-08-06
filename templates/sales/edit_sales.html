@@ -267,9 +267,9 @@
             <div class="col-11">
                 [[if editable: ]]
                     <!-- <button type="button" class="btn btn-success me-2" data-toggle="tooltip" data-placement="bottom" title="Save Voucher" id="save-data">Save</button> -->
-                    <button type="button" class="btn btn-primary me-2" data-toggle="tooltip" data-placement="bottom" title="Post Voucher" id="post-data">Post</button>
+                    <button type="button" class="btn btn-primary me-2" data-toggle="tooltip" data-placement="bottom" title="Post Voucher" id="post-data">Sell</button>
                     <input type="checkbox" id="post-checkbox" name="post-checkbox" data-toggle="tooltip" data-placement="bottom" title="Post">
-                    <label for="post-checkbox" class="ms-1">Confirm Post</label>
+                    <label for="post-checkbox" class="ms-1">Confirm Sales</label>
                 [[pass]]
             </div>
             <div class="col-1 d-flex justify-content-end">
@@ -599,57 +599,170 @@
     });
 
 
-    // post button 
-    $("#post-data").click(function () {
+//     // post button ---> old
+//     $("#post-data").click(function () {
         
-        var sl = $("#sl").text();         
-        var description = $("#description").val();         
-        var branch_code  = $("#vbc").text();         
-        var receive_date  = $("#receive_date").text();         
+//         var sl = $("#sl").text();         
+//         var description = $("#description").val();         
+//         var branch_code  = $("#vbc").text();         
+//         var receive_date  = $("#receive_date").text();         
         
-        var isPostChecked = $('#post-checkbox').is(':checked');
+//         var isPostChecked = $('#post-checkbox').is(':checked');
 
-        if(isPostChecked) {
-            var sub_total = parseFloat($('#total-amt').text().replace(/,/g, ''));
-            var vat = parseFloat($('#vat-amt').text().replace(/,/g, ''));
-            var grand_total = parseFloat($('#grand-total').text().replace(/,/g, ''));
+//         if(isPostChecked) {
+//             var sub_total = parseFloat($('#total-amt').text().replace(/,/g, ''));
+//             var vat = parseFloat($('#vat-amt').text().replace(/,/g, ''));
+//             var grand_total = parseFloat($('#grand-total').text().replace(/,/g, ''));
 
             
 
-        //     if (isPostChecked && totalDebit !== totalCredit) {
-        //                 Swal.fire({
-        //                         title: "Invalid Total",
-        //                         text: "Total debited amount must equal total credited amount.",
-        //                         icon: "error"
-        //                         });            
-        //                 return;
-        // }
+//         //     if (isPostChecked && totalDebit !== totalCredit) {
+//         //                 Swal.fire({
+//         //                         title: "Invalid Total",
+//         //                         text: "Total debited amount must equal total credited amount.",
+//         //                         icon: "error"
+//         //                         });            
+//         //                 return;
+//         // }
+
+//         $(this).prop('disabled', true);
+
+//         $.ajax({
+//             type: 'POST',
+//             url: '[[=URL("sales","post_sales")]]',
+//             contentType: 'application/json',
+//             data: JSON.stringify({
+//                 post: isPostChecked,                 
+//                 sl:sl,
+//                 sub_total: sub_total,
+//                 vat: vat,
+//                 grand_total:grand_total,
+//                 branch_code: branch_code,
+//                 description:description,
+//                 receive_date:receive_date
+//             }),
+//             success: function(data) {
+//                 if (data.success) {                            
+//                         Swal.fire({
+//                         title: "POSTED",
+//                         text: "Sales posted successfully",
+//                         icon: "success"
+//                             }).then(() => {
+//                             location.reload();
+//                         });
+
+//                 } else {
+//                     if (data.error == "Sales already posted or cancelled") {
+//                         Swal.fire({
+//                             title: "Error",
+//                             text: data.error,
+//                             icon: "warning"
+//                         }).then(() => {
+//                             location.reload(); // Reload the page
+//                         });
+//                     } else {
+//                         // Handle other errors
+//                         Swal.fire({
+//                             title: "Error",
+//                             text: 'Failed to post data: ' + data.error,
+//                             icon: "error"
+//                         });
+//                         $("#post-data").prop('disabled', false);
+//                     }
+//                 }
+//             },
+//             error: function(xhr, status, error) 
+//             {
+//                 console.error('Error:', error);
+//                 $("#post-data").prop('disabled', false);
+//             }
+
+//         });
+
+            
+//     }       
+
+
+// });
+
+// post button with print 
+$("#post-data").click(function () {
+    var sl = $("#sl").text();         
+    var description = $("#description").val();         
+    var branch_code  = $("#vbc").text();         
+    var receive_date  = $("#receive_date").text();         
+    
+    var isPostChecked = $('#post-checkbox').is(':checked');
+
+    if (isPostChecked) {
+        var sub_total = parseFloat($('#total-amt').text().replace(/,/g, ''));
+        var vat = parseFloat($('#vat-amt').text().replace(/,/g, ''));
+        var grand_total = parseFloat($('#grand-total').text().replace(/,/g, ''));
 
         $(this).prop('disabled', true);
 
+        // First AJAX: Post the sales
         $.ajax({
             type: 'POST',
             url: '[[=URL("sales","post_sales")]]',
             contentType: 'application/json',
             data: JSON.stringify({
                 post: isPostChecked,                 
-                sl:sl,
+                sl: sl,
                 sub_total: sub_total,
                 vat: vat,
-                grand_total:grand_total,
+                grand_total: grand_total,
                 branch_code: branch_code,
-                description:description,
-                receive_date:receive_date
+                description: description,
+                receive_date: receive_date
             }),
-            success: function(data) {
-                if (data.success) {                            
-                        Swal.fire({
-                        title: "POSTED",
-                        text: "Sales posted successfully",
-                        icon: "success"
+            success: function (data) {
+                if (data.success) {
+                    // ✅ Now call print_receipt after post is successful
+                    $.ajax({
+                        type: 'POST',
+                        url: '[[=URL("sales","print_receipt")]]',
+                        data: { trx_code: sl }, // Sending sales number
+                        success: function (printData) {
+                            try {
+                                var parsed = JSON.parse(printData);
+                                if (parsed.status === "success") {
+                                    Swal.fire({
+                                        title: "POSTED & PRINTED",
+                                        text: "Sales posted and receipt printed successfully",
+                                        icon: "success"
+                                    }).then(() => {
+                                        location.reload();
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        title: "POSTED",
+                                        text: "Sales posted successfully, but printing failed: " + parsed.message,
+                                        icon: "warning"
+                                    }).then(() => {
+                                        location.reload();
+                                    });
+                                }
+                            } catch (e) {
+                                Swal.fire({
+                                    title: "POSTED",
+                                    text: "Sales posted successfully, but printing response was invalid",
+                                    icon: "warning"
+                                }).then(() => {
+                                    location.reload();
+                                });
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            Swal.fire({
+                                title: "POSTED",
+                                text: "Sales posted successfully, but failed to print",
+                                icon: "warning"
                             }).then(() => {
-                            location.reload();
-                        });
+                                location.reload();
+                            });
+                        }
+                    });
 
                 } else {
                     if (data.error == "Sales already posted or cancelled") {
@@ -658,10 +771,9 @@
                             text: data.error,
                             icon: "warning"
                         }).then(() => {
-                            location.reload(); // Reload the page
+                            location.reload();
                         });
                     } else {
-                        // Handle other errors
                         Swal.fire({
                             title: "Error",
                             text: 'Failed to post data: ' + data.error,
@@ -671,18 +783,12 @@
                     }
                 }
             },
-            error: function(xhr, status, error) 
-            {
+            error: function (xhr, status, error) {
                 console.error('Error:', error);
                 $("#post-data").prop('disabled', false);
             }
-
         });
-
-            
-    }       
-
-
+    }
 });
 
         // cancel button

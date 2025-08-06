@@ -2,7 +2,7 @@
 
 [[block header]]
 [[icon='fa fa-box-open']]
-[[breadcamp = 'Edit Unit']]
+[[breadcamp = 'Edit Brand']]
 [[end]]
 
 [[block content]]
@@ -27,4 +27,27 @@
         }
     });
 </script>
+[[end]]
+
+[[block scripts]]
+<script>
+    $(document).ready(function() {
+        $("#brand_supplier_name").change(function() {  
+                // console.log('Hello')  ;
+                var selectedValue = $(this).val();  
+                $.ajax({
+                    url: '[[=URL("brand","get_sup_code")]]', // Replace with your endpoint
+                    method: 'GET',
+                    data: { q: selectedValue },
+                    dataType: 'json',
+                    success: function(data) {
+                    // console.log(data['branh_code'])            
+                    $("#brand_supplier_code").val(data['supplier_code']);            
+                }
+            });  
+
+        });
+    });
+</script>
+
 [[end]]

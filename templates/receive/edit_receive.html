@@ -143,6 +143,12 @@
                 <div class="card-body">
                 <div id="custom_input">
                     <div class="row g-3">
+
+                        <!-- Quantity -->
+                        <div class="col-md-1">
+                            <label for="qty" class="form-label">Quantity<span class="text-danger">*</span></label>
+                            <input type="number" class="form-control form-control-sm" id="qty" value="1.0" name="qty" min="0" max="10000000">
+                        </div>
                         
                         <!-- barcode  -->
                         <div class="col-md-2">
@@ -170,14 +176,7 @@
                                     <!-- suggestions will be displayed here -->
                                 </ul>
                             </div>
-                        </div>
-    
-    
-                        <!-- Quantity -->
-                        <div class="col-md-1">
-                            <label for="qty" class="form-label">Quantity<span class="text-danger">*</span></label>
-                            <input type="number" class="form-control form-control-sm" id="qty" value="1.0" name="qty" min="0" max="10000000">
-                        </div>
+                        </div>                        
     
                         <!-- Add Row Button -->
                         <div class="col-md-2 d-flex align-items-end">
@@ -252,7 +251,7 @@
             <div class="col-11">
                 [[if editable: ]]
                     <!-- <button type="button" class="btn btn-success me-2" data-toggle="tooltip" data-placement="bottom" title="Save Voucher" id="save-data">Save</button> -->
-                    <button type="button" class="btn btn-primary me-2" data-toggle="tooltip" data-placement="bottom" title="Post Voucher" id="post-data">Post</button>
+                    <button type="button" class="btn btn-primary me-2" data-toggle="tooltip" data-placement="bottom" title="Post Voucher" id="post-data">Confirm</button>
                     <input type="checkbox" id="post-checkbox" name="post-checkbox" data-toggle="tooltip" data-placement="bottom" title="Post">
                     <label for="post-checkbox" class="ms-1">Confirm Post</label>
                 [[pass]]

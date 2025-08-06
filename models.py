@@ -33,7 +33,7 @@ signature=db.Table(db,'signature',
                 Field('created_by','string',length=100,writable=False,readable=False),                
                 Field('created_on','datetime',default=datetime.datetime.now(),writable=False,readable=False),
                 Field('updated_by','string',length=100,writable=False,readable=False),
-                Field('updated_on','datetime',default=datetime.datetime.now(),writable=True),
+                Field('updated_on','datetime',default=datetime.datetime.now(),writable=False,readable=False),
                 )
 
 db.define_table('ac_accounts_class',
