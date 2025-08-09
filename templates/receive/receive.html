@@ -184,9 +184,9 @@
                 [[for row in rows:]]
                 <tbody>
                     <tr>
-                        <td>[[=row['receive_code']]]</td>
+                        <td>[[=row['trans_code']]]</td>
                         <td>[[=row['desc']]]</td>                            
-                        <td>[[=row['receive_date']]]</td>                            
+                        <td>[[=row['trans_date']]]</td>                            
                         <td>[[=row['supplier_name']]]</td>
                         <td>[[=row['total_amount']]]</td>
                         <td> 
@@ -201,7 +201,7 @@
                             [[pass]]
                         </td>
                         <td>
-                            <a class="button" href="[[=URL('receive','edit_receive',row['receive_code'])]]" ><i class="fa-regular fa-pen-to-square"></i></a> </t>     
+                            <a class="button" href="[[=URL('receive','edit_receive',row['trans_code'])]]" ><i class="fa-regular fa-pen-to-square"></i></a> </t>     
                                                         
                         </td>
                         

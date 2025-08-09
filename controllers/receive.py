@@ -36,7 +36,7 @@ def receive():
         # print(selected_branch)
 
         # Base query
-        v_query = "SELECT * FROM product_receive_head where trans_type='Receive' "
+        v_query = "SELECT * FROM transaction_head where trans_type='Receive' "
         print("v_query- "+v_query)
 
         # Apply branch filter
@@ -66,7 +66,7 @@ def receive():
         
 
         # Get total number of records for pagination
-        total_records_query = "SELECT COUNT(*) FROM product_receive_head WHERE "
+        total_records_query = "SELECT COUNT(*) FROM transaction_head WHERE "
         # if user_branch_code != 99:
         #     total_records_query += f" AND branch_code={user_branch_code}"
         # elif selected_branch:
@@ -121,7 +121,7 @@ def receive():
             voucher_branch_code = branch[0]
             voucher_branch_name = branch[1]
 
-            result = db.executesql(f"SELECT MAX(receive_code)+1 FROM product_receive_head")
+            result = db.executesql(f"SELECT MAX(trans_code)+1 FROM transaction_head")
             print("mx_sl")
             print(db._lastsql)
             new_sl_value = result[0][0] if result[0][0] is not None else 1
@@ -132,10 +132,10 @@ def receive():
 
                         
 
-            db.product_receive_head.insert(
+            db.transaction_head.insert(
                 cid="TDCLPC",
-                receive_code=new_sl_value,
-                receive_date=rcv_date,
+                trans_code=new_sl_value,
+                trans_date=rcv_date,
                 status="DRAFT",
                 desc=desc,
                 supplier_code=supplier_code,
@@ -176,10 +176,10 @@ def edit_receive(sl=None):
 
         # print(sl)
         
-        receive = db(db.product_receive_head.receive_code == sl).select().first()        
+        receive = db(db.transaction_head.trans_code == sl).select().first()        
 
         status=receive.status
-        receive_date=receive.receive_date 
+        trans_date=receive.trans_date 
         desctiption=receive.desc
         supplier_name=receive.supplier_name
         receive_branch_code=receive.branch_code
@@ -202,7 +202,7 @@ def edit_receive(sl=None):
 
         # rows =  db(db.ac_voucher_details.sl == sl).select()   
 
-        rows_query = """select * from product_receive_details where receive_code = {rcv_code} """.format(rcv_code=sl)
+        rows_query = """select * from transaction_details where trans_code = {rcv_code} """.format(rcv_code=sl)
         
         rows = db.executesql(rows_query,as_dict=True)     
         
@@ -210,7 +210,7 @@ def edit_receive(sl=None):
     return dict(sl=sl,status=status,description=desctiption,rows=rows,role=role,user=user,
                 branch_name=branch_name,editable=editable,receive_branch_name=receive_branch_name,
                 ref_types=ref_types,supplier_name = supplier_name,
-                receive_date=receive_date, receive_code = sl, receive_branch_code = receive_branch_code,trans_type=trans_type)
+                trans_date=trans_date, trans_code = sl, receive_branch_code = receive_branch_code,trans_type=trans_type)
 
 # auto suggest item 
 @action('receive/fetch_item_code_name', method=['GET'])
@@ -225,7 +225,7 @@ def fetch_item_code_name():
             query = """
                 SELECT item_code, item_name from inventory_items where  (item_code like '%{term}%' or item_name like '%{term}%') limit 10
                 """.format(term=term)
-            # print(query)
+            print(query)
             rows = db.executesql(query)
             suggestions = [f"{row[0]}|{row[1]}" for row in rows]
             return json.dumps(suggestions)
@@ -258,26 +258,27 @@ def add_item():
     
     # checking account branchwise
     if barcode and barcode.strip():
-        item_exists = db.executesql("SELECT item_code,item_name, trade_price FROM inventory_items WHERE barcode = %s LIMIT 1", placeholders=[barcode.strip()])
+        item_exists = db.executesql("SELECT item_code,item_name, trade_price,retail_price FROM inventory_items WHERE barcode = %s LIMIT 1", placeholders=[barcode.strip()])
     else:
-        item_exists = db.executesql("SELECT item_code,item_name, trade_price FROM inventory_items WHERE item_code = %s LIMIT 1", placeholders=[item_code.strip()])
+        item_exists = db.executesql("SELECT item_code,item_name, trade_price,retail_price FROM inventory_items WHERE item_code = %s LIMIT 1", placeholders=[item_code.strip()])
     
     if not item_exists:        
         return json.dumps({'status': 'not_found'}) 
     else:
         itm_code = item_exists[0][0]
         itm_name = item_exists[0][1]
-        print(itm_name)
         trade_price = item_exists[0][2]
+        retail_price = item_exists[0][3]
         total = trade_price* float(qty) 
-        db.product_receive_details.insert(
+        db.transaction_details.insert(
                     cid='TDCLPC',
-                    receive_code=sl,
+                    trans_code=sl,
                     item_code=item_code,
                     item_name=item_name,
                     quantity=qty,
-                    receive_date=receive_date,  
+                    trans_date=receive_date,  
                     trade_price=  trade_price,                
+                    retail_price= retail_price,                
                     status='DRAFT',
                     total=total,
                     trans_type="Receive",
@@ -302,7 +303,7 @@ def delete_receive_detail():
     # print(ref_code)
     
     if item_code and sl:        
-        delete_query = """delete from product_receive_details WHERE receive_code = {rcv_code} AND item_code = '{itm_code}'""".format(rcv_code=sl,itm_code=item_code)
+        delete_query = """delete from transaction_details WHERE trans_code = {rcv_code} AND item_code = '{itm_code}'""".format(rcv_code=sl,itm_code=item_code)
         db.executesql(delete_query)
         return dict(status='success')
     else:
@@ -328,17 +329,17 @@ def post_receive():
 
 
     try:
-        v_status = db.executesql("select status from product_receive_head where receive_code ="+sl)
+        v_status = db.executesql("select status from transaction_head where trans_code ="+sl)
 
         if v_status[0][0]=="POSTED":
             return dict(success=False, error=str('Receive already posted'))    
      
 
         # checking empty post
-        # items = db.executesql("SELECT item_code, quantity FROM product_receive_details WHERE receive_code = %s", (sl,))
-        balance_query = """SELECT prd.item_code, prd.quantity, s.quantity AS balance,prd.item_name FROM product_receive_details AS prd
+        # items = db.executesql("SELECT item_code, quantity FROM transaction_details WHERE trans_code = %s", (sl,))
+        balance_query = """SELECT prd.item_code, prd.quantity, s.quantity AS balance,prd.item_name FROM transaction_details AS prd
                         LEFT JOIN stock AS s ON prd.item_code=s.item_code AND prd.branch_code=s.branch_code 
-                        WHERE prd.receive_code ='{receive_code}'""".format(receive_code=sl)
+                        WHERE prd.trans_code ='{trans_code}'""".format(trans_code=sl)
         
         # print(balance_query)
         
@@ -384,7 +385,7 @@ def post_receive():
 
 
         # update head table status                      
-        db(db.product_receive_head.receive_code == sl).update(
+        db(db.transaction_head.trans_code == sl).update(
                 desc=description,
                 total_amount=total,
                 status='POSTED',
@@ -394,7 +395,7 @@ def post_receive():
                 post_time= post_time
             )
         # update details table status 
-        db(db.product_receive_details.receive_code == sl).update(
+        db(db.transaction_details.trans_code == sl).update(
                 status='POSTED',
                 updated_by=user,
                 updated_on=date,
@@ -420,14 +421,14 @@ def cancel_receive():
     if not sl:
         return json.dumps({'status': 'error', 'message': 'Sl missing'})
     try:        
-        # db.executesql("UPDATE product_receive_head SET status='CANCEL' WHERE and receive_code = %s", (sl,))    
-        # db.executesql("UPDATE product_receive_details SET status='CANCEL' WHERE receive_code = %s", (sl,))
-        db(db.product_receive_head.receive_code == sl).update(
+        # db.executesql("UPDATE transaction_head SET status='CANCEL' WHERE and trans_code = %s", (sl,))    
+        # db.executesql("UPDATE transaction_head SET status='CANCEL' WHERE trans_code = %s", (sl,))
+        db(db.transaction_head.trans_code == sl).update(
                 status='CANCEL',
                 updated_by=user,
                 updated_on=datetime.datetime.now(),
             )       
-        db(db.product_receive_details.receive_code == sl).update(
+        db(db.transaction_details.trans_code == sl).update(
                 status='CANCEL',
                 updated_by=user,
                 updated_on=datetime.datetime.now(),
@@ -452,11 +453,16 @@ def print_receive(sl=None):
         assert sl is not None  
            
         time = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-        query = """select receive_code,receive_date ,total_amount,status,branch_code,`desc`, created_by,branch_name, post_by  from product_receive_head where receive_code = {sl} """.format(sl=sl)        
+        query = """SELECT tr.trans_code,tr.trans_date ,tr.total_amount,tr.status,tr.`desc`,
+                    tr.created_by,tr.branch_name, post_by,
+                    tr.branch_code,br.address  
+                    FROM transaction_head AS tr 
+                    LEFT JOIN ac_branch AS br ON tr.branch_code= br.branch_code 
+                    WHERE trans_code ={sl} """.format(sl=sl)        
         # return query
         head= db.executesql(query, as_dict=True)
         
-        v_date = head[0]['receive_date']
+        v_date = head[0]['trans_date']
         # v_type = head[0]['v_type']
         total = head[0]['total_amount']
         status = head[0]['status']
@@ -465,6 +471,7 @@ def print_receive(sl=None):
         created_by = head[0]['created_by']
         post_by = head[0]['post_by']
         branch_name = head[0]['branch_name']
+        address = head[0]['address']
 
         # v_date = datetime.datetime.strptime(v_date_db, "%Y-%m-%d").strftime('%d-%b-%Y')   
 
@@ -479,13 +486,13 @@ def print_receive(sl=None):
         
         # transactio details 
         details_query = """select item_code, item_name,quantity, trade_price, total
-                            from product_receive_details where receive_code= {sl};""".format(sl=sl)
+                            from transaction_details where trans_code= {sl};""".format(sl=sl)
         results = db.executesql(details_query,as_dict=True)
 
        
 
     return dict(v_date = v_date, total=total,time=time,status=status,branch_code=branch_code,branch_name=branch_name,results=results,sl=sl,
-                 amt_words=amt_words,narration=narration,created_by=created_by, post_by=post_by)
+                 amt_words=amt_words,narration=narration,created_by=created_by, post_by=post_by,address=address)
 
 
 # amount in words functions 

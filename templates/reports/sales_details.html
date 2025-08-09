@@ -1,0 +1,133 @@
+[[extend 'layout_report.html']]
+
+[[block header]]
+<style>
+    .table th {
+        background-color: #f1c889e0;
+        color: black;
+        font-weight: bold;
+        font-size: smaller;
+        border: 1px solid black;
+    }
+    .table td {
+        font-size: smaller;
+        border: 1px solid black;
+    }
+    .header-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .download-link {
+        text-decoration: none;
+        color: #007bff;
+    }
+    .card-body {
+        display: flex;
+        justify-content: space-between;
+    }
+    .report-info {
+        flex: 1;
+    }
+    .date-info {
+        flex: 1;
+        text-align: right;
+    }
+    .logo-container {
+            max-width: 400px; /* Match the width of the logo */
+        }
+        .address-text {
+            font-size: smaller;
+            word-wrap: break-word; /* Ensure long words are wrapped */
+        }
+</style>
+
+
+[[end]]
+
+[[block content]]
+
+<div class="container mt-4">
+
+    <div class="d-flex flex-column align-items-center justify-content-center">
+        <div class="text-center logo-container">
+            <img src="[[=URL('static','sm.png')]]" height="75px" width="400px" alt="TDCL">
+            <p class="address-text">[[=address]]</p> 
+        </div>   
+    </div>
+    <!-- Current Date and Time Section -->
+    <div class="header-container">
+        <p class="text-muted">Date and Time: [[=time]]</p>
+        <a href="#" class="download-link">Download Report</a>
+
+    </div>
+
+    <!-- Header Section -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="report-info">
+                <p class="card-text"><strong>Report Type:</strong> Sales Details</p>
+                <p class="card-text"><strong>As of Date:</strong> [[=to_date]]</p>                
+            </div>
+            <div class="date-info">
+                <p class="card-text"><strong>Branch Code:</strong> [[=report_branch_code]]</p>
+                <p class="card-text"><strong>Branch Name:</strong> [[=report_branch_name]]</p>
+                
+            </div>
+        </div>
+    </div>
+
+    <!-- Table Section -->
+    <div class="row">
+        <div class="col-12">
+            <div class="table-responsive">
+                <table id="example" class="table table-sm table-bordered" style="width:100%"">
+                    <thead>
+                        <tr>
+                            <th scope="col">Sales No.</th>
+                            <th scope="col">Sales Date</th>
+                            <th scope="col">Item Code</th>
+                            <th scope="col">Item Name</th>
+                            <th style="text-align: right;" scope="col">TP</th>
+                            <th style="text-align: right;" scope="col">RP</th>
+                            <th style="text-align: right;" scope="col">Margin</th>
+                            <th style="text-align: right;" scope="col">Quantity</th>
+                            <th style="text-align: right;" scope="col">Profit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        [[for row in results:]]
+                        <tr>
+                            <td>[[=row['trans_code']]]</td>
+                            <td>[[=row['trans_date']]]</td>
+                            <td>[[=row['item_code']]]</td>
+                            <td>[[=row['item_name']]]</td>
+                            <td style="text-align: right;">[[=f"{row['trade_price']:,.2f}"]]</td> 
+                            <td style="text-align: right;">[[=f"{row['retail_price']:,.2f}"]]</td> 
+                            <td style="text-align: right;">[[=f"{row['margin']:,.2f}"]]</td> 
+                            <td style="text-align: right;">[[=f"{row['quantity']:,.2f}"]]</td> 
+                            <td style="text-align: right;">[[=f"{row['profit']:,.2f}"]]</td> 
+                        </tr>
+                        [[pass]] 
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td style="text-align: right; font-weight: bold">Total</td>
+                            <td style="text-align: right; font-weight: bold">[[=f"{total_profit:,.2f}"]]</td>
+                        </tr>
+                    </tbody>
+
+                </table>
+                
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+[[end]]

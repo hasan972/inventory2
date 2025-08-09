@@ -28,10 +28,20 @@ pass
                   <span class="menu-icon">
                     <i class="fa-solid fa-file-lines"></i>
                   </span>
-                  <span class="menu-title">Product Setup</span>
+                  <span class="menu-title">Basic Setup</span>
                 </a>
                 <div class="sub-menu-list">
                   <ul>                    
+                    [[if  _controller_name=='new_branch':]]
+                    <li class="menu-item active_link">
+                    [[else:]]
+                    <li class="menu-item">
+                    [[pass]]
+                        <a href="[[=URL('branch','new_branch')]]">
+                        <span class="menu-icon"><i class="fa-solid fa-code-branch"></i></span>
+                        <span class="menu-title">Branch</span>
+                        </a>
+                    </li>
                     [[if  _controller_name=='new_unit':]]
                     <li class="menu-item active_link">
                     [[else:]]

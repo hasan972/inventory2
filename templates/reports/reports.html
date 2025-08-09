@@ -28,7 +28,7 @@
         list-style: none;
         cursor: pointer;
     }
-    ul.suggestion-list-cd {
+    ul.suggestion-list-sp {
         list-style-type: none;
         margin: 0;
         padding: 0;
@@ -36,101 +36,184 @@
         }
 
 
-    .suggestions-cd {
+    .suggestions-sp {
         display: block; 
         background: #eee;
         position: absolute;               
-        z-index: 1000; /* Add this line to make sure the suggestion list is on top */
+        z-index: 1000; 
         
         
     }
-    ul.suggestion-list-rf {
+    ul.suggestion-list-itm {
         list-style-type: none;
         margin: 0;
         padding: 0;
         
-        }
+    }
 
-
-    .suggestions-rf {
+    .suggestions-itm {
         display: block; 
         background: #eee;
         position: absolute;               
-        z-index: 1000; /* Add this line to make sure the suggestion list is on top */
-        
+        z-index: 1000;        
+    }
+
+    ul.suggestion-list-br {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
         
     }
+
+    .suggestions-br {
+        display: block; 
+        background: #eee;
+        position: absolute;               
+        z-index: 1000;        
+    }
+     
+    .report-btn {
+        width: 220px; /* Set a fixed width for all buttons */
+        text-align: center; /* Center align text */
+        white-space: nowrap; /* Prevent text wrapping */
+    }
+    td {
+        white-space: nowrap;
+
+    }
+
 </style>
 [[end]]
 
 [[block content]]
 <br>
-<div class="form-container">
-    <form id="reports-form" method="post" target="_blank">
-        <div class="form-group">
-            <label for="from_date">From Date</label>
-            <input type="date" class="form-control" id="from_date" name="from_date" required>
-        </div>
-        <div class="form-group">
-            <label for="to_date">To Date</label>
-            <input type="date" class="form-control" id="to_date" name="to_date" required>
-        </div>
-        <div class="form-group">
-            <label for="branch">Branch</label>
-            <select class="form-control" id="branch" name="branch" required>
-                [[if user_branch_code != 99:]]
-                <option value="[[=branch_diabled]]">[[=branch_diabled]]</option>
-                [[else:]]
-                <option value="">Select Branch</option>
-                [[for branch in branch_names:]]
-                <option value="[[=branch[0]]]">[[=branch[0]]]</option>
-                [[pass]]
-                [[pass]]
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="account_code">Account</label>
-            <input type="text" class="form-control" id="account_code" name="account_code" autocomplete="off">
-            <div class="suggestions-cd mt-2">
-                <ul class="suggestion-list-cd list-group" id="dropdata-cd">
-                    <!-- suggestions will be displayed here -->
-                </ul>
-            </div>
-            <input type="hidden" class="form-control" id="account" name="account" >           
-            
-        </div>
-        <div class="form-group">
-            <label for="ref_type">Ref. Type</label>
-            <select id="ref_type" name="ref_type" class = "form-control">
-                [[for rf in ref_type:]]
-                <option value="[[=rf[0]]]">[[=rf[0]]]</option>    
-                [[pass]]                        
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="ref_code">Reference</label>
-            <input type="text" class="form-control" id="ref_code" name="ref_code" autocomplete="off">
-            <div class="suggestions-rf mt-2">
-                <ul class="suggestion-list-rf list-group" id="dropdata-rf">
-                    <!-- suggestions will be displayed here -->
-                </ul>
-            </div>
-           
-            <input type="hidden" class="form-control" id="ref" name="ref" >
 
-        </div>
-        
-        <div class="btn-group">
-            <button type="button" class="btn btn-primary" id="report1-btn">Trial Balance (Details)</button>
-            <button type="button" class="btn btn-primary" id="report2-btn">Trial Balance (Summary)</button>
-            <button type="button" class="btn btn-primary" id="report3-btn">Transaction Listing</button>
-            <button type="button" class="btn btn-primary" id="report4-btn">Receipt-Payment (Details)</button>
-            <button type="button" class="btn btn-primary" id="report5-btn">Receipt-Payment (Summary)</button>
-            <button type="button" class="btn btn-primary" id="report6-btn">Reference</button>
-            <button type="button" class="btn btn-primary" id="report7-btn">Imprest Closing Cash</button>
-        </div>
-    </form>
+<div class="container py-4">
+    <form id="reports-form" method="post" target="_blank">
+        <div class="row justify-content-center">
+            <div class="col-md-4">
+                <div class="mb-3">                    
+                    <div class="table-responsive">
+                        <table id="example" class="table table-sm table-borderless" style="width:100%">                        
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <label for="from_date">From Date</label>            
+                                    </td>
+                                    <td>                                    
+                                        <input type="date" class="form-control form-control-sm" id="from_date" name="from_date" required>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="to_date">To Date</label>                                   
+                                    </td>
+                                    <td>                                 
+                                        <input type="date" class="form-control form-control-sm" id="to_date" name="to_date" required>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="branch">Branch</label>                               
+                                    </td>
+                                    <td>                                 
+                                        <select class="form-control form-control-sm" id="branch" name="branch" required>
+                                            [[if user_branch_code != 99:]]
+                                            <option value="[[=branch_diabled]]">[[=branch_diabled]]</option>
+                                            [[else:]]
+                                            <option value="">Select Branch</option>
+                                            [[for branch in branch_names:]]
+                                            <option value="[[=branch[0]]]">[[=branch[0]]]</option>
+                                            [[pass]]
+                                            [[pass]]
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="supplier">Supplier</label>                             
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control form-control-sm" id="supplier" name="supplier" autocomplete="off">
+                                        <div class="suggestions-sp mt-2">
+                                            <ul class="suggestion-list-sp list-group" id="dropdata-sp">
+                                                <!-- suggestions will be displayed here -->
+                                            </ul>
+                                        </div>                                                                        
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <label for="brand">Brand</label>                             
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control form-control-sm" id="brand" name="brand" autocomplete="off">
+                                        <div class="suggestions-br mt-2">
+                                            <ul class="suggestion-list-br list-group" id="dropdata-br">
+                                                <!-- suggestions will be displayed here -->
+                                            </ul>
+                                        </div>
+                                        <!-- <input type="hidden" class="form-control form-control-sm" id="seg" name="seg" >                                 -->
+                                    </td>
+                                </tr>                                
+                                <tr>
+                                    <td>
+                                        <label for="item">Item</label>                   
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control form-control-sm" id="item" name="item" autocomplete="off">
+                                        <div class="suggestions-itm mt-2">
+                                            <ul class="suggestion-list-rf list-group" id="dropdata-itm">
+                                                <!-- suggestions will be displayed here -->
+                                            </ul>
+                                        </div>                                
+                                    </td>
+                                </tr>                                
+                            </tbody>
+                            
+                        </table>                    
+                    </div>              
+                    
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="mb-3">                    
+                    <div class="table-responsive">
+                        <table id="example" class="table table-sm table-borderless" style="width:100%">                            
+                            <tbody>                                
+                                <tr>
+                                    <td>
+                                        <button type="button" class="btn btn-primary report-btn" id="report1-btn">Item Stock</button>
+                                    </td>                                    
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <button type="button" class="btn btn-primary report-btn" id="report2-btn">Item History</button>
+                                    </td>                                    
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <button type="button" class="btn btn-primary report-btn" id="report3-btn">Sales Details</button>
+                                    </td>                                    
+                                </tr>
+                                
+                                
+                            </tbody>
+                            
+
+                        </table>
+                        
+                    </div>  
+                    
+                </div>
+            </div>
+
+        </div>  
+    </form>    
+
 </div>
+
 
 [[end]]
 
@@ -145,7 +228,12 @@
 
             // Check if the to_date is earlier than the from_date
             if (toDate < fromDate) {
-                alert("To Date cannot be earlier than From Date.");
+                // alert("To Date cannot be earlier than From Date.");
+                Swal.fire({
+                        title: "Invalid Date Range",
+                        text: "To Date cannot be earlier than From Date.",
+                        icon: "error"
+                    });
                 return false; // Prevent form submission
             }
 
@@ -165,16 +253,26 @@
             }
             return true; // Allow form submission
         }
-        // trial balance details
+       
+        // item stock 
         $("#report1-btn").click(function() {
             var branch = $('#branch').val()
-            if($("#to_date").val() == "") {
-                // alert("Please select To Date");     
+            if($("#from_date").val() == "") {
                 Swal.fire({
                         title: "Invalid Date",
-                        text: "Please select To Date",
+                        text: "Please select from date",
                         icon: "error"
-                    });           
+                    }); 
+            }            
+            else if ($("#to_date").val() == "") {
+                Swal.fire({
+                        title: "Invalid Date",
+                        text: "Please select to date",
+                        icon: "error"
+                    }); 
+            }
+            else if(!validateDateRange()) {
+                return;
             }
             else if(branch == 'Select Branch' || branch=='') {
                 // alert("Please select branch");
@@ -182,36 +280,35 @@
                         title: "Invalid Branch",
                         text: "Please select branch",
                         icon: "error"
-                    });   
-            }
-            else if(!validateDateRange()) {
-                return;
+                    }); 
             }
             else {
-                $("#reports-form").attr("action", "[[=URL('reports','trial_balance_1')]]");
+                $("#reports-form").attr("action", "[[=URL('reports','item_stock')]]");
                 $("#reports-form").submit();
-            }     
+            }
+            
         });
-        
-        // trial balance summary
+
+        // item history
         $("#report2-btn").click(function() {
             var branch = $('#branch').val()
+            var item = $('#item').val()
             if($("#from_date").val() == "") {
-                // alert("Please select From Date");
                 Swal.fire({
                         title: "Invalid Date",
-                        text: "Please select From Date",
+                        text: "Please select from date",
                         icon: "error"
-                    });   
-                
+                    }); 
             }            
             else if ($("#to_date").val() == "") {
-                // alert("Please select To Date");
                 Swal.fire({
                         title: "Invalid Date",
-                        text: "Please select To Date",
+                        text: "Please select to date",
                         icon: "error"
-                    });  
+                    }); 
+            }
+            else if(!validateDateRange()) {
+                return;
             }
             else if(branch == 'Select Branch' || branch=='') {
                 // alert("Please select branch");
@@ -221,155 +318,39 @@
                         icon: "error"
                     }); 
             }
-            else if(!validateDateRange()) {
-                return;
+            else if(item=='') {
+                // alert("Please select branch");
+                Swal.fire({
+                        title: "Invalid item",
+                        text: "Please select item",
+                        icon: "error"
+                    }); 
             }
             else {
-                $("#reports-form").attr("action", "[[=URL('reports','trial_balance_2')]]");
+                $("#reports-form").attr("action", "[[=URL('reports','item_history')]]");
                 $("#reports-form").submit();
             }
-
             
         });
 
-        // transactionlisting 
+        // saled details
         $("#report3-btn").click(function() {
-            if($("#from_date").val() == "") {
-                // alert("Please select From Date");
-                Swal.fire({
-                        title: "Invalid Date",
-                        text: "Please select From Date",
-                        icon: "error"
-                    }); 
-            }            
-            else if ($("#to_date").val() == "") {
-                // alert("Please select To Date");
-                Swal.fire({
-                        title: "Invalid Date",
-                        text: "Please select To Date",
-                        icon: "error"
-                    }); 
-            }
-            else if ($("#account").val() == "") {
-                // alert("Please Select Account");
-                Swal.fire({
-                        title: "Invalid Account",
-                        text: "Please Select Account",
-                        icon: "error"
-                    }); 
-            }
-            else if(!validateDateRange()) {
-                return;
-            }
-            else {
-                $("#reports-form").attr("action", "[[=URL('reports','transaction_listing')]]");
-                $("#reports-form").submit();
-            }
-            
-        });
-
-        // receipt-payment 
-        $("#report4-btn").click(function() {
             var branch = $('#branch').val()
-            // var branch = $('#branch').val()
-            if($("#from_date").val() == "") {
-                // alert("Please select From Date");
-                Swal.fire({
-                        title: "Invalid Date",
-                        text: "Please select From Date",
-                        icon: "error"
-                    }); 
-                
-            }            
-            else if ($("#to_date").val() == "") {
-                // alert("Please select To Date");
-                Swal.fire({
-                        title: "Invalid Date",
-                        text: "Please select To Date",
-                        icon: "error"
-                    }); 
-            }
-            else if(branch == 'Select Branch' || branch=='') {
-                // alert("Please select branch");
-                Swal.fire({
-                        title: "Invalid Branch",
-                        text: "Please select branch",
-                        icon: "error"
-                    }); 
-            }
-            else if(!validateDateRange()) {
-                return;
-            }
-            else {
-                $("#reports-form").attr("action", "[[=URL('reports','rcp_pay')]]");
-                $("#reports-form").submit();
-            }
-            
-        });
-
-        // receipt-paymen summary 
-        $("#report5-btn").click(function() {
-            var branch = $('#branch').val()
-            // var branch = $('#branch').val()
-            if($("#from_date").val() == "") {
-                // alert("Please select From Date");
-                Swal.fire({
-                        title: "Invalid Date",
-                        text: "Please select From Date",
-                        icon: "error"
-                    }); 
-                
-            }            
-            else if ($("#to_date").val() == "") {
-                // alert("Please select To Date");
-                Swal.fire({
-                        title: "Invalid Date",
-                        text: "Please select To Date",
-                        icon: "error"
-                    }); 
-            }
-            else if(branch == 'Select Branch' || branch=='') {
-                // alert("Please select branch");
-                Swal.fire({
-                        title: "Invalid Branch",
-                        text: "Please select branch",
-                        icon: "error"
-                    }); 
-            }
-            else if(!validateDateRange()) {
-                return;
-            }
-            else {
-                $("#reports-form").attr("action", "[[=URL('reports','rcp_pay_sum')]]");
-                $("#reports-form").submit();
-            }
-            
-        });
-
-        // ref details
-        $("#report6-btn").click(function() {
-            var branch = $('#branch').val()
+            var item = $('#item').val()
             if($("#from_date").val() == "") {
                 Swal.fire({
                         title: "Invalid Date",
-                        text: "Please select From Date",
+                        text: "Please select from date",
                         icon: "error"
                     }); 
             }            
             else if ($("#to_date").val() == "") {
                 Swal.fire({
                         title: "Invalid Date",
-                        text: "Please select To Date",
+                        text: "Please select to date",
                         icon: "error"
                     }); 
             }
-            // else if ($("#account").val() == "") {
-            //     Swal.fire({
-            //             title: "Invalid Account",
-            //             text: "Please Select Account",
-            //             icon: "error"
-            //         }); 
-            // }
             else if(!validateDateRange()) {
                 return;
             }
@@ -380,142 +361,136 @@
                         text: "Please select branch",
                         icon: "error"
                     }); 
-            }
-            else {
-                $("#reports-form").attr("action", "[[=URL('reports','ref_details')]]");
-                $("#reports-form").submit();
-            }
-            
-        });
-        // imprest cash
-        $("#report7-btn").click(function() {
-            var branch = $('#branch').val()
-            if($("#from_date").val() == "") {
-                Swal.fire({
-                        title: "Invalid Date",
-                        text: "Please select From Date",
-                        icon: "error"
-                    }); 
             }            
-            else if ($("#to_date").val() == "") {
-                Swal.fire({
-                        title: "Invalid Date",
-                        text: "Please select To Date",
-                        icon: "error"
-                    }); 
-            }
-            // else if ($("#account").val() == "") {
-            //     Swal.fire({
-            //             title: "Invalid Account",
-            //             text: "Please Select Account",
-            //             icon: "error"
-            //         }); 
-            // }
-            else if(!validateDateRange()) {
-                return;
-            }
-            else if(branch == 'Select Branch' || branch=='') {
-                // alert("Please select branch");
-                Swal.fire({
-                        title: "Invalid Branch",
-                        text: "Please select branch",
-                        icon: "error"
-                    }); 
-            }
             else {
-                $("#reports-form").attr("action", "[[=URL('reports','imprest_cash')]]");
+                $("#reports-form").attr("action", "[[=URL('reports','sales_details')]]");
                 $("#reports-form").submit();
             }
             
         });
 
-        // autofill suggestion for account code
-        $('#account_code').on('input', function() {        
+        // autofill suggestion for supplier
+        $('#supplier').on('input', function() {       
+            // console.log("Hello") 
             var query = $(this).val(); 
-            var selectedText = $('#branch').val();
-            var parts = selectedText.split('-');
-            branch_code= parts[0];
             // console.log(parts[0]);               
             if (query.length >= 3) {
                 $.ajax({
-                    url: '[[=URL("fetch_account_code_voucher_detail")]]',
-                    data: {term: query, v_branch_code: branch_code},
+                    url: '[[=URL("reports","fetch_supplier")]]',
+                    data: {term: query},
                     success: function(data) {
                         var suggestions = JSON.parse(data);
-                        var dropdown = $('#dropdata-cd');
+                        var dropdown = $('#dropdata-sp');
                         dropdown.empty(); 
                         $.each(suggestions, function(index, value) {
-                            dropdown.append('<li class="list-group-item suggestion-item">' + value + '</li>');
+                            dropdown.append('<li class="list-group-item suggestion-item-sp">' + value + '</li>');
                         });
-                        $('.suggestions-cd').show();
+                        $('.suggestions-sp').show();
                     }
                 });
             } else {
-                $('.suggestions-cd').hide(); 
+                $('.suggestions-sp').hide(); 
         }
     });
 
     //click on a suggestion
-    $(document).on('click', '.suggestion-item', function() {
+    $(document).on('click', '.suggestion-item-sp', function() {
         var selectedText = $(this).text();
         var parts = selectedText.split('|');        
-        $('#account_code').val(selectedText); 
-        $('#account').val(parts[0]); 
-        $('.suggestions-cd').hide();
+        $('#supplier').val(selectedText);         
+        $('.suggestions-sp').hide();
         
     });
     // click outside
     $(document).click(function(e) {
-        if (!$(e.target).closest('.suggestions-cd, #account_code').length) {
-            $('.suggestions-cd').hide();
-        }
-    });
-        // autofill suggestion for ref code / ref name
-        $('#ref_code').on('input', function() {        
-            var query = $(this).val(); 
-            var ref_type = $('#ref_type').val();
-            // console.log(ref_type);
-            
-            // console.log(ref_type);               
-            if (query.length >= 3) {
-                // console.log(query)
-                $.ajax({
-                    url: '[[=URL("fetch_reference")]]',
-                    data: {term: query, r_type: ref_type},
-                    success: function(data) {
-                        var suggestions = JSON.parse(data);
-                        var dropdown = $('#dropdata-rf');
-                        dropdown.empty(); 
-                        $.each(suggestions, function(index, value) {
-                            dropdown.append('<li class="list-group-item suggestion-item-rf">' + value + '</li>');
-                        });
-                        $('.suggestions-rf').show();
-                    }
-                });
-            } else if(query.length == 0){
-                $('#ref').val('');
-            }
-            else {
-                $('.suggestions-rf').hide(); 
-                
+        if (!$(e.target).closest('.suggestions-sp, #supplier').length) {
+            $('.suggestions-sp').hide();
         }
     });
 
-    //click on a ref suggestion
-    $(document).on('click', '.suggestion-item-rf', function() {
-        var selectedText = $(this).text();
-        var parts = selectedText.split('|');        
-        $('#ref_code').val(selectedText); 
-        $('#ref').val(parts[0]); 
-        $('.suggestions-rf').hide();
-        
-    });
-    // click ref outside
-    $(document).click(function(e) {
-        if (!$(e.target).closest('.suggestions-rf, #ref_code').length) {
-            $('.suggestions-rf').hide();
+        // autofill suggestion for brand
+        $('#brand').on('input', function() {       
+            // console.log("Hello") 
+            var query = $(this).val(); 
+
+            // console.log(parts[0]);               
+            if (query.length >= 3) {
+                $.ajax({
+                    url: '[[=URL("reports","fetch_brand")]]',
+                    data: {term: query},
+                    success: function(data) {
+                        var suggestions = JSON.parse(data);
+                        var dropdown = $('#dropdata-br');
+                        dropdown.empty(); 
+                        $.each(suggestions, function(index, value) {
+                            dropdown.append('<li class="list-group-item suggestion-item-br">' + value + '</li>');
+                        });
+                        $('.suggestions-br').show();
+                    }
+                });
+            } else {
+                $('.suggestions-br').hide(); 
         }
     });
+
+    //click on a suggestion
+    $(document).on('click', '.suggestion-item-br', function() {
+        var selectedText = $(this).text();
+        var parts = selectedText.split('|');        
+        $('#brand').val(selectedText);         
+        $('.suggestions-br').hide();
+        
+    });
+    // click outside
+    $(document).click(function(e) {
+        if (!$(e.target).closest('.suggestions-br, #brand').length) {
+            $('.suggestions-br').hide();
+        }
+    });
+
+
+        // autofill suggestion for brand
+        $('#item').on('input', function() {       
+            // console.log("Hello") 
+            var query = $(this).val(); 
+
+            // console.log(parts[0]);               
+            if (query.length >= 3) {
+                $.ajax({
+                    url: '[[=URL("receive","fetch_item_code_name")]]',
+                    data: {term: query},
+                    success: function(data) {
+                        var suggestions = JSON.parse(data);
+                        var dropdown = $('#dropdata-itm');
+                        dropdown.empty(); 
+                        $.each(suggestions, function(index, value) {
+                            dropdown.append('<li class="list-group-item suggestion-item-itm">' + value + '</li>');
+                        });
+                        $('.suggestions-itm').show();
+                    }
+                });
+            } else {
+                $('.suggestions-itm').hide(); 
+        }
+    });
+
+    //click on a suggestion
+    $(document).on('click', '.suggestion-item-itm', function() {
+        var selectedText = $(this).text();
+        var parts = selectedText.split('|');        
+        $('#item').val(selectedText);         
+        $('.suggestions-itm').hide();
+        
+    });
+    // click outside
+    $(document).click(function(e) {
+        if (!$(e.target).closest('.suggestions-br, #brand').length) {
+            $('.suggestions-br').hide();
+        }
+    });
+        
+
+    
 
 });
     </script>

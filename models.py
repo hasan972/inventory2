@@ -33,7 +33,7 @@ signature=db.Table(db,'signature',
                 Field('created_by','string',length=100,writable=False,readable=False),                
                 Field('created_on','datetime',default=datetime.datetime.now(),writable=False,readable=False),
                 Field('updated_by','string',length=100,writable=False,readable=False),
-                Field('updated_on','datetime',default=datetime.datetime.now(),writable=True),
+                Field('updated_on','datetime',default=datetime.datetime.now(),writable=False,readable=False),
                 )
 
 db.define_table('ac_accounts_class',
@@ -384,10 +384,10 @@ db.define_table('product',
                 migrate=False
             )
 
-db.define_table('product_receive_head',
+db.define_table('transaction_head',
                 Field('id', 'integer'),                
-                Field('receive_code','integer'),
-                Field('receive_date', 'date'),                
+                Field('trans_code','integer'),
+                Field('trans_date', 'date'),                
                 
                 Field('supplier_code', 'string',length=50),
                 Field('supplier_name', 'string', length=100),  
@@ -409,10 +409,10 @@ db.define_table('product_receive_head',
                 migrate=False
             )
 
-db.define_table('product_receive_details',
+db.define_table('transaction_details',
                 Field('id', 'integer'),                
-                Field('receive_code','integer',),
-                Field('receive_date', 'date'),              
+                Field('trans_code','integer',),
+                Field('trans_date', 'date'),              
 
                 
                 # Product Information

@@ -28,7 +28,7 @@
                         [[pass]]
                     </div>
                 </div>
-                <div class="col-4">
+                <div class="col-3">
                     <div class="mb-3">
                         <label for="brand_name" class="form-label">Brand Name</label>
                         [[= form.custom.widgets['brand_name'] ]]
@@ -37,18 +37,18 @@
                         [[pass]]
                     </div>
                 </div>
-                <div class="col-3">
-                    <div class="mb-3">
-                        <label for="brand_name" class="form-label">Supplier Name</label>
+                <div class="col-2">
+                    <div class="mb-2">
+                        <label for="supplier_name" class="form-label">Supplier Name</label>
                         [[= form.custom.widgets['supplier_name'] ]]
                         [[ if 'supplier_name' in form.errors: ]]
                         <div class="text-danger">[[=form.errors['supplier_name']]]</div>                           
                         [[pass]]
                     </div>
                 </div>
-                <div class="col-1">
+                <div class="col-2">
                     <div class="mb-3">
-                        <label for="brand_name" class="form-label">Supplier Code</label>
+                        <label for="supplier_code" class="form-label">Supplier Code</label>
                         [[= form.custom.widgets['supplier_code'] ]]
                         [[ if 'supplier_code' in form.errors: ]]
                         <div class="text-danger">[[=form.errors['supplier_code']]]</div>                           
@@ -134,8 +134,7 @@
                     data: { q: selectedValue },
                     dataType: 'json',
                     success: function(data) {
-                    // console.log(data['branh_code'])            
-                    $("#brand_supplier_code").val(data['supplier_code']);            
+                    // console.log(data['branh_code'])       
                 }
             });  
 
