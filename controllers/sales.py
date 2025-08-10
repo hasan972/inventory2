@@ -783,7 +783,7 @@ def print_receipt():
             receipt_text+=b'\n\n'
                  #qr
             # Add QR Code (ESC/POS command for QR code printing)
-            qr_data = f"https://example.com/receipt/{trx_code}"  # Customize the link or data
+            qr_data = f"A Aqrabiyah, Al Khobar, Saudi Arabia"  # Customize the link or data
             store_len = len(qr_data) + 3
             pL = store_len % 256
             pH = store_len // 256
