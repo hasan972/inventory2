@@ -303,7 +303,26 @@ def add_item():
             duplicate= db.executesql(duplicate_query)
             # print(duplicate_query)
             if duplicate:
-                return json.dumps({'status': 'duplicate'}) 
+                old_qty = db(db.transaction_details.trans_code == sl)(db.transaction_details.item_code == itm_code).select(
+                    db.transaction_details.quantity).first().quantity
+                
+                new_qty = old_qty + (-qty)   # add new qty to old qty
+                new_total = abs(round(retail_price * new_qty, 2))
+
+                db((db.transaction_details.trans_code == sl) & (db.transaction_details.item_code == itm_code)).update(
+                    quantity=new_qty,
+                    total=new_total
+                )
+
+                return json.dumps({
+                    'status': 'duplicate',
+                    'itm_code': itm_code,
+                    'itm_name': itm_name,
+                    'retail_price': retail_price,
+                    'new_qty': (-new_qty),
+                    'new_total': new_total
+                })
+
             else:  
                 db.transaction_details.insert(
                             cid='TDCLPC',
