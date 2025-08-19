@@ -216,7 +216,6 @@
                     data: { q: selectedValue },
                     dataType: 'json',
                     success: function(data) {
-                    // console.log(data['branh_code'])            
                     $("#inventory_items_brand_code").val(data['brand_code']);            
                     $("#inventory_items_supplier_code").val(data['supplier_code']);            
                     $("#inventory_items_supplier_name").val(data['supplier_name']);            
