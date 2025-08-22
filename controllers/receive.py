@@ -239,7 +239,7 @@ def add_item():
     item_code = request.json.get('item_code').strip()
     item_name = request.json.get('item_name').strip()
     receive_date = request.json.get('receive_date').strip()
-    qty = request.json.get('qty')
+    qty = float(request.json.get('qty'))
     r_branch_code = request.json.get('v_branch_code')
     r_branch_name = request.json.get('v_branch_name')
     barcode = request.json.get('barcode')  
@@ -256,19 +256,42 @@ def add_item():
     
     # checking account branchwise
     if barcode and barcode.strip():
-        item_exists = db.executesql("SELECT item_code,item_name, trade_price,retail_price FROM inventory_items WHERE barcode = %s LIMIT 1", placeholders=[barcode.strip()])
+        item_exists = db.executesql("SELECT item_code,item_name,retail_price, trade_price FROM inventory_items WHERE barcode = %s LIMIT 1", placeholders=[barcode.strip()])
     else:
-        item_exists = db.executesql("SELECT item_code,item_name, trade_price,retail_price FROM inventory_items WHERE item_code = %s LIMIT 1", placeholders=[item_code.strip()])
+        item_exists = db.executesql("SELECT item_code,item_name, retail_price, trade_price FROM inventory_items WHERE item_code = %s LIMIT 1", placeholders=[item_code.strip()])
     
     if not item_exists:        
         return json.dumps({'status': 'not_found'}) 
     else:
         itm_code = item_exists[0][0]
         itm_name = item_exists[0][1]
-        trade_price = item_exists[0][2]
-        retail_price = item_exists[0][3]
+        retail_price = item_exists[0][2]
+        trade_price = item_exists[0][3]
         total = trade_price* float(qty) 
-        # print(item_code+"  "+item_name+" "+str(trade_price)+" "+str(retail_price)+" "+str(total))
+
+        duplicate_query= """SELECT item_code,quantity FROM transaction_details  WHERE trans_code= '{sl}' and item_code = '{itm_code}' LIMIT 1 """.format(sl=sl,itm_code=itm_code)
+        duplicate= db.executesql(duplicate_query)
+
+        if duplicate:
+            old_qty = duplicate[0][1]                
+            new_qty = old_qty + qty   
+            new_total = round(trade_price * new_qty, 2)
+
+            db((db.transaction_details.trans_code == sl) & (db.transaction_details.item_code == itm_code)).update(
+                quantity=new_qty,
+                total=new_total
+            )
+
+            return json.dumps({
+                'status': 'duplicate',
+                'itm_code': itm_code,
+                'itm_name': itm_name,
+                'retail_price': retail_price,
+                'trade_price': trade_price,
+                'new_qty': new_qty,
+                'new_total': new_total
+            })
+
         db.transaction_details.insert(
                     cid='TDCLPC',
                     trans_code=sl,

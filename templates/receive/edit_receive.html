@@ -440,11 +440,20 @@
                             icon: "error"
                             });
                     } else if (result.status === 'duplicate') {
-                        Swal.fire({
-                            title: "Duplicate Item",
-                            text: "Please add a different item",
-                            icon: "error"
+                        $("#tbody tr").each(function () {
+                                var rowItemCode = $(this).find("td:eq(0)").text(); 
+                                if (rowItemCode === result.itm_code) {
+                                    $(this).find("td:eq(2)").text(formatNumberWithCommas(result.new_qty));  
+                                    $(this).find("td:eq(4)").text(formatNumberWithCommas(result.new_total)); 
+                                }
                             });
+
+                            $('#barcode').val("");
+                            $('#item_code').val("");
+                            $('#item_name').val("");
+                            $('#qty').val("1.0");
+                            $("#barcode").focus();
+                            updateTotals();
                     }
                     else if (result.status === 'exception') {
                             Swal.fire({
