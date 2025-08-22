@@ -299,12 +299,11 @@ def add_item():
             retail_price = item_exists[0][3]
             total = round((retail_price* qty),2 )
 
-            duplicate_query= """SELECT item_code FROM transaction_details  WHERE trans_code= '{sl}' and item_code = '{itm_code}' LIMIT 1 """.format(sl=sl,itm_code=itm_code)
+            duplicate_query= """SELECT item_code, quantity FROM transaction_details  WHERE trans_code= '{sl}' and item_code = '{itm_code}' LIMIT 1 """.format(sl=sl,itm_code=itm_code)
             duplicate= db.executesql(duplicate_query)
             # print(duplicate_query)
             if duplicate:
-                old_qty = db(db.transaction_details.trans_code == sl)(db.transaction_details.item_code == itm_code).select(
-                    db.transaction_details.quantity).first().quantity
+                old_qty = duplicate[0][1]
                 
                 new_qty = old_qty + (-qty)   # add new qty to old qty
                 new_total = abs(round(retail_price * new_qty, 2))
