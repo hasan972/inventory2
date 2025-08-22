@@ -134,6 +134,7 @@ def get_sup_code():
     sup_name = request.query.get("q")        
     sup_row = db(db.supplier.supplier_name == sup_name).select().first()  
     sup_code=sup_row.supplier_code   
+    # print(sup_code)
     # print(db._lastsql)
 
     return dict(supplier_code=sup_code)

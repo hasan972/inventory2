@@ -244,8 +244,6 @@ def add_item():
     r_branch_name = request.json.get('v_branch_name')
     barcode = request.json.get('barcode')  
 
-    print(barcode)
-
     searched_item='' 
      
     branch_code= session.get('branch_code')
@@ -270,11 +268,12 @@ def add_item():
         trade_price = item_exists[0][2]
         retail_price = item_exists[0][3]
         total = trade_price* float(qty) 
+        # print(item_code+"  "+item_name+" "+str(trade_price)+" "+str(retail_price)+" "+str(total))
         db.transaction_details.insert(
                     cid='TDCLPC',
                     trans_code=sl,
-                    item_code=item_code,
-                    item_name=item_name,
+                    item_code=itm_code,
+                    item_name=itm_name,
                     quantity=qty,
                     trans_date=receive_date,  
                     trade_price=  trade_price,                

@@ -212,7 +212,7 @@ db.define_table('ac_auth_user',
                 Field('role','string',length=100,requires=[IS_NOT_EMPTY('Please select role'),IS_IN_SET(['ADMIN','VIEWER','EDITOR-1st','EDITOR-2nd'])],zero='Select'),                  
                 Field('status','string',length=100,requires=[IS_NOT_EMPTY('Please select status'),IS_IN_SET(['ACTIVE', 'INACTIVE'])],default="ACTIVE"), 
                 # Field('status',requires=IS_IN_SET(['ACTIVE','INACTIVE']),zero='Select'), 
-                Field('contact','string',length=20, requires=[IS_MATCH('^01\d{9}$', error_message='Please enter a valid mobile number of 11 digits starting with 01'),IS_NOT_EMPTY('Please enter phone number'),IS_NOT_IN_DB(db,'ac_auth_user.contact','Mobile no. already exists')]),
+                Field('contact','string',length=20, requires=[IS_MATCH('^\d{10}$', error_message='Please enter a valid mobile number of 10 digits'),IS_NOT_EMPTY('Please enter phone number'),IS_NOT_IN_DB(db,'ac_auth_user.contact','Mobile no. already exists')]),
                 Field('f_password','integer',default='1',readable=False,writable=False),
                 signature,
                 migrate=False
