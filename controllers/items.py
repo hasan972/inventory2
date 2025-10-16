@@ -25,19 +25,30 @@ def new_item():
     search_term = request.query.get('search_term', '')
     search_by = request.query.get('search_by', 'item_name')
 
+    page = int(request.query.get('page', 1))
+    items_per_page = 20
+    offset = (page - 1) * items_per_page
+
+
     if search_term:
         if search_by == 'item_name':
-            query = "SELECT * FROM inventory_items WHERE  item_name LIKE '%{}%'".format(search_term)
+            query = "SELECT * FROM inventory_items WHERE  item_name LIKE '%{}%' order by id desc LIMIT {limit} OFFSET {offset}".format(search_term,limit=items_per_page, offset=offset)
         elif search_by == 'item_code':
-            query = "SELECT * FROM inventory_items WHERE item_code LIKE '%{}%'".format(search_term)
+            query = "SELECT * FROM inventory_items WHERE item_code LIKE '%{}%' order by id desc LIMIT {limit} OFFSET {offset}".format(search_term,limit=items_per_page, offset=offset)
     else:
-        query = "SELECT * FROM inventory_items  "
+        query = "SELECT * FROM inventory_items order by id desc LIMIT {limit} OFFSET {offset} ".format(limit=items_per_page, offset=offset)
 
     # print(query)
     branches = db.executesql("SELECT branch_code FROM ac_branch")
     rows = db.executesql(query, as_dict=True)
 
-    # db.inventory_items.created_by.default = user    
+    total_records_query = "SELECT COUNT(*) FROM inventory_items" 
+    total_records = db.executesql(total_records_query)[0][0]
+    total_pages = (total_records + items_per_page - 1) // items_per_page       
+    
+    # Calculate the range of records being displayed        
+    start_record = offset + 1
+    end_record = min(offset + items_per_page, total_records)
 
     form = Form(db.inventory_items)
 
@@ -72,7 +83,6 @@ def new_item():
             form.custom.widgets['trade_price']['_class'] = 'form-control form-control-sm'
     if 'retail_price' in form.custom.widgets:
             form.custom.widgets['retail_price']['_class'] = 'form-control form-control-sm'
-
     
 
     if form.accepted:
@@ -90,14 +100,14 @@ def new_item():
                     brand_code=new_brand_code,
                     supplier_code=new_sup_code,
                     quantity=0,                    
-                    branch_code = branch[0],                   
-                     created_by = user,
+                    branch_code = branch[0],
+                    created_by = user,
                     created_on=datetime.datetime.now(),
                 )        
 
         redirect(URL('items/new_item'))
 
-    return dict(form=form, rows=rows, search_term=search_term, search_by=search_by, role=role, user=user, branch_name=branch_name)
+    return dict(form=form, rows=rows, search_term=search_term, search_by=search_by, role=role, user=user, branch_name=branch_name,page=page, total_pages=total_pages, start_record=start_record, end_record=end_record, total_records=total_records)
 
 # Edit an item
 @action('items/edit_item/<item_id:int>', method=["GET", "POST"])
@@ -121,6 +131,10 @@ def edit_item(item_id=None):
             form.custom.widgets['item_code']['_class'] = 'form-control form-control-sm'
     if 'item_name' in form.custom.widgets:
             form.custom.widgets['item_name']['_class'] = 'form-control form-control-sm'
+    if 'supplier_code' in form.custom.widgets:
+            form.custom.widgets['supplier_code']['_class'] = 'form-control form-control-sm'
+    if 'supplier_name' in form.custom.widgets:
+            form.custom.widgets['supplier_name']['_class'] = 'form-control form-control-sm'
     if 'category' in form.custom.widgets:
             form.custom.widgets['category']['_class'] = 'form-control form-control-sm select-custom'
     if 'unit' in form.custom.widgets:

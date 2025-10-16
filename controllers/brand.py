@@ -28,16 +28,28 @@ def new_brand():
 
         search_term = request.query.get('search_term', '')
         search_by = request.query.get('search_by', 'brand_name')
+
+        page = int(request.query.get('page', 1))
+        items_per_page = 20
+        offset = (page - 1) * items_per_page
         
         if search_term:
             if search_by == 'brand_name':
-                query = "SELECT * FROM brand WHERE LOWER(brand_name) LIKE '%{}%'".format(search_term)
+                query = "SELECT * FROM brand WHERE LOWER(brand_name) LIKE '%{}%' order by id desc LIMIT {limit} OFFSET {offset}".format(search_term,limit=items_per_page, offset=offset)
             elif search_by == 'brand_code':
-                query = "SELECT * FROM brand WHERE brand_code LIKE '%{}%'".format(search_term)
+                query = "SELECT * FROM brand WHERE brand_code LIKE '%{}%' order by id desc LIMIT {limit} OFFSET {offset}".format(search_term,limit=items_per_page, offset=offset)
         else:
-            query = "SELECT * FROM brand"
+            query = "SELECT * FROM brand order by id desc LIMIT {limit} OFFSET {offset}".format(search_term,limit=items_per_page, offset=offset)
         
         rows = db.executesql(query, as_dict=True)
+
+        total_records_query = "SELECT COUNT(*) FROM brand" 
+        total_records = db.executesql(total_records_query)[0][0]
+        total_pages = (total_records + items_per_page - 1) // items_per_page       
+    
+        # Calculate the range of records being displayed        
+        start_record = offset + 1
+        end_record = min(offset + items_per_page, total_records)
 
         # db.brand.created_by.default = user
         form = Form(db.brand)
@@ -61,7 +73,7 @@ def new_brand():
             flash.set('Brand added successfully', 'success')
             redirect(URL('brand/new_brand'))
 
-    return dict(form=form, rows=rows, search_term=search_term, search_by=search_by, role=role, user=user, branch_name=branch_name)
+    return dict(form=form, rows=rows, search_term=search_term, search_by=search_by, role=role, user=user, branch_name=branch_name,page=page, total_pages=total_pages, start_record=start_record, end_record=end_record, total_records=total_records)
 
 # Edit brand
 @action('brand/edit_brand/<brand_id:int>', method=["GET", "POST"])

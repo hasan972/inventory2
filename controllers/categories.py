@@ -39,6 +39,8 @@ def new_category():
         
         rows = db.executesql(query, as_dict=True)
 
+        db.category.created_by.default = user
+
         # db.category.created_by.default = user
         form = Form(db.category)
         if 'category_code' in form.custom.widgets:
